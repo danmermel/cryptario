@@ -1,0 +1,36 @@
+const utilities = require ("./utilities.js")
+
+test("Identify that basic clue gets split", function() {
+  const res = utilities.split("Pleasant tumble in gale (6)")
+  expect(res).toEqual({"totalLength":6,"clue":"Pleasant tumble in gale", "wordLengths":[6]})
+});
+
+test("Additional brackets don't crap it", function() {
+  const res = utilities.split("Pleasant tumble (not in winter) in gale (6)")
+  expect(res).toEqual({"totalLength":6,"clue":"Pleasant tumble (not in winter) in gale", "wordLengths":[6]})
+});
+
+test("Additional spaces at the end of clue don't crap it", function() {
+  const res = utilities.split("Pleasant tumble in gale (6)   ")
+  expect(res).toEqual({"totalLength":6,"clue":"Pleasant tumble in gale", "wordLengths":[6]})
+});
+
+test("Complex solution length - hyphens", function() {
+  const res = utilities.split("Pleasant tumble in gale (6-4)")
+  expect(res).toEqual({"totalLength":10,"clue":"Pleasant tumble in gale", "wordLengths":[6,4]})
+});
+
+test("Complex solution length - commas", function() {
+  const res = utilities.split("Pleasant tumble in gale (6,4)")
+  expect(res).toEqual({"totalLength":10,"clue":"Pleasant tumble in gale", "wordLengths":[6,4]})
+});
+
+test("Complex solution length - hyphens, apostrophes, commas", function() {
+  const res = utilities.split("Pleasant tumble in gale (1'5-2,2)")
+  expect(res).toEqual({"totalLength":10,"clue":"Pleasant tumble in gale", "wordLengths":[1,5,2,2]})
+});
+
+test("Complex solution length - double digits", function() {
+  const res = utilities.split("Pleasant tumble in gale (16-4)")
+  expect(res).toEqual({"totalLength":20,"clue":"Pleasant tumble in gale", "wordLengths":[16,4]})
+});
