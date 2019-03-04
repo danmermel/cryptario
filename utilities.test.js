@@ -34,3 +34,33 @@ test("Complex solution length - double digits", function() {
   const res = utilities.split("Pleasant tumble in gale (16-4)")
   expect(res).toEqual({"totalLength":20,"clue":"Pleasant tumble in gale", "wordLengths":[16,4]})
 });
+
+test("Synonym of cook", async function() {
+  const res = await utilities.isSynonym("cook", "falsify")
+  expect(res).toEqual(true)
+});
+
+test("Not Synonym of dog", async function() {
+  const res = await utilities.isSynonym("dog", "cat")
+  expect(res).toEqual(false)
+});
+
+test("Synonym with capital letters", async function() {
+  const res = await utilities.isSynonym("Cook", "falsify")
+  expect(res).toEqual(true)
+});
+
+test("Synonym of empty string", async function() {
+  const res = await utilities.isSynonym("", "")
+  expect(res).toEqual(false)
+});
+
+test("Synonym of numbers", async function() {
+  const res = await utilities.isSynonym(1, 2)
+  expect(res).toEqual(false)
+});
+
+test("Synonym of partial empty string", async function() {
+  const res = await utilities.isSynonym("cook", "")
+  expect(res).toEqual(false)
+});
