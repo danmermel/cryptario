@@ -12,6 +12,8 @@
     "jest": "^24.1.0"
   },
   "dependencies": {
+    "line-by-line": "^0.1.6",
+    "node-snowball": "^0.2.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4"
   }

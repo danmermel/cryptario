@@ -18,8 +18,47 @@ const isSynonym = async function (word1, word2) {
   return (find > -1)
 }
 
+const getWords = function(clue) {
+  //this splits the clue into component words and then
+  //filters out the blank array members
+  //it is NOT lowercasing because we think sometimes you want upper case to be preserved
+  return clue.split(/\W/g).filter(function(str) { return str.length >0 })
+}
+
+const countLetters = function(words, numLetters) {
+  var total = 0;
+  var match = []
+  for(var i in words) {
+    total = total + words[i].length
+    match.push(words[i]) 
+    if (total === numLetters) {
+      return match
+    }
+  }
+  return null
+}
+
+const transformWord = function(word){
+
+  // lowercase
+  word = word.toLowerCase();
+
+  //remove all but letters
+  word = word.replace(/[^a-z]/g,"");
+
+  // reorder alphabetically
+
+  word = word.split("")
+  word = word.sort()
+  word = word.join("")
+
+  return word
+}
 
 module.exports = {
   split : split,
-  isSynonym: isSynonym
+  isSynonym: isSynonym,
+  getWords: getWords,
+  countLetters: countLetters,
+  transformWord: transformWord
 }

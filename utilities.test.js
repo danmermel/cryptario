@@ -64,3 +64,51 @@ test("Synonym of partial empty string", async function() {
   const res = await utilities.isSynonym("cook", "")
   expect(res).toEqual(false)
 });
+
+
+test("getWords - Get rid of anything that is not word in clue", function() {
+  const res = utilities.getWords("ABC123, (great) cook+kitchen - nest")
+  expect(res).toEqual(["ABC123", "great", "cook", "kitchen", "nest"])
+});
+
+test("countLetters - Match first two words", function() {
+  const res = utilities.countLetters(["in","gale","woof"], 6)
+  expect(res).toEqual(["in","gale"])
+});
+
+test("countLetters - Match first word", function() {
+  const res = utilities.countLetters(["in","gale","woof"], 2)
+  expect(res).toEqual(["in"])
+});
+
+test("countLetters - Match all words", function() {
+  const res = utilities.countLetters(["in","gale","woof"], 10)
+  expect(res).toEqual(["in","gale","woof"])
+});
+
+test("countLetters - Match nothing", function() {
+  const res = utilities.countLetters(["in","gale","woof"], 11)
+  expect(res).toEqual(null)
+});
+
+test("countLetters - Match nothing again", function() {
+  const res = utilities.countLetters(["in","gale","woof"], 3)
+  expect(res).toEqual(null)
+});
+
+test("transformWord - single word", function() {
+  const res = utilities.transformWord("dog")
+  expect(res).toEqual("dgo")
+});
+
+test("transformWord - multi  word", function() {
+  const res = utilities.transformWord("black dog")
+  expect(res).toEqual("abcdgklo")
+});
+
+test("transformWord - punctuation and capital letters", function() {
+  const res = utilities.transformWord(" Black Dog's ")
+  expect(res).toEqual("abcdgklos")
+});
+
+
