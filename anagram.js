@@ -64,8 +64,66 @@ const solveAnagram = async function(letters) {
   return retval
 }
 
+const analyzeAnagram = async function (clue) {
+
+  var retval = [];
+
+  //first split the clue
+  // returns an object with a clue, a totalLength and a wordLengths array
+  var splitClue = utilities.split(clue);  
+  if (splitClue == null ) {
+    return []
+  }
+  console.log("split clue = ", splitClue);
+
+  //now try to get anagram indicators
+  //returns an array of indicators or an empty array if there are none
+  var indicators = identifyIndicators(splitClue.clue);
+  if (indicators.length == 0) {
+    return []
+  }
+  console.log("indicators = ", indicators)
+  // now parse clue for every possible indicator
+  // paseClue returns  an array of objects [{letters, words, definition}]
+  for (var i in indicators) {
+    var indicator = indicators[i];
+    var parsedClue = parseClue(splitClue.clue, indicator, splitClue.totalLength);
+    console.log("indicator is ", indicator, " and parsed Clue is ", parsedClue);
+
+    for (var j in parsedClue) {
+      var pc = parsedClue[j];
+      var obj= {"type":"anagram",
+                "clue":splitClue.clue,
+                "totalLength":splitClue.totalLength,
+                "definition": pc.definition,
+                "indicator":indicator,
+                "words": pc.words
+     };
+     //now make anagram words for all the words
+     //returns an array of strings 
+     var solvedAnagrams = await solveAnagram(pc.letters);
+     console.log("solvedAnagrams is ", solvedAnagrams);
+
+     for (var k in solvedAnagrams) {
+       var solved = solvedAnagrams[k];
+       //clone the obj so that it becomes different and not just a reference to itself.
+       var x= JSON.parse(JSON.stringify(obj));
+       x.solution = solved;
+       x.isSynonym = await utilities.isSynonym(x.definition,x.solution)
+       retval.push(x);
+     } //for k
+
+    }; //for j
+  
+  } // for i
+  
+  return retval
+}
+
+
 module.exports = {
   identifyIndicators: identifyIndicators,
   parseClue: parseClue,
-  solveAnagram: solveAnagram
+  solveAnagram: solveAnagram,
+  analyzeAnagram: analyzeAnagram
 }

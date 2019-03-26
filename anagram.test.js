@@ -56,3 +56,81 @@ test("parseClue: pleasant tumble in gal", function() {
   expect(solution).toEqual([])
 })
 
+test("analyzeAnagram: pleasant tumble in gale (6)", async function() {
+  var solution = await anagram.analyzeAnagram("pleasant tumble in gale (6)")
+  expect(solution).toEqual(expect.arrayContaining([{
+    type: "anagram",
+    clue: "pleasant tumble in gale",
+    totalLength: 6,
+    definition: "pleasant",
+    indicator: "tumble",
+    words: ["in","gale"],
+    solution: "linage",
+    isSynonym: false
+  },{
+    type: "anagram",
+    clue: "pleasant tumble in gale",
+    totalLength: 6,
+    definition: "pleasant", 
+    indicator: "tumble",
+    words: ["in","gale"],
+    solution: "algine",
+    isSynonym: false
+  },{
+    type: "anagram",
+    clue: "pleasant tumble in gale",
+    totalLength: 6,
+    definition: "pleasant", 
+    indicator: "tumble",
+    words: ["in","gale"],
+    solution: "genial",
+    isSynonym: false
+  }]))
+})
+
+test("analyzeAnagram: a drab cord mixed inferior (9)", async function() {
+  var solution = await anagram.analyzeAnagram("a drab cord mixed inferior (9)")
+  expect(solution).toEqual(expect.arrayContaining([{
+    type: "anagram",
+    clue: "a drab cord mixed inferior",
+    totalLength: 9,
+    definition: "inferior",
+    indicator: "mixed",
+    words: ["cord","drab","a"],
+    solution: "cardboard",
+    isSynonym: true
+  }]))
+})
+
+test("analyzeAnagram: inferior mixed a drab cord (9)", async function() {
+  var solution = await anagram.analyzeAnagram("inferior mixed a drab cord (9)")
+  expect(solution).toEqual(expect.arrayContaining([{
+    type: "anagram",
+    clue: "inferior mixed a drab cord",
+    totalLength: 9,
+    definition: "inferior",
+    indicator: "mixed",
+    words: ["a","drab","cord"],
+    solution: "cardboard",
+    isSynonym: true
+  }]))
+})
+
+test("analyzeAnagram: inferior sausages  a drab cord (9)", async function() {
+  var solution = await anagram.analyzeAnagram("inferior sausages a drab cord (9)")
+  expect(solution).toEqual([])
+})
+
+test("analyzeAnagram: inferior mixed a drab cord (10)", async function() {
+  var solution = await anagram.analyzeAnagram("inferior mixed a drab cord (10)")
+  expect(solution).toEqual([])
+})
+
+
+// this test should pass but 8,1 is not the same as 9
+/*
+test("analyzeAnagram: inferior mixed a drab cord (8,1)", async function() {
+  var solution = await anagram.analyzeAnagram("inferior mixed a drab cord (8,1)")
+  expect(solution).toEqual([])
+})
+*/
