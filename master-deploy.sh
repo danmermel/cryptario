@@ -16,6 +16,20 @@ aws dynamodb create-table --table-name "cryptarioDictionary-${SUFFIX}" \
   --key-schema AttributeName=id,KeyType=HASH \
   --global-secondary-indexes IndexName=problem-index,KeySchema=["{AttributeName=problem,KeyType=HASH}"],Projection="{ProjectionType=INCLUDE,NonKeyAttributes=[solution]}"
 
+echo "create role for lambda to access stuff.."
+aws iam create-role --role-name cryptario --assume-role-policy-document file://policy.json
+
+echo "now add policies to the role to give access to services..."
+
+# inline policy for lambda to be able to write logs
+aws iam put-role-policy --role-name cryptario --policy-name logs-inline --policy-document file://inline-policy.json
+
+# AWS managed policies
+aws iam attach-role-policy --role-name cryptario --policy-arn arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+
+echo "create lambda function" 
+aws lambda create-function --function-name "cryptario-${SUFFIX}" --runtime nodejs8.10 --role arn:aws:iam::160991186365:role/nottario --handler index.handler --zip-file fileb://dummy.zip
+
 exit
 
 echo "create nottario queue .."
