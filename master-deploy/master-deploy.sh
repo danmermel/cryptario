@@ -30,6 +30,75 @@ aws iam attach-role-policy --role-name cryptario --policy-arn arn:aws:iam::aws:p
 echo "create lambda function" 
 aws lambda create-function --function-name "cryptario-${SUFFIX}" --runtime nodejs8.10 --role arn:aws:iam::160991186365:role/nottario --handler index.handler --zip-file fileb://dummy.zip
 
+
+API_ID=$(aws apigateway get-rest-apis --query 'items[?name==`cryptario-${SUFFIX}`].id' --output text)
+# If the API does not already exist
+if [ "$API_ID" == "" ] 
+  then
+  echo "create api gateway"
+  API_ID=$(aws apigateway create-rest-api --name "cryptario-${SUFFIX}" --query id --output text)
+  PARENT_ID=$(aws apigateway get-resources --rest-api-id $API_ID --query 'items[?path==`/`].id' --output text)
+
+  # nottarioFiatCheck
+  RESOURCE_ID=$(aws apigateway create-resource --rest-api-id $API_ID --parent-id $PARENT_ID --path-part "analyze" --query id --output text)
+
+  aws apigateway put-method --rest-api-id $API_ID \
+                            --resource-id $RESOURCE_ID \
+                            --http-method ANY \
+                            --authorization-type NONE
+
+  aws apigateway put-integration --rest-api-id $API_ID --resource-id $RESOURCE_ID \
+                                 --http-method ANY --integration-http-method POST \
+                                 --type AWS_PROXY --uri "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:160991186365:function:cryptario-${SUFFIX}/invocations" \
+                                 --passthrough-behavior WHEN_NO_MATCH --cache-namespace $RESOURCE_ID \
+                                 --content-handling CONVERT_TO_TEXT --timeout-in-millis 5000
+
+  echo "put method"
+  aws apigateway put-method --rest-api-id $API_ID \
+                            --resource-id $RESOURCE_ID \
+                            --http-method OPTIONS \
+                            --authorization-type NONE
+
+  echo "put integration"
+  aws apigateway put-integration --rest-api-id $API_ID  \
+                                 --resource-id $RESOURCE_ID \
+                                 --http-method OPTIONS \
+                                 --type MOCK \
+                                 --passthrough-behavior WHEN_NO_MATCH \
+                                 --cache-namespace $RESOURCE_ID \
+                                 --timeout-in-millis 29000 \
+                                 --request-templates '{"application/json": "{\"statusCode\": 200}"}'
+
+  echo "put method response"
+  aws apigateway put-method-response --rest-api-id $API_ID  \
+                                     --resource-id $RESOURCE_ID \
+                                     --http-method OPTIONS  \
+                                     --status-code 200  \
+                                     --response-parameters "{\"method.response.header.Access-Control-Allow-Origin\": false,\"method.response.header.Access-Control-Allow-Methods\": false,\"method.response.header.Access-Control-Allow-Headers\": false}"  \
+                                     --response-models "{\"application/json\":\"Empty\"}"
+
+  echo "put integration response"
+  aws apigateway put-integration-response  --rest-api-id $API_ID \
+                                           --resource-id $RESOURCE_ID \
+                                           --http-method OPTIONS \
+                                           --status-code 200 \
+                                           --response-parameters "{\"method.response.header.Access-Control-Allow-Origin\":\"'*'\",\"method.response.header.Access-Control-Allow-Methods\":\"'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'\",\"method.response.header.Access-Control-Allow-Headers\":\"'*'\"}" \
+                                           --response-templates "{\"application/json\":\"\"}"
+
+
+  # create stage name
+  aws apigateway create-deployment --rest-api-id $API_ID --stage-name ${SUFFIX}
+
+  # Allow lambda function to be executed by API Gateway
+  aws lambda add-permission \
+    --function-name cryptario-${SUFFIX} \
+    --statement-id cryptario-${SUFFIX} \
+    --action "lambda:*" \
+    --principal apigateway.amazonaws.com \
+    --source-arn "arn:aws:execute-api:eu-west-1:160991186365:${API_ID}/*/*/analyze"
+
+fi
+
 exit
 
 echo "create nottario queue .."
@@ -94,56 +163,6 @@ aws lambda create-event-source-mapping \
  --starting-position LATEST
 
 
-API_ID=$(aws apigateway get-rest-apis --query 'items[?name==`nottario-${SUFFIX}`].id' --output text)
-# If the API does not already exist
-if [ "$API_ID" == "" ] 
-  then
-  echo "create api gateway"
-  API_ID=$(aws apigateway create-rest-api --name "nottario-${SUFFIX}" --query id --output text)
-  PARENT_ID=$(aws apigateway get-resources --rest-api-id $API_ID --query 'items[?path==`/`].id' --output text)
-
-  # nottarioFiatCheck
-  RESOURCE_ID=$(aws apigateway create-resource --rest-api-id $API_ID --parent-id $PARENT_ID --path-part "nottarioFiatCheck" --query id --output text)
-
-  aws apigateway put-method --rest-api-id $API_ID --resource-id $RESOURCE_ID --http-method ANY --authorization-type NONE
-
-  aws apigateway put-integration --rest-api-id $API_ID --resource-id $RESOURCE_ID \
-                                 --http-method ANY --integration-http-method POST \
-                                 --type AWS_PROXY --uri "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:160991186365:function:nottarioFiatCheck-${SUFFIX}/invocations" \
-                                 --passthrough-behavior WHEN_NO_MATCH --cache-namespace $RESOURCE_ID \
-                                 --content-handling CONVERT_TO_TEXT --timeout-in-millis 29000
-
-echo "put method"
-  aws apigateway put-method --rest-api-id $API_ID \
-                            --resource-id $RESOURCE_ID \
-                            --http-method OPTIONS \
-                            --authorization-type NONE
-
-echo "put integration"
-  aws apigateway put-integration --rest-api-id $API_ID  \
-                                 --resource-id $RESOURCE_ID \
-                                 --http-method OPTIONS \
-                                 --type MOCK \
-                                 --passthrough-behavior WHEN_NO_MATCH \
-                                 --cache-namespace $RESOURCE_ID \
-                                 --timeout-in-millis 29000 \
-                                 --request-templates '{"application/json": "{\"statusCode\": 200}"}'
-
-echo "put method response"
-  aws apigateway put-method-response --rest-api-id $API_ID  \
-                                     --resource-id $RESOURCE_ID \
-                                     --http-method OPTIONS  \
-                                     --status-code 200  \
-                                     --response-parameters "{\"method.response.header.Access-Control-Allow-Origin\": false,\"method.response.header.Access-Control-Allow-Methods\": false,\"method.response.header.Access-Control-Allow-Headers\": false}"  \
-                                     --response-models "{\"application/json\":\"Empty\"}"
-
-echo "put integration response"
-  aws apigateway put-integration-response  --rest-api-id $API_ID \
-                                           --resource-id $RESOURCE_ID \
-                                           --http-method OPTIONS \
-                                           --status-code 200 \
-                                           --response-parameters "{\"method.response.header.Access-Control-Allow-Origin\":\"'*'\",\"method.response.header.Access-Control-Allow-Methods\":\"'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'\",\"method.response.header.Access-Control-Allow-Headers\":\"'*'\"}" \
-                                           --response-templates "{\"application/json\":\"\"}"
 
   # nottarioFiatContact
   RESOURCE_ID=$(aws apigateway create-resource --rest-api-id $API_ID --parent-id $PARENT_ID --path-part "nottarioFiatContact" --query id --output text)
@@ -260,18 +279,6 @@ echo "put integration response"
                                            --response-parameters "{\"method.response.header.Access-Control-Allow-Origin\":\"'*'\",\"method.response.header.Access-Control-Allow-Methods\":\"'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'\",\"method.response.header.Access-Control-Allow-Headers\":\"'*'\"}" \
                                            --response-templates "{\"application/json\":\"\"}"
 
-
-  # create stage name
-  aws apigateway create-deployment --rest-api-id $API_ID --stage-name ${SUFFIX}
-
-  # Allow lambda function to be executed by API Gateway
-
-  aws lambda add-permission \
-    --function-name nottarioFiatContact-${SUFFIX} \
-    --statement-id nottarioFiatContact-${SUFFIX} \
-    --action "lambda:*" \
-    --principal apigateway.amazonaws.com \
-    --source-arn "arn:aws:execute-api:eu-west-1:160991186365:${API_ID}/*/*/nottarioFiatContact"
 
   aws lambda add-permission \
     --function-name nottarioFiatCheck-${SUFFIX} \

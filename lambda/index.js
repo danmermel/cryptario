@@ -2,7 +2,9 @@ const anagram = require('./anagram.js')
 
 const handler = async function(event, context) {
   console.log(JSON.stringify(event))
-  const clue = event.clue
+  const body = JSON.parse(event.body)
+  console.log('the body is', body)
+  const clue = body.clue
   console.log('the clue is', clue)
   if (!clue) {
     throw(new Error('missing clue'))
