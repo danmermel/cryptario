@@ -7,7 +7,8 @@ if [ -z $1 ]
 fi
 echo "Deployment stage = ${1}"
 
-rm -rf node_modules
+# copy the anagram/utilities libraries here for deployment
+cp ../*.js ../config.json .
 
 # mount our directory as /var/task on the Docker container
 # run the Lambda Docker image
@@ -16,9 +17,12 @@ rm -rf node_modules
 docker run -v "$PWD":/var/task lambci/lambda:build-nodejs8.10 npm install
 
 # build the zip
-zip -r lambda.zip package.json index.js db.js anagramIndicators.js datamuse.js anagram.js utilities.js config.json node_modules/
+zip -r lambda.zip package.json *.js config.json node_modules/
 
 # deploy to Lambda
 aws lambda update-function-code --function-name "cryptario-${1}" --zip-file fileb://lambda.zip
 rm lambda.zip
+
+# tidy up
+rm anagramIndicators.js datamuse.js db.js anagram.js utilities.js *.test.js config.json
 
