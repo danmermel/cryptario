@@ -1,0 +1,21 @@
+<html>
+<head>
+</head>
+
+<body>
+<div id="app">
+  <input v-model="clue" placeholder="Enter Clue here">
+  <input type="button" v-on:click="analyze" value="Submit">
+
+  <p>Solution(s) are:</p>
+  <p v-for="s in solutions">{{ s }}</p>
+
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="app.js"></script>
+</body>
+
+</html>
