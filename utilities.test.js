@@ -1,114 +1,111 @@
-const utilities = require ("./utilities.js")
+const utilities = require('./utilities.js')
 
-test("Identify that basic clue gets split", function() {
-  const res = utilities.split("Pleasant tumble in gale (6)")
-  expect(res).toEqual({"totalLength":6,"clue":"Pleasant tumble in gale", "wordLengths":[6]})
-});
+test('Identify that basic clue gets split', function () {
+  const res = utilities.split('Pleasant tumble in gale (6)')
+  expect(res).toEqual({ 'totalLength': 6, 'clue': 'Pleasant tumble in gale', 'wordLengths': [6] })
+})
 
-test("Additional brackets don't crap it", function() {
-  const res = utilities.split("Pleasant tumble (not in winter) in gale (6)")
-  expect(res).toEqual({"totalLength":6,"clue":"Pleasant tumble (not in winter) in gale", "wordLengths":[6]})
-});
+test("Additional brackets don't crap it", function () {
+  const res = utilities.split('Pleasant tumble (not in winter) in gale (6)')
+  expect(res).toEqual({ 'totalLength': 6, 'clue': 'Pleasant tumble (not in winter) in gale', 'wordLengths': [6] })
+})
 
-test("Additional spaces at the end of clue don't crap it", function() {
-  const res = utilities.split("Pleasant tumble in gale (6)   ")
-  expect(res).toEqual({"totalLength":6,"clue":"Pleasant tumble in gale", "wordLengths":[6]})
-});
+test("Additional spaces at the end of clue don't crap it", function () {
+  const res = utilities.split('Pleasant tumble in gale (6)   ')
+  expect(res).toEqual({ 'totalLength': 6, 'clue': 'Pleasant tumble in gale', 'wordLengths': [6] })
+})
 
-test("Complex solution length - hyphens", function() {
-  const res = utilities.split("Pleasant tumble in gale (6-4)")
-  expect(res).toEqual({"totalLength":10,"clue":"Pleasant tumble in gale", "wordLengths":[6,4]})
-});
+test('Complex solution length - hyphens', function () {
+  const res = utilities.split('Pleasant tumble in gale (6-4)')
+  expect(res).toEqual({ 'totalLength': 10, 'clue': 'Pleasant tumble in gale', 'wordLengths': [6, 4] })
+})
 
-test("Complex solution length - commas", function() {
-  const res = utilities.split("Pleasant tumble in gale (6,4)")
-  expect(res).toEqual({"totalLength":10,"clue":"Pleasant tumble in gale", "wordLengths":[6,4]})
-});
+test('Complex solution length - commas', function () {
+  const res = utilities.split('Pleasant tumble in gale (6,4)')
+  expect(res).toEqual({ 'totalLength': 10, 'clue': 'Pleasant tumble in gale', 'wordLengths': [6, 4] })
+})
 
-test("Complex solution length - hyphens, apostrophes, commas", function() {
+test('Complex solution length - hyphens, apostrophes, commas', function () {
   const res = utilities.split("Pleasant tumble in gale (1'5-2,2)")
-  expect(res).toEqual({"totalLength":10,"clue":"Pleasant tumble in gale", "wordLengths":[1,5,2,2]})
-});
+  expect(res).toEqual({ 'totalLength': 10, 'clue': 'Pleasant tumble in gale', 'wordLengths': [1, 5, 2, 2] })
+})
 
-test("Complex solution length - double digits", function() {
-  const res = utilities.split("Pleasant tumble in gale (16-4)")
-  expect(res).toEqual({"totalLength":20,"clue":"Pleasant tumble in gale", "wordLengths":[16,4]})
-});
+test('Complex solution length - double digits', function () {
+  const res = utilities.split('Pleasant tumble in gale (16-4)')
+  expect(res).toEqual({ 'totalLength': 20, 'clue': 'Pleasant tumble in gale', 'wordLengths': [16, 4] })
+})
 
-test("Synonym of cook", async function() {
-  const res = await utilities.isSynonym("cook", "falsify")
+test('Synonym of cook', async function () {
+  const res = await utilities.isSynonym('cook', 'falsify')
   expect(res).toEqual(true)
-});
+})
 
-test("Not Synonym of dog", async function() {
-  const res = await utilities.isSynonym("dog", "cat")
+test('Not Synonym of dog', async function () {
+  const res = await utilities.isSynonym('dog', 'cat')
   expect(res).toEqual(false)
-});
+})
 
-test("Synonym with capital letters", async function() {
-  const res = await utilities.isSynonym("Cook", "falsify")
+test('Synonym with capital letters', async function () {
+  const res = await utilities.isSynonym('Cook', 'falsify')
   expect(res).toEqual(true)
-});
+})
 
-test("Synonym of empty string", async function() {
-  const res = await utilities.isSynonym("", "")
+test('Synonym of empty string', async function () {
+  const res = await utilities.isSynonym('', '')
   expect(res).toEqual(false)
-});
+})
 
-test("Synonym of numbers", async function() {
+test('Synonym of numbers', async function () {
   const res = await utilities.isSynonym(1, 2)
   expect(res).toEqual(false)
-});
+})
 
-test("Synonym of partial empty string", async function() {
-  const res = await utilities.isSynonym("cook", "")
+test('Synonym of partial empty string', async function () {
+  const res = await utilities.isSynonym('cook', '')
   expect(res).toEqual(false)
-});
+})
 
+test('getWords - Get rid of anything that is not word in clue', function () {
+  const res = utilities.getWords('ABC123, (great) cook+kitchen - nest')
+  expect(res).toEqual(['ABC123', 'great', 'cook', 'kitchen', 'nest'])
+})
 
-test("getWords - Get rid of anything that is not word in clue", function() {
-  const res = utilities.getWords("ABC123, (great) cook+kitchen - nest")
-  expect(res).toEqual(["ABC123", "great", "cook", "kitchen", "nest"])
-});
+test('countLetters - Match first two words', function () {
+  const res = utilities.countLetters(['in', 'gale', 'woof'], 6)
+  expect(res).toEqual(['in', 'gale'])
+})
 
-test("countLetters - Match first two words", function() {
-  const res = utilities.countLetters(["in","gale","woof"], 6)
-  expect(res).toEqual(["in","gale"])
-});
+test('countLetters - Match first word', function () {
+  const res = utilities.countLetters(['in', 'gale', 'woof'], 2)
+  expect(res).toEqual(['in'])
+})
 
-test("countLetters - Match first word", function() {
-  const res = utilities.countLetters(["in","gale","woof"], 2)
-  expect(res).toEqual(["in"])
-});
+test('countLetters - Match all words', function () {
+  const res = utilities.countLetters(['in', 'gale', 'woof'], 10)
+  expect(res).toEqual(['in', 'gale', 'woof'])
+})
 
-test("countLetters - Match all words", function() {
-  const res = utilities.countLetters(["in","gale","woof"], 10)
-  expect(res).toEqual(["in","gale","woof"])
-});
-
-test("countLetters - Match nothing", function() {
-  const res = utilities.countLetters(["in","gale","woof"], 11)
+test('countLetters - Match nothing', function () {
+  const res = utilities.countLetters(['in', 'gale', 'woof'], 11)
   expect(res).toEqual(null)
-});
+})
 
-test("countLetters - Match nothing again", function() {
-  const res = utilities.countLetters(["in","gale","woof"], 3)
+test('countLetters - Match nothing again', function () {
+  const res = utilities.countLetters(['in', 'gale', 'woof'], 3)
   expect(res).toEqual(null)
-});
+})
 
-test("transformWord - single word", function() {
-  const res = utilities.transformWord("dog")
-  expect(res).toEqual("dgo")
-});
+test('transformWord - single word', function () {
+  const res = utilities.transformWord('dog')
+  expect(res).toEqual('dgo')
+})
 
-test("transformWord - multi  word", function() {
-  const res = utilities.transformWord("black dog")
-  expect(res).toEqual("abcdgklo")
-});
+test('transformWord - multi  word', function () {
+  const res = utilities.transformWord('black dog')
+  expect(res).toEqual('abcdgklo')
+})
 
-test("transformWord - punctuation and capital letters", function() {
+test('transformWord - punctuation and capital letters', function () {
   const res = utilities.transformWord(" Black Dog's ")
-  expect(res).toEqual("abcdgklos")
-});
-
-
+  expect(res).toEqual('abcdgklos')
+})

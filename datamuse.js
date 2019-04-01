@@ -5,16 +5,16 @@ const url = 'https://api.datamuse.com/'
 
 // this is an async function. It can treat things that return
 // Promises as synchronous code
-async function synonym(word) {
+async function synonym (word) {
   // await = hide the Promise/callback stuff
   try {
-    const response = await request({ url: url + 'words?ml=' + word, json: true})
+    const response = await request({ url: url + 'words?ml=' + word, json: true })
     const words = []
-    for(var i in response) {
+    for (var i in response) {
       words.push(response[i].word)
     }
     return words
-  } catch(e) {
+  } catch (e) {
     return []
   }
 }
