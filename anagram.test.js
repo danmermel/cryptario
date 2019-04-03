@@ -17,7 +17,7 @@ test('identifyIndicators returns multiple anagram indicator', function () {
 
 test('solveAnagram: single word', async function () {
   var solution = await anagram.solveAnagram('god')
-  expect(solution).toEqual(expect.arrayContaining(['dog', 'God']))
+  expect(solution).toEqual(expect.arrayContaining(['god', 'dog']))
 })
 
 test('solveAnagram: single word no solution', async function () {
@@ -124,9 +124,14 @@ test('analyzeAnagram: inferior mixed a drab cord (10)', async function () {
 })
 
 // this test should pass but 8,1 is not the same as 9
-/*
-test("analyzeAnagram: inferior mixed a drab cord (8,1)", async function() {
-  var solution = await anagram.analyzeAnagram("inferior mixed a drab cord (8,1)")
-  expect(solution).toEqual([])
+
+test('analyzeAnagram: cat pu mixed malfunction (3,2)', async function () {
+  var solution = await anagram.analyzeAnagram('cat pu mixed malfunction (3,2)')
+  var caput = false
+  for (var i = 0; i < solution.length; i++) {
+    if (solution[i].solution === 'caput') {
+      caput = true
+    }
+  }
+  expect(caput).toEqual(false)
 })
-*/

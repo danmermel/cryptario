@@ -3,7 +3,6 @@ const utilities = require('./utilities.js')
 const stem = require('node-snowball')
 
 const indicators = require('./anagramIndicators.js')
-// const indicators = ["abandoned", "altered", "abnormal", "about", "absurd", "abused", "abysmal", "accident", "acrobatics", "action", "active"]
 
 const stemmedIndicators = stem.stemword(indicators)
 const db = require('./db.js')
@@ -104,11 +103,21 @@ const analyzeAnagram = async function (clue) {
 
       for (var k in solvedAnagrams) {
         var solved = solvedAnagrams[k]
-        // clone the obj so that it becomes different and not just a reference to itself.
-        var x = JSON.parse(JSON.stringify(obj))
-        x.solution = solved
-        x.isSynonym = await utilities.isSynonym(x.definition, x.solution)
-        retval.push(x)
+        console.log('solved is ', solved)
+        // now we need to check if the solutions that came back fit with the
+        // length of the solutions we are expecting
+        var solvedWords = utilities.getWords(solved)
+        console.log('solvedWords is ', solvedWords)
+        var solvedWordLengths = solvedWords.map(function (str) { return str.length })
+        console.log('solvedWordLengths is ', solvedWordLengths)
+        // to compare arrays for equality turn them into strings
+        if (JSON.stringify(solvedWordLengths) === JSON.stringify(splitClue.wordLengths)) {
+          // clone the obj so that it becomes different and not just a reference to itself.
+          var x = JSON.parse(JSON.stringify(obj))
+          x.solution = solved
+          x.isSynonym = await utilities.isSynonym(x.definition, x.solution)
+          retval.push(x)
+        } // if
       } // for k
     }; // for j
   } // for i
