@@ -126,6 +126,18 @@ const analyzeAnagram = async function (clue) {
     }; // for j
   } // for i
 
+  // sort so that isSynonym:true goes top
+  var sorter = function (a, b) {
+    if (a.isSynonym && !b.isSynonym) {
+      return -1
+    } else if (!a.isSynonym && b.isSynonym) {
+      return 1
+    } else {
+      return 0
+    }
+  }
+  retval.sort(sorter)
+
   return retval
 }
 

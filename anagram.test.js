@@ -157,3 +157,9 @@ test('analyzeAnagram should return a plural', async function () {
     isSynonym: false
   }]))
 })
+
+test('analyzeAnagram: synonym matches go top', async function () {
+  var solution = await anagram.analyzeAnagram('amiable tumble in gale (6)')
+  // the first solution should be the synonym
+  expect(solution[0].isSynonym).toEqual(true)
+})
