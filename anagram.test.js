@@ -6,13 +6,23 @@ test('identifyIndicators returns empty array when there are none', function () {
 })
 
 test('identifyIndicators returns one anagram indicator', function () {
-  const res = anagram.identifyIndicators('The quick brown fox went absurd')
+  const res = anagram.identifyIndicators('The quick brown fox went absurd running')
   expect(res).toEqual(['absurd'])
 })
 
 test('identifyIndicators returns multiple anagram indicator', function () {
-  const res = anagram.identifyIndicators('The altered quick brown fox went absurd ')
+  const res = anagram.identifyIndicators('The altered quick brown fox went absurd running')
   expect(res).toEqual(['altered', 'absurd'])
+})
+
+test('identifyIndicators should ignore indicator at end of string', function () {
+  const res = anagram.identifyIndicators('cat pu mixed malfunction')
+  expect(res).toEqual(['mixed'])
+})
+
+test('identifyIndicators should ignore indicator at start of string', function () {
+  const res = anagram.identifyIndicators('malfunction cat pu mixed stuff')
+  expect(res).toEqual(['mixed'])
 })
 
 test('solveAnagram: single word', async function () {
@@ -123,8 +133,6 @@ test('analyzeAnagram: inferior mixed a drab cord (10)', async function () {
   expect(solution).toEqual([])
 })
 
-// this test should pass but 8,1 is not the same as 9
-
 test('analyzeAnagram: cat pu mixed malfunction (3,2)', async function () {
   var solution = await anagram.analyzeAnagram('cat pu mixed malfunction (3,2)')
   var caput = false
@@ -134,4 +142,18 @@ test('analyzeAnagram: cat pu mixed malfunction (3,2)', async function () {
     }
   }
   expect(caput).toEqual(false)
+})
+
+test('analyzeAnagram should return a plural', async function () {
+  var solution = await anagram.analyzeAnagram('gods mixed furry friends (4)')
+  expect(solution).toEqual(expect.arrayContaining([{
+    type: 'anagram',
+    clue: 'gods mixed furry friends',
+    totalLength: 4,
+    definition: 'furry friends',
+    indicator: 'mixed',
+    words: ['gods'],
+    solution: 'dogs',
+    isSynonym: false
+  }]))
 })

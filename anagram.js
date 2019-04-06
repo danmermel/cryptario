@@ -12,7 +12,9 @@ const identifyIndicators = function (clue) {
   const words = utilities.getWords(clue.toLowerCase())
   const stemmedWords = stem.stemword(words)
 
-  for (var i in stemmedWords) {
+  // looping through the array stemmedWords, but ignoring the first and last words because
+  // by definition they cannot be indicators - you cannot have anything to anagram before/after them
+  for (var i = 1; i < stemmedWords.length - 1; i++) {
     var word = stemmedWords[i]
     var x = stemmedIndicators.indexOf(word)
     if (x !== -1) {
@@ -103,20 +105,22 @@ const analyzeAnagram = async function (clue) {
 
       for (var k in solvedAnagrams) {
         var solved = solvedAnagrams[k]
-        console.log('solved is ', solved)
-        // now we need to check if the solutions that came back fit with the
-        // length of the solutions we are expecting
-        var solvedWords = utilities.getWords(solved)
-        console.log('solvedWords is ', solvedWords)
-        var solvedWordLengths = solvedWords.map(function (str) { return str.length })
-        console.log('solvedWordLengths is ', solvedWordLengths)
-        // to compare arrays for equality turn them into strings
-        if (JSON.stringify(solvedWordLengths) === JSON.stringify(splitClue.wordLengths)) {
-          // clone the obj so that it becomes different and not just a reference to itself.
-          var x = JSON.parse(JSON.stringify(obj))
-          x.solution = solved
-          x.isSynonym = await utilities.isSynonym(x.definition, x.solution)
-          retval.push(x)
+        if (solved !== pc.letters) {
+          console.log('solved is ', solved)
+          // now we need to check if the solutions that came back fit with the
+          // length of the solutions we are expecting
+          var solvedWords = utilities.getWords(solved)
+          console.log('solvedWords is ', solvedWords)
+          var solvedWordLengths = solvedWords.map(function (str) { return str.length })
+          console.log('solvedWordLengths is ', solvedWordLengths)
+          // to compare arrays for equality turn them into strings
+          if (JSON.stringify(solvedWordLengths) === JSON.stringify(splitClue.wordLengths)) {
+            // clone the obj so that it becomes different and not just a reference to itself.
+            var x = JSON.parse(JSON.stringify(obj))
+            x.solution = solved
+            x.isSynonym = await utilities.isSynonym(x.definition, x.solution)
+            retval.push(x)
+          } // if
         } // if
       } // for k
     }; // for j
