@@ -109,3 +109,18 @@ test('transformWord - punctuation and capital letters', function () {
   const res = utilities.transformWord(" Black Dog's ")
   expect(res).toEqual('abcdgklos')
 })
+
+test('checkWordPattern - matches word lengths correctly - multi-word', function () {
+  const res = utilities.checkWordPattern('black dog', [5, 3])
+  expect(res).toEqual(true)
+})
+
+test('checkWordPattern - matches word lengths correctly - single word', function () {
+  const res = utilities.checkWordPattern('black', [5])
+  expect(res).toEqual(true)
+})
+
+test('checkWordPattern - matches word lengths correctly - returns false', function () {
+  const res = utilities.checkWordPattern('black dog', [5, 2])
+  expect(res).toEqual(false)
+})
