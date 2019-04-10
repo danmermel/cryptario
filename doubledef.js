@@ -2,7 +2,34 @@ const datamuse = require('./datamuse.js')
 const utilities = require('./utilities.js')
 
 const analyzeDoubleDef = async function (clue) {
-  return []
+  var retval = []
+  const splitClue = utilities.split(clue)
+  const words = utilities.getWords(splitClue.clue)
+  //console.log('words are ', words)
+  const searchablePairs = createSearchablePairs(words)
+  //console.log('searchablePairs is ', searchablePairs)
+  for (var i = 0; i < searchablePairs.length; i++) {
+    const pair = searchablePairs[i]
+    const matches = await comparePair(pair.one, pair.two, splitClue.wordLengths)
+    for (var j = 0; j < matches.length; j++) {
+      const obj = {
+        type: 'double definition',
+        clue: splitClue.clue,
+        totalLength: splitClue.totalLength,
+        definition: [pair.one.join(' '), pair.two.join(' ')],
+        indicator: null,
+        words: null,
+        solution: matches[j],
+        isSynonym: true
+      }
+      retval.push(obj)
+    }
+    // if we find one or more matches, stop looking
+    if (matches.length > 0) {
+      break
+    }
+  }
+  return retval
 }
 
 const createSearchablePairs = function (words) {

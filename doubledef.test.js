@@ -29,6 +29,26 @@ test('createSearchablePairs: splits one word string correctly', function () {
   expect(res).toEqual([])
 })
 
+test('comparePair: get a match', async function () {
+  const res = await doubledef.comparePair('yearn', 'quite a while', [4])
+  expect(res).toEqual(['long'])
+})
+
+test('comparePair: get no match', async function () {
+  const res = await doubledef.comparePair('sausage', 'quite a while', [4])
+  expect(res).toEqual([])
+})
+
+test('comparePair: get no match because the pattern does not fit', async function () {
+  const res = await doubledef.comparePair('yearn', 'quite a while', [5])
+  expect(res).toEqual([])
+})
+
+test('comparePair: empty strings', async function () {
+  const res = await doubledef.comparePair('', 'quite a while', [5])
+  expect(res).toEqual([])
+})
+
 test('analyzeDoubleDef: Yearn for quite a while (4)', async function () {
   const res = await doubledef.analyzeDoubleDef('Yearn for quite a while (4)')
   expect(res).toEqual([{
@@ -41,4 +61,8 @@ test('analyzeDoubleDef: Yearn for quite a while (4)', async function () {
     solution: 'long',
     isSynonym: true
   }])
+})
+test('analyzeDoubleDef: Empty array - no results', async function () {
+  const res = await doubledef.analyzeDoubleDef('sausages donkey (12)')
+  expect(res).toEqual([])
 })
