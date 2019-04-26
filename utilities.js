@@ -55,10 +55,18 @@ const transformWord = function (word) {
   return word
 }
 
+const checkWordPattern = function (str, pattern) {
+  const words = getWords(str)
+  const lengths = words.map(function (str) { return str.length })
+  // to compare arrays for equality turn them into strings
+  return (JSON.stringify(lengths) === JSON.stringify(pattern))
+}
+
 module.exports = {
   split: split,
   isSynonym: isSynonym,
   getWords: getWords,
   countLetters: countLetters,
-  transformWord: transformWord
+  transformWord: transformWord,
+  checkWordPattern: checkWordPattern
 }

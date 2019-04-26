@@ -1,4 +1,5 @@
 const anagram = require('./anagram.js')
+const doubledef = require('./doubledef.js')
 
 const handler = async function (event, context) {
   console.log(JSON.stringify(event))
@@ -9,13 +10,17 @@ const handler = async function (event, context) {
   if (!clue) {
     throw (new Error('missing clue'))
   }
-
-  const solutions = await anagram.analyzeAnagram(clue)
+  
+  var  doubleDefSolutions = []
+  const anagramSolutions = await anagram.analyzeAnagram(clue)
+  if (anagramSolutions.length === 0) {
+    doubleDefSolutions = await doubledef.analyzeDoubleDef(clue)
+  }
 
   return {
     statusCode: 200,
     headers: { 'Access-Control-Allow-Origin': '*' },
-    body: JSON.stringify(solutions)
+    body: JSON.stringify(anagramSolutions.concat(doubleDefSolutions))
   }
 }
 

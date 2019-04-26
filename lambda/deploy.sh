@@ -24,5 +24,5 @@ aws lambda update-function-code --function-name "cryptario-${1}" --zip-file file
 rm lambda.zip
 
 # tidy up
-rm anagramIndicators.js datamuse.js db.js anagram.js utilities.js *.test.js config.json
+rm doubledef.js anagramIndicators.js datamuse.js db.js anagram.js utilities.js *.test.js config.json
 
