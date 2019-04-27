@@ -10,8 +10,8 @@ const handler = async function (event, context) {
   if (!clue) {
     throw (new Error('missing clue'))
   }
-  
-  var  doubleDefSolutions = []
+
+  var doubleDefSolutions = []
   const anagramSolutions = await anagram.analyzeAnagram(clue)
   if (anagramSolutions.length === 0) {
     doubleDefSolutions = await doubledef.analyzeDoubleDef(clue)

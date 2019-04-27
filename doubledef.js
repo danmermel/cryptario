@@ -5,9 +5,9 @@ const analyzeDoubleDef = async function (clue) {
   var retval = []
   const splitClue = utilities.split(clue)
   const words = utilities.getWords(splitClue.clue)
-  //console.log('words are ', words)
+  // console.log('words are ', words)
   const searchablePairs = createSearchablePairs(words)
-  //console.log('searchablePairs is ', searchablePairs)
+  // console.log('searchablePairs is ', searchablePairs)
   for (var i = 0; i < searchablePairs.length; i++) {
     const pair = searchablePairs[i]
     const matches = await comparePair(pair.one, pair.two, splitClue.wordLengths)
