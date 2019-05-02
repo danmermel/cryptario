@@ -10,6 +10,11 @@ test('identifyIndicators returns one anagram indicator', function () {
   expect(res).toEqual(['absurd'])
 })
 
+test('identifyIndicators returns one multi-word indicator', function () {
+  const res = anagram.identifyIndicators('The quick brown fox went mixed up running')
+  expect(res).toEqual(['mixed', 'mixed up'])
+})
+
 test('identifyIndicators returns multiple anagram indicator', function () {
   const res = anagram.identifyIndicators('The altered quick brown fox went absurd running')
   expect(res).toEqual(['altered', 'absurd'])

@@ -21,6 +21,17 @@ const identifyIndicators = function (clue) {
       anagramIndicators.push(words[i])
     }
   }
+
+  // second pass for multi-word indicators
+  // we are using the unstemmed indicators for comparison
+  for (i = 1; i < words.length - 2; i++) {
+    word = words[i] + ' ' + words[i + 1]
+    x = indicators.indexOf(word)
+    if (x !== -1) {
+      anagramIndicators.push(word)
+    }
+  }
+
   return anagramIndicators
 }
 
