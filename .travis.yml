@@ -22,6 +22,7 @@ deploy:
   zip: "lambda/lambda.zip"
   role: "arn:aws:iam::160991186365:role/cryptario"
   handler_name: "handler"
+  runtime: "nodejs8.10"
 
 # ensure that deployment only happens when merging into the master branch
 stages:
