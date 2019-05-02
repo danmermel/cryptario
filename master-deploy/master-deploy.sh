@@ -28,7 +28,7 @@ aws iam put-role-policy --role-name cryptario --policy-name logs-inline --policy
 aws iam attach-role-policy --role-name cryptario --policy-arn arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
 
 echo "create lambda function" 
-aws lambda create-function --function-name "cryptario-${SUFFIX}" --runtime nodejs8.10 --role arn:aws:iam::160991186365:role/nottario --handler index.handler --zip-file fileb://dummy.zip
+aws lambda create-function --function-name "cryptario-${SUFFIX}" --runtime nodejs8.10 --role arn:aws:iam::160991186365:role/cryptario --handler index.handler --zip-file fileb://dummy.zip
 
 
 API_ID=$(aws apigateway get-rest-apis --query 'items[?name==`cryptario-${SUFFIX}`].id' --output text)
