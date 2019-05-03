@@ -178,6 +178,20 @@ test('analyzeAnagram should return a plural', async function () {
   }]))
 })
 
+test('analyzeAnagram - synonym check has to be case insensitive', async function () {
+  var solution = await anagram.analyzeAnagram('Greek mountain could be so lumpy (7)')
+  expect(solution).toEqual(expect.arrayContaining([{
+    type: 'anagram',
+    clue: 'Greek mountain could be so lumpy',
+    totalLength: 7,
+    definition: 'greek mountain',
+    indicator: 'could be',
+    words: ['so', 'lumpy'],
+    solution: 'Olympus',
+    isSynonym: true
+  }]))
+})
+
 test('analyzeAnagram: synonym matches go top', async function () {
   var solution = await anagram.analyzeAnagram('amiable tumble in gale (6)')
   // the first solution should be the synonym
