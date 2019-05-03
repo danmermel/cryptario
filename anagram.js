@@ -21,18 +21,30 @@ const identifyIndicators = function (clue) {
       anagramIndicators.push(words[i])
     }
   }
+
+  // second pass for multi-word indicators
+  // we are using the unstemmed indicators for comparison
+  for (i = 1; i < words.length - 2; i++) {
+    word = words[i] + ' ' + words[i + 1]
+    x = indicators.indexOf(word)
+    if (x !== -1) {
+      anagramIndicators.push(word)
+    }
+  }
+
   return anagramIndicators
 }
 
 const parseClue = function (clue, indicator, numLetters) {
   const words = utilities.getWords(clue.toLowerCase())
-  const pos = words.indexOf(indicator)
+  const indicatorSplit = indicator.toLowerCase().split(' ')
+  const pos = words.indexOf(indicatorSplit[0])
   if (pos === -1) {
     throw new Error('indicator not found')
   }
   // pleasant tumble in gale
   const left = words.slice(0, pos).reverse() // pleasant
-  const right = words.slice(pos + 1) // in gale
+  const right = words.slice(pos + indicatorSplit.length) // in gale
 
   // look for words that add up to the numLetters count
   const leftSolution = utilities.countLetters(left, numLetters)
