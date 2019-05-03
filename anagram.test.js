@@ -63,6 +63,21 @@ test('parseClue: in gale tumble ple ant', function () {
   ])
 })
 
+test('parseClue: "in gale at odds ple ant" - multi-word anagram indicator', function () {
+  var solution = anagram.parseClue('in gale at odds ple ant', 'at odds', 6)
+  expect(solution).toEqual([
+    { letters: 'galein', words: ['gale', 'in'], definition: 'ple ant' },
+    { letters: 'pleant', words: ['ple', 'ant'], definition: 'in gale' }
+  ])
+})
+
+test('parseClue: "in gales at odds ple ant" - multi-word anagram indicator', function () {
+  var solution = anagram.parseClue('in gales at odds ple ant', 'at odds', 6)
+  expect(solution).toEqual([
+    { letters: 'pleant', words: ['ple', 'ant'], definition: 'in gales' }
+  ])
+})
+
 test('parseClue: pleasant tumble in gal', function () {
   var solution = anagram.parseClue('pleasant tumble in gal', 'tumble', 6)
   expect(solution).toEqual([])
