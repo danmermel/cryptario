@@ -1,0 +1,130 @@
+const utilities = require('./utilities.js')
+const stem = require('node-snowball')
+const indicators = require('./hiddenWordIndicators.js')
+const stemmedIndicators = stem.stemword(indicators)
+const db = require('./db.js')
+
+const identifyIndicators = function (clue) {
+  var hiddenIndicators = []
+  const words = utilities.getWords(clue.toLowerCase())
+  const stemmedWords = stem.stemword(words)
+
+  // looping through the array stemmedWords, but ignore the last word because
+  // by definition it cannot be indicator - you cannot have anything hidden after the last word
+  for (var i = 0; i < stemmedWords.length - 1; i++) {
+    var word = stemmedWords[i]
+    var x = stemmedIndicators.indexOf(word)
+    if (x !== -1) {
+      hiddenIndicators.push(words[i])
+    }
+  }
+
+  // second pass for multi-word indicators
+  // we are using the unstemmed indicators for comparison
+  for (i = 0; i < words.length - 2; i++) {
+    word = words[i] + ' ' + words[i + 1]
+    x = indicators.indexOf(word)
+    if (x !== -1) {
+      hiddenIndicators.push(word)
+    }
+  }
+
+  return hiddenIndicators
+}
+
+const parseClue = function (clue, indicator) {
+  const words = utilities.getWords(clue.toLowerCase())
+  const indicatorSplit = indicator.toLowerCase().split(' ')
+  const pos = words.indexOf(indicatorSplit[0])
+  if (pos === -1) {
+    throw new Error('indicator not found')
+  }
+
+  if (pos === 0) { // the indicator is a the start of the clue
+    // for now we are going to assume that the definition is only the last word of the clue
+    return { 'indicator': indicator,
+      'definition': words[words.length - 1],
+      'subsidiary': words.slice(indicatorSplit.length, words.length - 1).join(' ')
+    }
+  } else { // position of indicator is somehwere in clue
+    return { 'indicator': indicator,
+      'definition': words.slice(0, pos).join(' '),
+      'subsidiary': words.slice(pos + indicatorSplit.length, words.length).join(' ')
+    }
+  }
+}
+
+const findHiddenWords = function (subsidiary, solutionLength) {
+  var retval = []
+  const letters = subsidiary.replace(/ /g, '') // remove all spaces
+  for (var i = 0; i < letters.length - solutionLength + 1; i++) {
+    retval.push(letters.slice(i, i + solutionLength))
+  }
+  return retval
+}
+
+const findActualWords = async function (candidateWords) {
+  var retval = []
+  for (var i = 0; i < candidateWords.length; i++) {
+    var result = await db.queryHidden(candidateWords[i])
+    if (result.Count > 0) {
+      retval.push(candidateWords[i]) // the word is real, so add it to the array
+    }
+  }
+  return retval
+}
+
+const analyzeHidden = async function (clue) {
+  var retval = []
+
+  // first split the clue
+  // returns an object with a clue, a totalLength and a wordLengths array
+  var splitClue = utilities.split(clue)
+  if (splitClue == null) {
+    return []
+  }
+  console.log('split clue = ', splitClue)
+
+  // now try to get hidden word indicators
+  // returns an array of indicators or an empty array if there are none
+  var indicators = identifyIndicators(splitClue.clue)
+  if (indicators.length === 0) {
+    return []
+  }
+  console.log('indicators = ', indicators)
+  // now parse clue for every possible indicator
+  // paseClue returns  an array of objects [{letters, words, definition}]
+  for (var i in indicators) {
+    var indicator = indicators[i]
+    var parsedClue = parseClue(splitClue.clue, indicator)
+    console.log('indicator is ', indicator, ' and parsed Clue is ', parsedClue)
+    // now find hidden words in the subsidiary
+    var hiddenWordCandidates = findHiddenWords(parsedClue.subsidiary, splitClue.totalLength)
+    // now, are any of the candidates actual words?
+    var actualWords = await findActualWords(hiddenWordCandidates)
+    // now, are these words synonyms of the definition
+    for (var j = 0; j < actualWords.length; j++) {
+      if (await utilities.isSynonym(actualWords[j], parsedClue.definition)) {
+        retval.push({ 'type': 'Hidden Word',
+          'clue': splitClue.clue,
+          'totalLength': splitClue.totalLength,
+          'definition': parsedClue.definition,
+          'indicator': indicator,
+          'words': null,
+          'solution': actualWords[j],
+          'isSynonym': true
+        })
+      } // if
+    } // for j
+  } // for i
+
+  return retval
+}
+
+module.exports = {
+  identifyIndicators: identifyIndicators,
+  parseClue: parseClue,
+  findHiddenWords: findHiddenWords,
+  findActualWords: findActualWords,
+  analyzeHidden: analyzeHidden
+}

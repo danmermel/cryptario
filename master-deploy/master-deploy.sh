@@ -16,6 +16,13 @@ aws dynamodb create-table --table-name "cryptarioDictionary-${SUFFIX}" \
   --key-schema AttributeName=id,KeyType=HASH \
   --global-secondary-indexes IndexName=problem-index,KeySchema=["{AttributeName=problem,KeyType=HASH}"],Projection="{ProjectionType=INCLUDE,NonKeyAttributes=[solution]}"
 
+echo "add another index to the table on solution"
+
+aws dynamodb update-table --table-name "cryptarioDictionary-${SUFFIX}" \
+  --attribute-definitions AttributeName=id,AttributeType=S AttributeName=solution,AttributeType=S \
+  --global-secondary-index-updates ' [{ "Create" : { "IndexName": "solution-index" , "KeySchema": [ { "AttributeName": "solution" ,"KeyType":"HASH" }], "Projection":{"ProjectionType":"INCLUDE","NonKeyAttributes":["problem"]} }  }] '
+
+
 echo "create role for lambda to access stuff.."
 aws iam create-role --role-name cryptario --assume-role-policy-document file://policy.json
 
