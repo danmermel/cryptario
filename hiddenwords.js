@@ -19,10 +19,20 @@ const identifyIndicators = function (clue) {
     }
   }
 
-  // second pass for multi-word indicators
+  // second pass for two-word indicators
   // we are using the unstemmed indicators for comparison
   for (i = 0; i < words.length - 2; i++) {
     word = words[i] + ' ' + words[i + 1]
+    x = indicators.indexOf(word)
+    if (x !== -1) {
+      hiddenIndicators.push(word)
+    }
+  }
+
+  // third pass for three-word indicators
+  // we are using the unstemmed indicators for comparison
+  for (i = 0; i < words.length - 3; i++) {
+    word = words[i] + ' ' + words[i + 1] + ' ' + words[i + 2]
     x = indicators.indexOf(word)
     if (x !== -1) {
       hiddenIndicators.push(word)
@@ -104,21 +114,61 @@ const analyzeHidden = async function (clue) {
     var actualWords = await findActualWords(hiddenWordCandidates)
     // now, are these words synonyms of the definition
     for (var j = 0; j < actualWords.length; j++) {
-      if (await utilities.isSynonym(actualWords[j], parsedClue.definition)) {
-        retval.push({ 'type': 'Hidden Word',
-          'clue': splitClue.clue,
-          'totalLength': splitClue.totalLength,
-          'definition': parsedClue.definition,
-          'indicator': indicator,
-          'words': null,
-          'solution': actualWords[j],
-          'isSynonym': true
-        })
-      } // if
+      var isSynonym = await utilities.isSynonym(actualWords[j], parsedClue.definition)
+      retval.push({
+        'type': 'Hidden Word',
+        'clue': splitClue.clue,
+        'totalLength': splitClue.totalLength,
+        'definition': parsedClue.definition,
+        'indicator': indicator,
+        'words': null,
+        'solution': actualWords[j],
+        'isSynonym': isSynonym
+      })
     } // for j
   } // for i
 
-  return retval
+  // sort so that isSynonym:true goes top
+  var sorter = function (a, b) {
+    if (a.isSynonym && !b.isSynonym) {
+      return -1
+    } else if (!a.isSynonym && b.isSynonym) {
+      return 1
+    } else {
+      return 0
+    }
+  }
+  retval.sort(sorter)
+
+  // dedupe by solution
+  var retval2 = []
+  // return true if solution is already
+  // found in the retval2 array of objects
+  var alreadyIn = function (solutionObj) {
+    for (var i in retval2) {
+      var r = retval2[i]
+      if (r.solution === solutionObj.solution) {
+        // favour longer indicators over shorter indicators
+        //  e.g. coming from overwrites from
+        if (solutionObj.indicator.length > r.indicator.length) {
+          retval2[i] = solutionObj
+        }
+        return true
+      }
+    }
+    return false
+  }
+  // loop through all the candidate answers but
+  // ensure that each solution only appears once
+  // (you might get dupes because of multiple
+  // hidden word indicators)
+  for (var k in retval) {
+    var r = retval[k]
+    if (!alreadyIn(r)) {
+      retval2.push(r)
+    }
+  }
+  return retval2
 }
 
 module.exports = {
