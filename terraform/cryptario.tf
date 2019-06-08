@@ -91,6 +91,25 @@ resource "aws_lambda_function" "cryptario_anagram_lambda" {
   runtime = "nodejs8.10"
 }
 
+// create stub Lambda function with dummy code
+resource "aws_lambda_function" "cryptario_hiddenwords_lambda" {
+  filename = "dummy.zip"
+  function_name = "cryptario-hiddenwords-${terraform.workspace}"
+  role = "${aws_iam_role.cryptario_lambda_role.arn}"
+  handler = "index.handler"
+  runtime = "nodejs8.10"
+}
+
+// create stub Lambda function with dummy code
+resource "aws_lambda_function" "cryptario_doubledef_lambda" {
+  filename = "dummy.zip"
+  function_name = "cryptario-doubledef-${terraform.workspace}"
+  role = "${aws_iam_role.cryptario_lambda_role.arn}"
+  handler = "index.handler"
+  runtime = "nodejs8.10"
+}
+
+
 // create an API gateway
 resource "aws_api_gateway_rest_api" "cryptario_api" {
   name = "cryptario-${terraform.workspace}"
@@ -107,9 +126,31 @@ module "anagram_method" {
   api_account_id = "${data.aws_caller_identity.current.account_id}"
 }
 
+module "hiddenwords_method" {
+  source = "./modules/apimethod"
+  api_id = "${aws_api_gateway_rest_api.cryptario_api.id}"
+  api_root_resource_id = "${aws_api_gateway_rest_api.cryptario_api.root_resource_id}"
+  api_path_part = "hiddenwords"
+  api_lambda_arn = "${aws_lambda_function.cryptario_hiddenwords_lambda.arn}"
+  api_lambda_name = "${aws_lambda_function.cryptario_hiddenwords_lambda.function_name}"
+  api_region = "${data.aws_region.current.name}"
+  api_account_id = "${data.aws_caller_identity.current.account_id}"
+}
+
+module "doubledef_method" {
+  source = "./modules/apimethod"
+  api_id = "${aws_api_gateway_rest_api.cryptario_api.id}"
+  api_root_resource_id = "${aws_api_gateway_rest_api.cryptario_api.root_resource_id}"
+  api_path_part = "doubledef"
+  api_lambda_arn = "${aws_lambda_function.cryptario_doubledef_lambda.arn}"
+  api_lambda_name = "${aws_lambda_function.cryptario_doubledef_lambda.function_name}"
+  api_region = "${data.aws_region.current.name}"
+  api_account_id = "${data.aws_caller_identity.current.account_id}"
+}
+
 # create api gateway deployment
 resource "aws_api_gateway_deployment" "cryptario_api_deployment" {
-#  depends_on = ["anagram_method"]
+  depends_on = ["module.anagram_method","module.hiddenwords_method","module.doubledef_method"]
   rest_api_id = "${aws_api_gateway_rest_api.cryptario_api.id}"
   stage_name = "${terraform.workspace}"
 }
