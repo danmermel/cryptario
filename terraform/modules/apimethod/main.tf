@@ -21,7 +21,7 @@ resource "aws_api_gateway_integration" "cryptario_integration" {
   http_method  = "${aws_api_gateway_method.cryptario_method.http_method}"
   integration_http_method = "POST"
   type = "AWS_PROXY"
-  uri = "arn:aws:apigateway:${data.aws_region.current.name}:lambda:path/2015-03-31/functions/${var.api_lambda_arn}/invocations"
+  uri = "arn:aws:apigateway:${var.api_region}:lambda:path/2015-03-31/functions/${var.api_lambda_arn}/invocations"
   passthrough_behavior = "WHEN_NO_MATCH"
   content_handling = "CONVERT_TO_TEXT"
   cache_namespace = "${aws_api_gateway_resource.cryptario_resource.id}"
@@ -83,7 +83,7 @@ resource "aws_lambda_permission" "allow_api_gateway" {
   statement_id = "${var.api_lambda_name}"
   action = "lambda:*"
   principal = "apigateway.amazonaws.com"
-  source_arn = "arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${var.api_id}/*/*/analyze"
+  source_arn = "arn:aws:execute-api:${var.api_region}:${var.api_account_id}:${var.api_id}/*/*/${var.api_path_part}"
 }
 
 
