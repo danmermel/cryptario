@@ -7,22 +7,23 @@ if [ -z $1 ]
 fi
 echo "Deployment stage = ${1}"
 
-# copy the anagram/utilities libraries here for deployment
-cp ../*.js ../config.json .
-
-# mount our directory as /var/task on the Docker container
-# run the Lambda Docker image
-# run 'npm install' in the container
-# the files appear on our node_modules (because it's mounted)
-docker run -v "$PWD":/var/task lambci/lambda:build-nodejs8.10 npm install
-
-# build the zip
-zip -r lambda.zip package.json *.js config.json node_modules/
+# build the zip files
+cd anagram
+./prepare.sh
+cd ../hiddenwords
+./prepare.sh
+cd ../doubledef
+./prepare.sh
+cd ..
 
 # deploy to Lambda
-aws lambda update-function-code --function-name "cryptario-${1}" --zip-file fileb://lambda.zip
-rm lambda.zip
+aws lambda update-function-code --function-name "cryptario-anagram-${1}" --zip-file fileb://anagram/lambda.zip
+aws lambda update-function-code --function-name "cryptario-doubledef-${1}" --zip-file fileb://doubledef/lambda.zip
+aws lambda update-function-code --function-name "cryptario-hiddenwords-${1}" --zip-file fileb://hiddenwords/lambda.zip
 
-# tidy up
-rm doubledef.js anagramIndicators.js datamuse.js db.js anagram.js utilities.js *.test.js config.json
+
+# tidy up zip files
+rm anagram/lambda.zip
+rm hiddenwords/lambda.zip
+rm doubledef/lambda.zip
 
