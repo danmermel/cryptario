@@ -89,6 +89,7 @@ resource "aws_lambda_function" "cryptario_anagram_lambda" {
   role = "${aws_iam_role.cryptario_lambda_role.arn}"
   handler = "index.handler"
   runtime = "nodejs8.10"
+  timeout = 10
 }
 
 // create stub Lambda function with dummy code
@@ -98,6 +99,7 @@ resource "aws_lambda_function" "cryptario_hiddenwords_lambda" {
   role = "${aws_iam_role.cryptario_lambda_role.arn}"
   handler = "index.handler"
   runtime = "nodejs8.10"
+  timeout = 10
 }
 
 // create stub Lambda function with dummy code
@@ -107,6 +109,7 @@ resource "aws_lambda_function" "cryptario_doubledef_lambda" {
   role = "${aws_iam_role.cryptario_lambda_role.arn}"
   handler = "index.handler"
   runtime = "nodejs8.10"
+  timeout = 10
 }
 
 

@@ -1,3 +1,13 @@
+const solve = async (clue, clueType) => {
+  var obj = { 'clue': clue }
+  var response = await fetch('https://r5atfhsr91.execute-api.eu-west-1.amazonaws.com/stage/' + clueType, {
+     method: 'post',
+     body: JSON.stringify(obj)
+  })
+  var solution =  await response.json()
+  return solution
+}
+
 var app = new Vue({
   el: '#app',
   data: {
@@ -8,12 +18,11 @@ var app = new Vue({
   methods: {
 
     analyze: async function () {
-      var obj = { 'clue': this.clue }
-      var response = await fetch('https://t1c6x6ajze.execute-api.eu-west-1.amazonaws.com/stage/analyze', {
-        method: 'post',
-        body: JSON.stringify(obj)
-      })
-      this.solutions = await response.json()
+      const anagramSolutions = await solve(this.clue, 'anagram')
+      const hiddenWordSolutions = await solve(this.clue, 'hiddenwords')
+      const doubleDefSolutions = await solve(this.clue, 'doubledef')
+      this.solutions = this.solutions.concat(anagramSolutions, hiddenWordSolutions, doubleDefSolutions)
+
     }
   }
 })
