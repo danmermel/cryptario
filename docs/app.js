@@ -18,11 +18,17 @@ var app = new Vue({
   methods: {
 
     analyze: async function () {
-      const anagramSolutions = await solve(this.clue, 'anagram')
-      const hiddenWordSolutions = await solve(this.clue, 'hiddenwords')
-      const doubleDefSolutions = await solve(this.clue, 'doubledef')
-      this.solutions = this.solutions.concat(anagramSolutions, hiddenWordSolutions, doubleDefSolutions)
-
+      const self = this
+      self.solutions = []
+      solve(this.clue, 'anagram').then(function(anagramSolutions) {
+        self.solutions = self.solutions.concat(anagramSolutions)
+      })
+      solve(this.clue, 'hiddenwords').then(function(hiddenwordsSolutions) {
+        self.solutions = self.solutions.concat(hiddenwordsSolutions)
+      })
+      solve(this.clue, 'doubledef').then(function(doubledefSolutions) {
+        self.solutions = self.solutions.concat(doubledefSolutions)
+      })
     }
   }
 })
