@@ -14,6 +14,9 @@ const split = function (fullClue) {
 }
 
 const isSynonym = async function (word1, word2) {
+  if (typeof word1 !== 'string' || typeof word2 !== 'string') {
+    return false
+  }
   const synonyms = await datamuse.synonym(word1)
   const find = synonyms.indexOf(word2.toLowerCase())
   return (find > -1)
