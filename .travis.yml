@@ -11,19 +11,11 @@ services:
 
 
 # First we run a script that creates the zip file for lambda with all the compiled libraries.
-before_deploy:
-  - cd lambda ; ./prepare.sh
 
 #Then we deploy the zip to lambda, using the AWS user in the env variable
 deploy:
-  provider: lambda
-  function_name: "cryptario-stage"
-  region: "eu-west-1"
-  zip: "lambda.zip"
-  role: "arn:aws:iam::160991186365:role/cryptario"
-  handler_name: "handler"
-  runtime: "nodejs8.10"
-  timeout: 10
+  provider: script
+    script: bash lambda/deploy.sh prod
 
 # ensure that deployment only happens when merging into the master branch
 stages:
