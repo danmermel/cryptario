@@ -159,4 +159,35 @@ resource "aws_api_gateway_deployment" "cryptario_api_deployment" {
 }
 
 
+# Custom domain part
+module "custom_domain" {
+  source = "./modules/acm"
+  api_id = "${aws_api_gateway_rest_api.cryptario_api.id}"
+}
 
+# associate the certificate & domain name to the API gateway
+
+resource "aws_api_gateway_domain_name" "cdn" {
+  certificate_arn = module.custom_domain.certarn
+  domain_name     = "${terraform.workspace}.remebit.com"
+}
+
+# api base path  mapping
+resource "aws_api_gateway_base_path_mapping" "cdn_mapping" { 
+  api_id = "${aws_api_gateway_rest_api.cryptario_api.id}" 
+  stage_name = "${terraform.workspace}" 
+  domain_name = "${aws_api_gateway_domain_name.cdn.domain_name}" 
+}
+
+# create DNS record in Route 53 - aliasing our domain name with 
+# the api gateway's domain name
+resource "aws_route53_record" "r53_cdn_entry" { 
+  zone_id = "Z1L8M1ZWQLKTWT" 
+  name = "${terraform.workspace}.remebit.com" 
+  type = "A" 
+  alias { 
+    name = "${aws_api_gateway_domain_name.cdn.cloudfront_domain_name}" 
+    zone_id = "${aws_api_gateway_domain_name.cdn.cloudfront_zone_id}" 
+    evaluate_target_health = true 
+  } 
+}
