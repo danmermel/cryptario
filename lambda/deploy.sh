@@ -8,7 +8,14 @@ fi
 echo "Deployment stage = ${1}"
 
 # build the zip files
-cd anagram
+
+echo "changing dir to build dir.."
+
+cd $TRAVIS_BUILD_DIR/lambda
+
+echo $PWD
+
+cd  anagram
 ./prepare.sh
 cd ../hiddenwords
 ./prepare.sh
