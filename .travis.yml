@@ -15,7 +15,7 @@ services:
 #Then we deploy the zip to lambda, using the AWS user in the env variable
 deploy:
   provider: script
-    script: bash lambda/deploy.sh prod
+  script: bash lambda/deploy.sh prod
 
 # ensure that deployment only happens when merging into the master branch
 stages:

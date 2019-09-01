@@ -14,16 +14,20 @@ cd ../hiddenwords
 ./prepare.sh
 cd ../doubledef
 ./prepare.sh
+cd ../homophones
+./prepare.sh
 cd ..
 
 # deploy to Lambda
 aws lambda update-function-code --function-name "cryptario-anagram-${1}" --zip-file fileb://anagram/lambda.zip
 aws lambda update-function-code --function-name "cryptario-doubledef-${1}" --zip-file fileb://doubledef/lambda.zip
 aws lambda update-function-code --function-name "cryptario-hiddenwords-${1}" --zip-file fileb://hiddenwords/lambda.zip
+aws lambda update-function-code --function-name "cryptario-homophones-${1}" --zip-file fileb://homophones/lambda.zip
 
 
 # tidy up zip files
 rm anagram/lambda.zip
 rm hiddenwords/lambda.zip
 rm doubledef/lambda.zip
+rm homophones/lambda.zip
 
