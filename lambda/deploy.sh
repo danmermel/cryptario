@@ -9,7 +9,7 @@ echo "Deployment stage = ${1}"
 
 echo "configuring aws region"
 
-aws configure --region eu-west-1
+export AWS_DEFAULT_REGION="eu-west-1"
 
 # build the zip files
 
