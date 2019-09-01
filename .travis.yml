@@ -9,6 +9,8 @@ env:
 services:
   - docker
 
+before_install:
+  - pip install --user awscli
 
 # First we run a script that creates the zip file for lambda with all the compiled libraries.
 
