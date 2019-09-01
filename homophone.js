@@ -115,7 +115,7 @@ const analyzeHomophone = async function (clue) {
   if (splitClue == null) {
     return []
   }
-  //console.log('split clue = ', splitClue)
+  // console.log('split clue = ', splitClue)
 
   // now try to get homophone indicators
   // returns an array of indicators or an empty array if there are none
@@ -123,7 +123,7 @@ const analyzeHomophone = async function (clue) {
   if (indicators.length === 0) {
     return []
   }
-  //console.log('indicators = ', indicators)
+  // console.log('indicators = ', indicators)
 
   // now discard eveything  but the longest
   var indicator = ''
@@ -137,7 +137,7 @@ const analyzeHomophone = async function (clue) {
   // paseClue returns  an array of objects [{letters, words, definition}]
   var solutions = []
   var parsedClue = parseClue(splitClue.clue, indicator, splitClue.totalLength)
-  //console.log('indicator is ', indicator, ' and parsed Clue is ', parsedClue)
+  // console.log('indicator is ', indicator, ' and parsed Clue is ', parsedClue)
 
   var pc = parsedClue
   var obj = {
@@ -152,8 +152,8 @@ const analyzeHomophone = async function (clue) {
   // find synonyms of definition & subsidiary
   var definitionSynonyms = await datamuse.synonym(obj.definition)
   var subsidiarySynonyms = await datamuse.synonym(obj.subsidiary)
-  //console.log('definition synonyms', definitionSynonyms)
-  //console.log('subsidiary synonyms', subsidiarySynonyms)
+  // console.log('definition synonyms', definitionSynonyms)
+  // console.log('subsidiary synonyms', subsidiarySynonyms)
   if (definitionSynonyms.length === 0 || subsidiarySynonyms.length === 0) {
     return []
   }
@@ -168,8 +168,8 @@ const analyzeHomophone = async function (clue) {
   for (j = 0; j < subsidiarySynonyms.length; j++) {
     subsidiarySoundex[j] = soundex(subsidiarySynonyms[j])[0]
   }
-  //console.log('definition soundexes', definitionSoundex)
-  //console.log('subsidiary soundexes', subsidiarySoundex)
+  // console.log('definition soundexes', definitionSoundex)
+  // console.log('subsidiary soundexes', subsidiarySoundex)
 
   // look for equality between soundex of synonyms
   var k

@@ -112,6 +112,16 @@ resource "aws_lambda_function" "cryptario_doubledef_lambda" {
   timeout = 10
 }
 
+// create stub Lambda function with dummy code
+resource "aws_lambda_function" "cryptario_homophones_lambda" {
+  filename = "dummy.zip"
+  function_name = "cryptario-homophones-${terraform.workspace}"
+  role = "${aws_iam_role.cryptario_lambda_role.arn}"
+  handler = "index.handler"
+  runtime = "nodejs8.10"
+  timeout = 10
+}
+
 
 // create an API gateway
 resource "aws_api_gateway_rest_api" "cryptario_api" {
@@ -147,6 +157,17 @@ module "doubledef_method" {
   api_path_part = "doubledef"
   api_lambda_arn = "${aws_lambda_function.cryptario_doubledef_lambda.arn}"
   api_lambda_name = "${aws_lambda_function.cryptario_doubledef_lambda.function_name}"
+  api_region = "${data.aws_region.current.name}"
+  api_account_id = "${data.aws_caller_identity.current.account_id}"
+}
+
+module "homophones_method" {
+  source = "./modules/apimethod"
+  api_id = "${aws_api_gateway_rest_api.cryptario_api.id}"
+  api_root_resource_id = "${aws_api_gateway_rest_api.cryptario_api.root_resource_id}"
+  api_path_part = "homophones"
+  api_lambda_arn = "${aws_lambda_function.cryptario_homophones_lambda.arn}"
+  api_lambda_name = "${aws_lambda_function.cryptario_homophones_lambda.function_name}"
   api_region = "${data.aws_region.current.name}"
   api_account_id = "${data.aws_caller_identity.current.account_id}"
 }
