@@ -7,6 +7,10 @@ if [ -z $1 ]
 fi
 echo "Deployment stage = ${1}"
 
+echo "configuring aws region"
+
+aws configure --region eu-west-1
+
 # build the zip files
 
 echo "changing dir to build dir.."
