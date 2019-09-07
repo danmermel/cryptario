@@ -6,7 +6,7 @@ const split = function (fullClue) {
   bracketContent = bracketContent.replace(/[()]/g, '').trim()
   const wordLengths = bracketContent.split(/[^0-9]/).map(function (v) { return parseInt(v) })
   const totalLength = wordLengths.reduce(function (a, b) { return a + b })
-  const clue = fullClue.substr(0, lastBracket - 1).trim()
+  const clue = fullClue.substr(0, lastBracket).trim()
   return { clue: clue,
     totalLength: totalLength,
     wordLengths: wordLengths
