@@ -26,6 +26,7 @@ const getWords = function (clue) {
   // this splits the clue into component words and then
   // filters out the blank array members
   // it is NOT lowercasing because we think sometimes you want upper case to be preserved
+  clue = clue.replace(/'/g, '')
   return clue.split(/\W/g).filter(function (str) { return str.length > 0 })
 }
 
