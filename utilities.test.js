@@ -70,6 +70,11 @@ test('getWords - Get rid of anything that is not word in clue', function () {
   expect(res).toEqual(['ABC123', 'great', 'cook', 'kitchen', 'nest'])
 })
 
+test('getWords - remove apostrophes', function () {
+  const res = utilities.getWords('ABC123 cat\'s dog\'s, (great) cook+kitchen - nest')
+  expect(res).toEqual(['ABC123', 'cats', 'dogs', 'great', 'cook', 'kitchen', 'nest'])
+})
+
 test('countLetters - Match first two words', function () {
   const res = utilities.countLetters(['in', 'gale', 'woof'], 6)
   expect(res).toEqual(['in', 'gale'])
