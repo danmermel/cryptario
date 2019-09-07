@@ -5,6 +5,11 @@ test('Identify that basic clue gets split', function () {
   expect(res).toEqual({ 'totalLength': 6, 'clue': 'Pleasant tumble in gale', 'wordLengths': [6] })
 })
 
+test('Identify that basic clue gets split - no space before bracket', function () {
+  const res = utilities.split('Pleasant tumble in gale(6)')
+  expect(res).toEqual({ 'totalLength': 6, 'clue': 'Pleasant tumble in gale', 'wordLengths': [6] })
+})
+
 test("Additional brackets don't crap it", function () {
   const res = utilities.split('Pleasant tumble (not in winter) in gale (6)')
   expect(res).toEqual({ 'totalLength': 6, 'clue': 'Pleasant tumble (not in winter) in gale', 'wordLengths': [6] })
