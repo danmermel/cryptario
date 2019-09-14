@@ -126,12 +126,7 @@ const analyzeHomophone = async function (clue) {
   // console.log('indicators = ', indicators)
 
   // now discard eveything  but the longest
-  var indicator = ''
-  for (var i in indicators) {
-    if (indicators[i].length > indicator.length) {
-      indicator = indicators[i]
-    }
-  }
+  var indicator = utilities.getLongestIndicator(indicators)
 
   // now parse clue for every possible indicator
   // paseClue returns  an array of objects [{letters, words, definition}]

@@ -50,6 +50,7 @@ module.exports = [
   'turned',
   'turning',
   'turns',
+  'turns up',
   'up',
   'upended',
   'upset',

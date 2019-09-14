@@ -77,6 +77,16 @@ const findActualWords = async function (candidateWords) {
   return retval
 }
 
+const getLongestIndicator = function(indicators) {
+  var indicator = ''
+  for (var i in indicators) {
+    if (indicators[i].length > indicator.length) {
+      indicator = indicators[i]
+    }
+  }
+  return indicator
+}
+
 module.exports = {
   split: split,
   isSynonym: isSynonym,
@@ -84,5 +94,6 @@ module.exports = {
   countLetters: countLetters,
   transformWord: transformWord,
   checkWordPattern: checkWordPattern,
-  findActualWords: findActualWords
+  findActualWords: findActualWords,
+  getLongestIndicator: getLongestIndicator
 }

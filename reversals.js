@@ -55,7 +55,7 @@ const parseClue = function (clue, indicator) {
       'definition': words[words.length - 1],
       'subsidiary': words.slice(indicatorSplit.length, words.length - 1).join(' ')
     }
-  } else if (pos === words.length - 1) {
+  } else if (pos === words.length - indicatorSplit.length) {
     // for now we are going to assume that the definition is only the first word of the clue
     return { 'indicator': indicator,
       'definition': words[0],
@@ -87,22 +87,21 @@ const analyzeReversal = async function (clue) {
     return []
   }
   console.log('indicators = ', indicators)
+  var indicator = utilities.getLongestIndicator(indicators)
 
   // now parse clue for every possible indicator
   // paseClue returns  an array of objects [{letters, words, definition}]
-  for (var i in indicators) {
-    var indicator = indicators[i]
     var parsedClue = parseClue(splitClue.clue, indicator)
     console.log('indicator is ', indicator, ' and parsed Clue is ', parsedClue)
 
     // Find synonyms one side, e.g. fish = cod, halibut, swordfish, rib, pez)
-    var synonyms = await datamuse.synonym(parsedClue.definition)
+    var synonyms = await datamuse.synonym(parsedClue.subsidiary)
     console.log('synonyms', synonyms)
     // Throw away any that don't match the solution pattern e.g. [4,5]
     synonyms = synonyms.filter(function (f) { return utilities.checkWordPattern(f, splitClue.wordLengths) })
     if (synonyms.length === 0) {
       console.log('no matches')
-      continue
+      return []
     }
     console.log('synonyms matching', synonyms)
 
@@ -118,20 +117,21 @@ const analyzeReversal = async function (clue) {
     // See if any are synonyms of the other side (doc = physician)
     for (var j in actualWords) {
       // check for synonym
-      var isSynonym = await utilities.isSynonym(actualWords[j], parsedClue.subsidiary)
+      var isSynonym = await utilities.isSynonym(actualWords[j], parsedClue.definition)
       retval.push({
         'type': 'Reversal',
         'clue': splitClue.clue,
         'totalLength': splitClue.totalLength,
         'definition': parsedClue.definition,
         'indicator': indicator,
+        'subsidiary': parsedClue.subsidiary,
         'words': null,
         'solution': actualWords[j],
-        'isSynonym': isSynonym
+        'isSynonym': isSynonym,
+        'info' : actualWords[j].split('').reverse().join('') + " is a synonym of " + parsedClue.subsidiary + ", which when reversed gives you " + actualWords[j] +", which is a synonym of " + parsedClue.definition
       })
     }
     // Return all of them anyway, but the synonym=true ones at the top
-  } // for i
 
   // sort so that isSynonym:true goes top
   var sorter = function (a, b) {
