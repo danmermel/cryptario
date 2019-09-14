@@ -14,5 +14,8 @@ docker run -v "$PWD":/var/task lambci/lambda:build-nodejs8.10 npm install --sile
 zip -r lambda.zip package.json *.js config.json node_modules/
 
 # tidy up
-rm !(package.json|index.js|prepare.sh)
+# this sets the shell options so that ! is understood as NOT
+shopt -s extglob
+# remove all files except those in the list
+rm !(package.json|index.js|prepare.sh|node_modules|package-lock.json|lambda.zip)
 

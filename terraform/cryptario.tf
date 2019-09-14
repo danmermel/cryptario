@@ -182,7 +182,7 @@ module "homophones_method" {
   api_account_id = "${data.aws_caller_identity.current.account_id}"
 }
 
-module "homophones_method" {
+module "reversals_method" {
   source = "./modules/apimethod"
   api_id = "${aws_api_gateway_rest_api.cryptario_api.id}"
   api_root_resource_id = "${aws_api_gateway_rest_api.cryptario_api.root_resource_id}"
