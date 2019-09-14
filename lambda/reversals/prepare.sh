@@ -18,3 +18,4 @@ zip -r lambda.zip package.json *.js config.json node_modules/
 shopt -s extglob
 # remove all files except those in the list
 rm !(package.json|index.js|prepare.sh|node_modules|package-lock.json|lambda.zip)
+

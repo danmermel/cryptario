@@ -32,6 +32,9 @@ var app = new Vue({
       solve(this.clue, 'homophones').then(function(solutions) {
         self.solutions = self.solutions.concat(solutions)
       })
+      solve(this.clue, 'reversals').then(function(solutions) {
+        self.solutions = self.solutions.concat(solutions)
+      })
     }
   }
 })

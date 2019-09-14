@@ -2,7 +2,6 @@ const utilities = require('./utilities.js')
 const stem = require('node-snowball')
 const indicators = require('./hiddenWordIndicators.js')
 const stemmedIndicators = stem.stemword(indicators)
-const db = require('./db.js')
 
 const identifyIndicators = function (clue) {
   var hiddenIndicators = []
@@ -73,17 +72,6 @@ const findHiddenWords = function (subsidiary, solutionLength) {
   return retval
 }
 
-const findActualWords = async function (candidateWords) {
-  var retval = []
-  for (var i = 0; i < candidateWords.length; i++) {
-    var result = await db.queryHidden(candidateWords[i])
-    if (result.Count > 0) {
-      retval.push(candidateWords[i]) // the word is real, so add it to the array
-    }
-  }
-  return retval
-}
-
 const analyzeHidden = async function (clue) {
   var retval = []
 
@@ -111,7 +99,7 @@ const analyzeHidden = async function (clue) {
     // now find hidden words in the subsidiary
     var hiddenWordCandidates = findHiddenWords(parsedClue.subsidiary, splitClue.totalLength)
     // now, are any of the candidates actual words?
-    var actualWords = await findActualWords(hiddenWordCandidates)
+    var actualWords = await utilities.findActualWords(hiddenWordCandidates)
     // now, are these words synonyms of the definition
     for (var j = 0; j < actualWords.length; j++) {
       var isSynonym = await utilities.isSynonym(actualWords[j], parsedClue.definition)
@@ -175,6 +163,5 @@ module.exports = {
   identifyIndicators: identifyIndicators,
   parseClue: parseClue,
   findHiddenWords: findHiddenWords,
-  findActualWords: findActualWords,
   analyzeHidden: analyzeHidden
 }
