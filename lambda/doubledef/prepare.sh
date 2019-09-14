@@ -14,5 +14,5 @@ docker run -v "$PWD":/var/task lambci/lambda:build-nodejs8.10 npm install --sile
 zip -r lambda.zip package.json *.js config.json node_modules/
 
 # tidy up
-rm homophone.js homophoneIndicators.js hiddenWordIndicators.js hiddenwords.js doubledef.js anagramIndicators.js datamuse.js db.js anagram.js utilities.js *.test.js config.json
+rm !(package.json|index.js|prepare.sh)
 

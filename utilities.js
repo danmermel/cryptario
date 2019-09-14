@@ -1,4 +1,5 @@
 const datamuse = require('./datamuse.js')
+const db = require('./db.js')
 
 const split = function (fullClue) {
   var lastBracket = fullClue.lastIndexOf('(')
@@ -65,11 +66,23 @@ const checkWordPattern = function (str, pattern) {
   return (JSON.stringify(lengths) === JSON.stringify(pattern))
 }
 
+const findActualWords = async function (candidateWords) {
+  var retval = []
+  for (var i = 0; i < candidateWords.length; i++) {
+    var result = await db.queryHidden(candidateWords[i])
+    if (result.Count > 0) {
+      retval.push(candidateWords[i]) // the word is real, so add it to the array
+    }
+  }
+  return retval
+}
+
 module.exports = {
   split: split,
   isSynonym: isSynonym,
   getWords: getWords,
   countLetters: countLetters,
   transformWord: transformWord,
-  checkWordPattern: checkWordPattern
+  checkWordPattern: checkWordPattern,
+  findActualWords: findActualWords
 }
