@@ -77,7 +77,7 @@ const findActualWords = async function (candidateWords) {
   return retval
 }
 
-const getLongestIndicator = function(indicators) {
+const getLongestIndicator = function (indicators) {
   var indicator = ''
   for (var i in indicators) {
     if (indicators[i].length > indicator.length) {
