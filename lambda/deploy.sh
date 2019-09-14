@@ -27,7 +27,7 @@ cd ../doubledef
 ./prepare.sh
 cd ../homophones
 ./prepare.sh
-cd ../reverals
+cd ../reversals
 ./prepare.sh
 cd ..
 
