@@ -12,6 +12,8 @@ var app = new Vue({
   el: '#app',
   data: {
     clue: '',
+    progress: 0,
+    solving: false,
     solutions: []
   },
 
@@ -20,20 +22,29 @@ var app = new Vue({
     analyze: async function () {
       const self = this
       self.solutions = []
+      self.solving = true
+      self.progress = 0
+      const increment = 20
+
       solve(this.clue, 'anagram').then(function(solutions) {
         self.solutions = self.solutions.concat(solutions)
+        self.progress += increment
       })
       solve(this.clue, 'hiddenwords').then(function(solutions) {
         self.solutions = self.solutions.concat(solutions)
+        self.progress += increment
       })
       solve(this.clue, 'doubledef').then(function(solutions) {
         self.solutions = self.solutions.concat(solutions)
+        self.progress += increment
       })
       solve(this.clue, 'homophones').then(function(solutions) {
         self.solutions = self.solutions.concat(solutions)
+        self.progress += increment
       })
       solve(this.clue, 'reversals').then(function(solutions) {
         self.solutions = self.solutions.concat(solutions)
+        self.progress += increment
       })
     }
   }
