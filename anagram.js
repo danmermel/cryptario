@@ -108,7 +108,8 @@ const analyzeAnagram = async function (clue) {
         'totalLength': splitClue.totalLength,
         'definition': pc.definition,
         'indicator': indicator,
-        'words': pc.words
+        'words': pc.words,
+        'subsidiary': pc.words.join(' ')
       }
       // now make anagram words for all the words
       // returns an array of strings
@@ -126,6 +127,12 @@ const analyzeAnagram = async function (clue) {
             var x = JSON.parse(JSON.stringify(obj))
             x.solution = solved
             x.isSynonym = await utilities.isSynonym(x.definition, x.solution)
+            x.info = 'The word "' + x.indicator + '" looks like an anagram indicator and "' + x.solution + '" is an anagram of "' + x.words.join(' ') + '" '
+            if (x.isSynonym) {
+              x.info += ' which is a synonym of "' + x.definition + '"'
+            } else {
+              x.info += ' and may be a synonym of "' + x.definition + '"'
+            }
             retval.push(x)
           } // if
         } // if
