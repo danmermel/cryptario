@@ -17,10 +17,12 @@ const analyzeDoubleDef = async function (clue) {
         clue: splitClue.clue,
         totalLength: splitClue.totalLength,
         definition: [pair.one.join(' '), pair.two.join(' ')],
-        indicator: null,
+        subsidiary: '',
+        indicator: '',
         words: null,
         solution: matches[j],
-        isSynonym: true
+        isSynonym: true,
+        info: '"' + pair.one.join(' ') + '" and "' + pair.two.join(' ') + '" are both synonyms of "' + matches[j] + '".' 
       }
       retval.push(obj)
     }

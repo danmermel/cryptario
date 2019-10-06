@@ -108,10 +108,12 @@ const analyzeHidden = async function (clue) {
         'clue': splitClue.clue,
         'totalLength': splitClue.totalLength,
         'definition': parsedClue.definition,
+        'subsidiary': parsedClue.subsidiary,
         'indicator': indicator,
         'words': null,
         'solution': actualWords[j],
-        'isSynonym': isSynonym
+        'isSynonym': isSynonym,
+        'info': 'The word "' + indicator + '" suggests this is a hidden word clue. The word "' + actualWords[j] + '" is hidden inside "' + parsedClue.subsidiary + '" and ' + (isSynonym ? 'is ' : 'may be ') + ' a synonym of "' + parsedClue.definition + '".'
       })
     } // for j
   } // for i
