@@ -22,7 +22,7 @@ const analyzeDoubleDef = async function (clue) {
         words: null,
         solution: matches[j],
         isSynonym: true,
-        info: '"' + pair.one.join(' ') + '" and "' + pair.two.join(' ') + '" are both synonyms of "' + matches[j] + '".' 
+        info: '"' + pair.one.join(' ') + '" and "' + pair.two.join(' ') + '" are both synonyms of "' + matches[j] + '".'
       }
       retval.push(obj)
     }
