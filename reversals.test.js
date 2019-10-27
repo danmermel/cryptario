@@ -42,7 +42,8 @@ test('parseClue - indicator at end', function () {
 
 test('analyzeReversals - solves a clue', async function () {
   const res = await reversals.analyzeReversal('physician turns up fish (3)')
-  expect(res).toEqual([ { type: 'Reversal',
+  expect(res).toEqual([{
+    type: 'Reversal',
     clue: 'physician turns up fish',
     totalLength: 3,
     definition: 'physician',
@@ -52,5 +53,6 @@ test('analyzeReversals - solves a clue', async function () {
     solution: 'doc',
     isSynonym: true,
     info:
-     'cod is a synonym of fish, which when reversed gives you doc, which is a synonym of physician' } ])
+     'cod is a synonym of fish, which when reversed gives you doc, which is a synonym of physician'
+  }])
 })

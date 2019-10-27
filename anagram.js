@@ -103,13 +103,14 @@ const analyzeAnagram = async function (clue) {
 
     for (var j in parsedClue) {
       var pc = parsedClue[j]
-      var obj = { 'type': 'anagram',
-        'clue': splitClue.clue,
-        'totalLength': splitClue.totalLength,
-        'definition': pc.definition,
-        'indicator': indicator,
-        'words': pc.words,
-        'subsidiary': pc.words.join(' ')
+      var obj = {
+        type: 'anagram',
+        clue: splitClue.clue,
+        totalLength: splitClue.totalLength,
+        definition: pc.definition,
+        indicator: indicator,
+        words: pc.words,
+        subsidiary: pc.words.join(' ')
       }
       // now make anagram words for all the words
       // returns an array of strings

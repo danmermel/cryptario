@@ -31,7 +31,7 @@ var write = function (data, callback) {
 var read = function (id, callback) {
   var obj = {
     TableName: table,
-    Key: { 'id': id }
+    Key: { id: id }
   }
 
   docClient.get(obj, callback)

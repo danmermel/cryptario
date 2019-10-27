@@ -2,42 +2,42 @@ const utilities = require('./utilities.js')
 
 test('Identify that basic clue gets split', function () {
   const res = utilities.split('Pleasant tumble in gale (6)')
-  expect(res).toEqual({ 'totalLength': 6, 'clue': 'Pleasant tumble in gale', 'wordLengths': [6] })
+  expect(res).toEqual({ totalLength: 6, clue: 'Pleasant tumble in gale', wordLengths: [6] })
 })
 
 test('Identify that basic clue gets split - no space before bracket', function () {
   const res = utilities.split('Pleasant tumble in gale(6)')
-  expect(res).toEqual({ 'totalLength': 6, 'clue': 'Pleasant tumble in gale', 'wordLengths': [6] })
+  expect(res).toEqual({ totalLength: 6, clue: 'Pleasant tumble in gale', wordLengths: [6] })
 })
 
 test("Additional brackets don't crap it", function () {
   const res = utilities.split('Pleasant tumble (not in winter) in gale (6)')
-  expect(res).toEqual({ 'totalLength': 6, 'clue': 'Pleasant tumble (not in winter) in gale', 'wordLengths': [6] })
+  expect(res).toEqual({ totalLength: 6, clue: 'Pleasant tumble (not in winter) in gale', wordLengths: [6] })
 })
 
 test("Additional spaces at the end of clue don't crap it", function () {
   const res = utilities.split('Pleasant tumble in gale (6)   ')
-  expect(res).toEqual({ 'totalLength': 6, 'clue': 'Pleasant tumble in gale', 'wordLengths': [6] })
+  expect(res).toEqual({ totalLength: 6, clue: 'Pleasant tumble in gale', wordLengths: [6] })
 })
 
 test('Complex solution length - hyphens', function () {
   const res = utilities.split('Pleasant tumble in gale (6-4)')
-  expect(res).toEqual({ 'totalLength': 10, 'clue': 'Pleasant tumble in gale', 'wordLengths': [6, 4] })
+  expect(res).toEqual({ totalLength: 10, clue: 'Pleasant tumble in gale', wordLengths: [6, 4] })
 })
 
 test('Complex solution length - commas', function () {
   const res = utilities.split('Pleasant tumble in gale (6,4)')
-  expect(res).toEqual({ 'totalLength': 10, 'clue': 'Pleasant tumble in gale', 'wordLengths': [6, 4] })
+  expect(res).toEqual({ totalLength: 10, clue: 'Pleasant tumble in gale', wordLengths: [6, 4] })
 })
 
 test('Complex solution length - hyphens, apostrophes, commas', function () {
   const res = utilities.split("Pleasant tumble in gale (1'5-2,2)")
-  expect(res).toEqual({ 'totalLength': 10, 'clue': 'Pleasant tumble in gale', 'wordLengths': [1, 5, 2, 2] })
+  expect(res).toEqual({ totalLength: 10, clue: 'Pleasant tumble in gale', wordLengths: [1, 5, 2, 2] })
 })
 
 test('Complex solution length - double digits', function () {
   const res = utilities.split('Pleasant tumble in gale (16-4)')
-  expect(res).toEqual({ 'totalLength': 20, 'clue': 'Pleasant tumble in gale', 'wordLengths': [16, 4] })
+  expect(res).toEqual({ totalLength: 20, clue: 'Pleasant tumble in gale', wordLengths: [16, 4] })
 })
 
 test('Synonym of cook', async function () {
@@ -133,4 +133,19 @@ test('checkWordPattern - matches word lengths correctly - single word', function
 test('checkWordPattern - matches word lengths correctly - returns false', function () {
   const res = utilities.checkWordPattern('black dog', [5, 2])
   expect(res).toEqual(false)
+})
+
+test('findActualWords should  return one real word', async function () {
+  const res = await utilities.findActualWords(['ickb', 'ckbr', 'kbro', 'brow'])
+  expect(res).toEqual(['brow'])
+})
+
+test('findActualWords should  return two real words', async function () {
+  const res = await utilities.findActualWords(['blood', 'ickb', 'ckbr', 'kbro', 'brow'])
+  expect(res).toEqual(['blood', 'brow'])
+})
+
+test('findActualWords should  return zero words', async function () {
+  const res = await utilities.findActualWords(['ickb', 'ckbr', 'kbro', 'brqw'])
+  expect(res).toEqual([])
 })

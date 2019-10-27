@@ -1,4 +1,4 @@
-module.exports = [ 'according to hearsay',
+module.exports = ['according to hearsay',
   'announced',
   'as we hear',
   'audible',
@@ -41,4 +41,4 @@ module.exports = [ 'according to hearsay',
   'to the auditor',
   'to the listener',
   'vocal',
-  'voiced' ]
+  'voiced']

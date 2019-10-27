@@ -89,8 +89,10 @@ const parseClue = function (clue, indicator, numLetters) {
 
     // Scenario 1 - indicator is at the start. Only interested in the words at the end of the string
   } else if (pos === 0) {
-    return { definition: words.slice(indicatorSplit.length + remainingWordsLength / 2).join(' '),
-      subsidiary: words.slice(indicatorSplit.length, indicatorSplit.length + remainingWordsLength / 2).join(' ') }
+    return {
+      definition: words.slice(indicatorSplit.length + remainingWordsLength / 2).join(' '),
+      subsidiary: words.slice(indicatorSplit.length, indicatorSplit.length + remainingWordsLength / 2).join(' ')
+    }
   } else {
     return { definition: words.slice(0, pos).join(' '), subsidiary: words.slice(pos + indicatorSplit.length).join(' ') }
   }
@@ -136,12 +138,12 @@ const analyzeHomophone = async function (clue) {
 
   var pc = parsedClue
   var obj = {
-    'type': 'homophone',
-    'clue': splitClue.clue,
-    'totalLength': splitClue.totalLength,
-    'definition': pc.definition, //  a guess based on position in the clue
-    'indicator': indicator,
-    'subsidiary': pc.subsidiary // this could turn out to be the definition
+    type: 'homophone',
+    clue: splitClue.clue,
+    totalLength: splitClue.totalLength,
+    definition: pc.definition, //  a guess based on position in the clue
+    indicator: indicator,
+    subsidiary: pc.subsidiary // this could turn out to be the definition
   }
 
   // find synonyms of definition & subsidiary

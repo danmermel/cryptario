@@ -73,29 +73,35 @@ test('parseClue - indicator in the middle', function () {
 test('analyzeHomophone - solves a clue', async function () {
   const res = await homophone.analyzeHomophone('remained sober, so we hear (6)')
   expect(res).toEqual(
-    [ { type: 'homophone',
+    [{
+      type: 'homophone',
       clue: 'remained sober, so we hear',
       totalLength: 6,
       definition: 'remained',
       indicator: 'so we hear',
       subsidiary: 'sober',
       solution: 'stayed',
-      info: 'remained has a synonym stayed which sounds like sedate which is a synonym of sober' },
-    { type: 'homophone',
+      info: 'remained has a synonym stayed which sounds like sedate which is a synonym of sober'
+    },
+    {
+      type: 'homophone',
       clue: 'remained sober, so we hear',
       totalLength: 6,
       definition: 'remained',
       indicator: 'so we hear',
       subsidiary: 'sober',
       solution: 'stayed',
-      info: 'remained has a synonym stayed which sounds like staid which is a synonym of sober' },
-    { type: 'homophone',
+      info: 'remained has a synonym stayed which sounds like staid which is a synonym of sober'
+    },
+    {
+      type: 'homophone',
       clue: 'remained sober, so we hear',
       totalLength: 6,
       definition: 'sober',
       indicator: 'so we hear',
       subsidiary: 'remained',
       solution: 'sedate',
-      info: 'sober has a synonym sedate which sounds like stood which is a synonym of remained' } ]
+      info: 'sober has a synonym sedate which sounds like stood which is a synonym of remained'
+    }]
   )
 })
