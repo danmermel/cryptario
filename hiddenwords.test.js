@@ -1,3 +1,6 @@
+/* global jest */
+jest.setTimeout(10000)
+
 const hiddenwords = require('./hiddenwords.js')
 
 test('identifyIndicators returns empty array when there are none', function () {
@@ -50,35 +53,103 @@ test('findHiddenWords should  return correct substrings', function () {
   expect(res).toEqual(['quic', 'uick', 'ickb', 'ckbr', 'kbro', 'brow', 'rown'])
 })
 
-test('findActualWords should  return one real word', async function () {
-  const res = await hiddenwords.findActualWords(['ickb', 'ckbr', 'kbro', 'brow'])
-  expect(res).toEqual(['brow'])
-})
-
-test('findActualWords should  return two real words', async function () {
-  const res = await hiddenwords.findActualWords(['blood', 'ickb', 'ckbr', 'kbro', 'brow'])
-  expect(res).toEqual(['blood', 'brow'])
-})
-
-test('findActualWords should  return zero words', async function () {
-  const res = await hiddenwords.findActualWords(['ickb', 'ckbr', 'kbro', 'brqw'])
-  expect(res).toEqual([])
-})
-
 test('AnalyzeHidden ahould  return the isSynony at the top', async function () {
-  const res = await hiddenwords.analyzeHidden('some teachers get hurt (4)')
-  const answer = [{ type: 'Hidden Word', clue: 'some teachers get hurt', totalLength: 4, definition: 'hurt', indicator: 'some', words: null, solution: 'ache', isSynonym: true }, { type: 'Hidden Word', clue: 'some teachers get hurt', totalLength: 4, definition: 'hurt', indicator: 'some', words: null, solution: 'each', isSynonym: false }, { type: 'Hidden Word', clue: 'some teachers get hurt', totalLength: 4, definition: 'hurt', indicator: 'some', words: null, solution: 'hers', isSynonym: false }]
+  const res = await hiddenwords.analyzeHidden('Some teachers get hurt (4)')
+  const answer = [{
+    type: 'Hidden Word',
+    clue: 'Some teachers get hurt',
+    totalLength: 4,
+    definition: 'hurt',
+    subsidiary: 'teachers get',
+    indicator: 'some',
+    words: null,
+    solution: 'ache',
+    isSynonym: true,
+    info:
+     'The word "some" suggests this is a hidden word clue. The word "ache" is hidden inside "teachers get" and is  a synonym of "hurt".'
+  },
+  {
+    type: 'Hidden Word',
+    clue: 'Some teachers get hurt',
+    totalLength: 4,
+    definition: 'hurt',
+    subsidiary: 'teachers get',
+    indicator: 'some',
+    words: null,
+    solution: 'each',
+    isSynonym: false,
+    info:
+     'The word "some" suggests this is a hidden word clue. The word "each" is hidden inside "teachers get" and may be  a synonym of "hurt".'
+  },
+  {
+    type: 'Hidden Word',
+    clue: 'Some teachers get hurt',
+    totalLength: 4,
+    definition: 'hurt',
+    subsidiary: 'teachers get',
+    indicator: 'some',
+    words: null,
+    solution: 'hers',
+    isSynonym: false,
+    info:
+     'The word "some" suggests this is a hidden word clue. The word "hers" is hidden inside "teachers get" and may be  a synonym of "hurt".'
+  }]
   expect(res).toEqual(answer)
 })
 
 test('AnalyzeHidden ahould  return is synonim at the top', async function () {
-  const res = await hiddenwords.analyzeHidden('stop getting letters from friends (3)')
-  const answer = [{ type: 'Hidden Word', clue: 'stop getting letters from friends', totalLength: 3, definition: 'stop', indicator: 'getting letters from', words: null, solution: 'end', isSynonym: true }, { type: 'Hidden Word', clue: 'stop getting letters from friends', totalLength: 3, definition: 'stop getting', indicator: 'letters', words: null, solution: 'fro', isSynonym: false }, { type: 'Hidden Word', clue: 'stop getting letters from friends', totalLength: 3, definition: 'stop getting', indicator: 'letters', words: null, solution: 'rom', isSynonym: false }, { type: 'Hidden Word', clue: 'stop getting letters from friends', totalLength: 3, definition: 'stop', indicator: 'getting letters from', words: null, solution: 'rie', isSynonym: false }]
-  expect(res).toEqual(answer)
-})
-
-test('AnalyzeHidden ahould  handle special characters ', async function () {
-  const res = await hiddenwords.analyzeHidden('Hide in Arthur\'s kingdom (4)')
-  const answer = [{ type: 'Hidden Word', clue: 'Hide in Arthur\'s kingdom', totalLength: 4, definition: 'hide', indicator: 'in', words: null, solution: 'skin', isSynonym: true }, { type: 'Hidden Word', clue: 'Hide in Arthur\'s kingdom', totalLength: 4, definition: 'hide', indicator: 'in', words: null, solution: 'king', isSynonym: false }]
+  const res = await hiddenwords.analyzeHidden('Stop getting letters from friends (3)')
+  const answer = [{
+    type: 'Hidden Word',
+    clue: 'Stop getting letters from friends',
+    totalLength: 3,
+    definition: 'stop',
+    subsidiary: 'friends',
+    indicator: 'getting letters from',
+    words: null,
+    solution: 'end',
+    isSynonym: true,
+    info:
+     'The word "getting letters from" suggests this is a hidden word clue. The word "end" is hidden inside "friends" and is  a synonym of "stop".'
+  },
+  {
+    type: 'Hidden Word',
+    clue: 'Stop getting letters from friends',
+    totalLength: 3,
+    definition: 'stop getting',
+    subsidiary: 'from friends',
+    indicator: 'letters',
+    words: null,
+    solution: 'fro',
+    isSynonym: false,
+    info:
+     'The word "letters" suggests this is a hidden word clue. The word "fro" is hidden inside "from friends" and may be  a synonym of "stop getting".'
+  },
+  {
+    type: 'Hidden Word',
+    clue: 'Stop getting letters from friends',
+    totalLength: 3,
+    definition: 'stop getting',
+    subsidiary: 'from friends',
+    indicator: 'letters',
+    words: null,
+    solution: 'rom',
+    isSynonym: false,
+    info:
+     'The word "letters" suggests this is a hidden word clue. The word "rom" is hidden inside "from friends" and may be  a synonym of "stop getting".'
+  },
+  {
+    type: 'Hidden Word',
+    clue: 'Stop getting letters from friends',
+    totalLength: 3,
+    definition: 'stop',
+    subsidiary: 'friends',
+    indicator: 'getting letters from',
+    words: null,
+    solution: 'rie',
+    isSynonym: false,
+    info:
+     'The word "getting letters from" suggests this is a hidden word clue. The word "rie" is hidden inside "friends" and may be  a synonym of "stop".'
+  }]
   expect(res).toEqual(answer)
 })

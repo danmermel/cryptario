@@ -56,11 +56,15 @@ test('analyzeDoubleDef: Yearn for quite a while (4)', async function () {
     clue: 'Yearn for quite a while',
     totalLength: 4,
     definition: ['Yearn', 'for quite a while'],
-    indicator: null,
+    subsidiary: '',
+    indicator: '',
     words: null,
     solution: 'long',
-    isSynonym: true
-  }])
+    isSynonym: true,
+    info:
+     '"Yearn" and "for quite a while" are both synonyms of "long".'
+  }
+  ])
 })
 test('analyzeDoubleDef: Empty array - no results', async function () {
   const res = await doubledef.analyzeDoubleDef('sausages donkey (12)')

@@ -97,7 +97,7 @@ const analyzeContainers = async function (clue) {
       const str = s1[i] + s2[j]
       if (str.length === splitClue.totalLength) {
         var solvedAnagrams = await solveAnagram(str)
-        console.log('Anagrams of ', str, 'are', solvedAnagrams)
+        // console.log('Anagrams of ', str, 'are', solvedAnagrams)
         for (var l in solvedAnagrams) {
           var solvedAnagram = solvedAnagrams[l]
           // only solved anagrams that contain one of the original words

@@ -134,3 +134,18 @@ test('checkWordPattern - matches word lengths correctly - returns false', functi
   const res = utilities.checkWordPattern('black dog', [5, 2])
   expect(res).toEqual(false)
 })
+
+test('findActualWords should  return one real word', async function () {
+  const res = await utilities.findActualWords(['ickb', 'ckbr', 'kbro', 'brow'])
+  expect(res).toEqual(['brow'])
+})
+
+test('findActualWords should  return two real words', async function () {
+  const res = await utilities.findActualWords(['blood', 'ickb', 'ckbr', 'kbro', 'brow'])
+  expect(res).toEqual(['blood', 'brow'])
+})
+
+test('findActualWords should  return zero words', async function () {
+  const res = await utilities.findActualWords(['ickb', 'ckbr', 'kbro', 'brqw'])
+  expect(res).toEqual([])
+})
