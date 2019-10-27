@@ -59,4 +59,4 @@ module.exports = [
   'veiling',
   'veils',
   'withholds',
-  'within' ]
+  'within']

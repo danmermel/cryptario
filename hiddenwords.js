@@ -51,14 +51,16 @@ const parseClue = function (clue, indicator) {
 
   if (pos === 0) { // the indicator is a the start of the clue
     // for now we are going to assume that the definition is only the last word of the clue
-    return { 'indicator': indicator,
-      'definition': words[words.length - 1],
-      'subsidiary': words.slice(indicatorSplit.length, words.length - 1).join(' ')
+    return {
+      indicator: indicator,
+      definition: words[words.length - 1],
+      subsidiary: words.slice(indicatorSplit.length, words.length - 1).join(' ')
     }
   } else { // position of indicator is somehwere in clue
-    return { 'indicator': indicator,
-      'definition': words.slice(0, pos).join(' '),
-      'subsidiary': words.slice(pos + indicatorSplit.length, words.length).join(' ')
+    return {
+      indicator: indicator,
+      definition: words.slice(0, pos).join(' '),
+      subsidiary: words.slice(pos + indicatorSplit.length, words.length).join(' ')
     }
   }
 }
@@ -104,16 +106,16 @@ const analyzeHidden = async function (clue) {
     for (var j = 0; j < actualWords.length; j++) {
       var isSynonym = await utilities.isSynonym(actualWords[j], parsedClue.definition)
       retval.push({
-        'type': 'Hidden Word',
-        'clue': splitClue.clue,
-        'totalLength': splitClue.totalLength,
-        'definition': parsedClue.definition,
-        'subsidiary': parsedClue.subsidiary,
-        'indicator': indicator,
-        'words': null,
-        'solution': actualWords[j],
-        'isSynonym': isSynonym,
-        'info': 'The word "' + indicator + '" suggests this is a hidden word clue. The word "' + actualWords[j] + '" is hidden inside "' + parsedClue.subsidiary + '" and ' + (isSynonym ? 'is ' : 'may be ') + ' a synonym of "' + parsedClue.definition + '".'
+        type: 'Hidden Word',
+        clue: splitClue.clue,
+        totalLength: splitClue.totalLength,
+        definition: parsedClue.definition,
+        subsidiary: parsedClue.subsidiary,
+        indicator: indicator,
+        words: null,
+        solution: actualWords[j],
+        isSynonym: isSynonym,
+        info: 'The word "' + indicator + '" suggests this is a hidden word clue. The word "' + actualWords[j] + '" is hidden inside "' + parsedClue.subsidiary + '" and ' + (isSynonym ? 'is ' : 'may be ') + ' a synonym of "' + parsedClue.definition + '".'
       })
     } // for j
   } // for i

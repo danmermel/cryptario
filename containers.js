@@ -2,13 +2,14 @@
 const utilities = require('./utilities.js')
 const stem = require('node-snowball')
 
-const indicators = require('./anagramIndicators.js')
+const indicators = require('./containerIndicators.js')
 
 const stemmedIndicators = stem.stemword(indicators)
 const db = require('./db.js')
+const datamuse = require('./datamuse.js')
 
 const identifyIndicators = function (clue) {
-  var anagramIndicators = []
+  var containerIndicators = []
   const words = utilities.getWords(clue.toLowerCase())
   const stemmedWords = stem.stemword(words)
 
@@ -18,7 +19,7 @@ const identifyIndicators = function (clue) {
     var word = stemmedWords[i]
     var x = stemmedIndicators.indexOf(word)
     if (x !== -1) {
-      anagramIndicators.push(words[i])
+      containerIndicators.push(words[i])
     }
   }
 
@@ -28,42 +29,28 @@ const identifyIndicators = function (clue) {
     word = words[i] + ' ' + words[i + 1]
     x = indicators.indexOf(word)
     if (x !== -1) {
-      anagramIndicators.push(word)
+      containerIndicators.push(word)
     }
   }
 
-  return anagramIndicators
+  return containerIndicators
 }
 
 const parseClue = function (clue, indicator, numLetters) {
   const words = utilities.getWords(clue.toLowerCase())
   const indicatorSplit = indicator.toLowerCase().split(' ')
+  // find the position  of the indicator
   const pos = words.indexOf(indicatorSplit[0])
   if (pos === -1) {
     throw new Error('indicator not found')
   }
-  // pleasant tumble in gale
-  const left = words.slice(0, pos).reverse() // pleasant
-  const right = words.slice(pos + indicatorSplit.length) // in gale
 
-  // look for words that add up to the numLetters count
-  const leftSolution = utilities.countLetters(left, numLetters)
-  const rightSolution = utilities.countLetters(right, numLetters)
-
-  const retval = []
-
-  // left null, right solution
-  if (leftSolution === null && rightSolution) {
-    retval.push({ letters: rightSolution.join(''), words: rightSolution, definition: left.reverse().join(' ') })
+  // if the first word around the indicator is the first word
+  if (pos - 1 === 0) {
+    return { definition: words[words.length - 1],  subsidiary1: words[pos-1], subsidiary2:  words[pos + indicatorSplit.length] }
+  }  else {
+    return { definition: words[0],  subsidiary1: words[pos-1], subsidiary2: words[pos + indicatorSplit.length] }
   }
-  if (leftSolution && rightSolution === null) {
-    retval.push({ letters: leftSolution.join(''), words: leftSolution, definition: right.join(' ') })
-  }
-  if (leftSolution && rightSolution) {
-    retval.push({ letters: leftSolution.join(''), words: leftSolution, definition: right.join(' ') })
-    retval.push({ letters: rightSolution.join(''), words: rightSolution, definition: left.reverse().join(' ') })
-  }
-  return retval
 }
 
 const solveAnagram = async function (letters) {
@@ -76,7 +63,7 @@ const solveAnagram = async function (letters) {
   return retval
 }
 
-const analyzeAnagram = async function (clue) {
+const analyzeContainers = async function (clue) {
   var retval = []
 
   // first split the clue
@@ -94,6 +81,41 @@ const analyzeAnagram = async function (clue) {
     return []
   }
   console.log('indicators = ', indicators)
+  var indicator = utilities.getLongestIndicator(indicators)
+  console.log('indicator = ', indicator)
+
+  var parsedClue = parseClue(splitClue.clue, indicator, splitClue.totalLength)
+  console.log('parsedClue', parsedClue)
+
+  // calculate synonyms
+  var s1 = await datamuse.synonym(parsedClue.subsidiary1)
+  var s2 = await datamuse.synonym(parsedClue.subsidiary2)
+  console.log('synonyms of', parsedClue.subsidiary1, 'are' , s1)
+  console.log('synonyms of', parsedClue.subsidiary2, 'are' , s2)
+  const candidates = []
+  for(var i in s1) {
+   for(var j in s2) {
+     const str = s1[i] + s2[j]
+     if (str.length === splitClue.totalLength) {
+       var solvedAnagrams = await solveAnagram(str)
+       console.log('Anagrams of ', str, 'are' , solvedAnagrams)
+       for(var l in  solvedAnagrams) {
+         var solvedAnagram = solvedAnagrams[l]
+         // only solved anagrams that contain one of the original words
+         // are allowed to be solutions
+         if (solvedAnagram.indexOf(s1[i]) > -1 || solvedAnagram.indexOf(s2[j]) > -1) {
+           candidates.push(solvedAnagram)
+         }
+       }
+     }
+   }
+  }
+  console.log('candidates', candidates)
+
+
+  return []
+
+
   // now parse clue for every possible indicator
   // paseClue returns  an array of objects [{letters, words, definition}]
   for (var i in indicators) {
@@ -159,6 +181,5 @@ const analyzeAnagram = async function (clue) {
 module.exports = {
   identifyIndicators: identifyIndicators,
   parseClue: parseClue,
-  solveAnagram: solveAnagram,
-  analyzeAnagram: analyzeAnagram
+  analyzeContainers: analyzeContainers
 }

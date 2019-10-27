@@ -67,18 +67,18 @@ test('findActualWords should  return zero words', async function () {
 
 test('AnalyzeHidden ahould  return the isSynony at the top', async function () {
   const res = await hiddenwords.analyzeHidden('some teachers get hurt (4)')
-  const answer = [ { type: 'Hidden Word', clue: 'some teachers get hurt', totalLength: 4, definition: 'hurt', indicator: 'some', words: null, solution: 'ache', isSynonym: true }, { type: 'Hidden Word', clue: 'some teachers get hurt', totalLength: 4, definition: 'hurt', indicator: 'some', words: null, solution: 'each', isSynonym: false }, { type: 'Hidden Word', clue: 'some teachers get hurt', totalLength: 4, definition: 'hurt', indicator: 'some', words: null, solution: 'hers', isSynonym: false } ]
+  const answer = [{ type: 'Hidden Word', clue: 'some teachers get hurt', totalLength: 4, definition: 'hurt', indicator: 'some', words: null, solution: 'ache', isSynonym: true }, { type: 'Hidden Word', clue: 'some teachers get hurt', totalLength: 4, definition: 'hurt', indicator: 'some', words: null, solution: 'each', isSynonym: false }, { type: 'Hidden Word', clue: 'some teachers get hurt', totalLength: 4, definition: 'hurt', indicator: 'some', words: null, solution: 'hers', isSynonym: false }]
   expect(res).toEqual(answer)
 })
 
 test('AnalyzeHidden ahould  return is synonim at the top', async function () {
   const res = await hiddenwords.analyzeHidden('stop getting letters from friends (3)')
-  const answer = [ { type: 'Hidden Word', clue: 'stop getting letters from friends', totalLength: 3, definition: 'stop', indicator: 'getting letters from', words: null, solution: 'end', isSynonym: true }, { type: 'Hidden Word', clue: 'stop getting letters from friends', totalLength: 3, definition: 'stop getting', indicator: 'letters', words: null, solution: 'fro', isSynonym: false }, { type: 'Hidden Word', clue: 'stop getting letters from friends', totalLength: 3, definition: 'stop getting', indicator: 'letters', words: null, solution: 'rom', isSynonym: false }, { type: 'Hidden Word', clue: 'stop getting letters from friends', totalLength: 3, definition: 'stop', indicator: 'getting letters from', words: null, solution: 'rie', isSynonym: false } ]
+  const answer = [{ type: 'Hidden Word', clue: 'stop getting letters from friends', totalLength: 3, definition: 'stop', indicator: 'getting letters from', words: null, solution: 'end', isSynonym: true }, { type: 'Hidden Word', clue: 'stop getting letters from friends', totalLength: 3, definition: 'stop getting', indicator: 'letters', words: null, solution: 'fro', isSynonym: false }, { type: 'Hidden Word', clue: 'stop getting letters from friends', totalLength: 3, definition: 'stop getting', indicator: 'letters', words: null, solution: 'rom', isSynonym: false }, { type: 'Hidden Word', clue: 'stop getting letters from friends', totalLength: 3, definition: 'stop', indicator: 'getting letters from', words: null, solution: 'rie', isSynonym: false }]
   expect(res).toEqual(answer)
 })
 
 test('AnalyzeHidden ahould  handle special characters ', async function () {
   const res = await hiddenwords.analyzeHidden('Hide in Arthur\'s kingdom (4)')
-  const answer = [ { type: 'Hidden Word', clue: 'Hide in Arthur\'s kingdom', totalLength: 4, definition: 'hide', indicator: 'in', words: null, solution: 'skin', isSynonym: true }, { type: 'Hidden Word', clue: 'Hide in Arthur\'s kingdom', totalLength: 4, definition: 'hide', indicator: 'in', words: null, solution: 'king', isSynonym: false } ]
+  const answer = [{ type: 'Hidden Word', clue: 'Hide in Arthur\'s kingdom', totalLength: 4, definition: 'hide', indicator: 'in', words: null, solution: 'skin', isSynonym: true }, { type: 'Hidden Word', clue: 'Hide in Arthur\'s kingdom', totalLength: 4, definition: 'hide', indicator: 'in', words: null, solution: 'king', isSynonym: false }]
   expect(res).toEqual(answer)
 })

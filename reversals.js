@@ -51,20 +51,23 @@ const parseClue = function (clue, indicator) {
 
   if (pos === 0) { // the indicator is a the start of the clue
     // for now we are going to assume that the definition is only the last word of the clue
-    return { 'indicator': indicator,
-      'definition': words[words.length - 1],
-      'subsidiary': words.slice(indicatorSplit.length, words.length - 1).join(' ')
+    return {
+      indicator: indicator,
+      definition: words[words.length - 1],
+      subsidiary: words.slice(indicatorSplit.length, words.length - 1).join(' ')
     }
   } else if (pos === words.length - indicatorSplit.length) {
     // for now we are going to assume that the definition is only the first word of the clue
-    return { 'indicator': indicator,
-      'definition': words[0],
-      'subsidiary': words.slice(1, pos).join(' ')
+    return {
+      indicator: indicator,
+      definition: words[0],
+      subsidiary: words.slice(1, pos).join(' ')
     }
   } else { // position of indicator is somehwere in clue
-    return { 'indicator': indicator,
-      'definition': words.slice(0, pos).join(' '),
-      'subsidiary': words.slice(pos + indicatorSplit.length, words.length).join(' ')
+    return {
+      indicator: indicator,
+      definition: words.slice(0, pos).join(' '),
+      subsidiary: words.slice(pos + indicatorSplit.length, words.length).join(' ')
     }
   }
 }
@@ -119,16 +122,16 @@ const analyzeReversal = async function (clue) {
     // check for synonym
     var isSynonym = await utilities.isSynonym(actualWords[j], parsedClue.definition)
     retval.push({
-      'type': 'Reversal',
-      'clue': splitClue.clue,
-      'totalLength': splitClue.totalLength,
-      'definition': parsedClue.definition,
-      'indicator': indicator,
-      'subsidiary': parsedClue.subsidiary,
-      'words': null,
-      'solution': actualWords[j],
-      'isSynonym': isSynonym,
-      'info': actualWords[j].split('').reverse().join('') + ' is a synonym of ' + parsedClue.subsidiary + ', which when reversed gives you ' + actualWords[j] + ', which is a synonym of ' + parsedClue.definition
+      type: 'Reversal',
+      clue: splitClue.clue,
+      totalLength: splitClue.totalLength,
+      definition: parsedClue.definition,
+      indicator: indicator,
+      subsidiary: parsedClue.subsidiary,
+      words: null,
+      solution: actualWords[j],
+      isSynonym: isSynonym,
+      info: actualWords[j].split('').reverse().join('') + ' is a synonym of ' + parsedClue.subsidiary + ', which when reversed gives you ' + actualWords[j] + ', which is a synonym of ' + parsedClue.definition
     })
   }
   // Return all of them anyway, but the synonym=true ones at the top

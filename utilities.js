@@ -8,7 +8,8 @@ const split = function (fullClue) {
   const wordLengths = bracketContent.split(/[^0-9]/).map(function (v) { return parseInt(v) })
   const totalLength = wordLengths.reduce(function (a, b) { return a + b })
   const clue = fullClue.substr(0, lastBracket).trim()
-  return { clue: clue,
+  return {
+    clue: clue,
     totalLength: totalLength,
     wordLengths: wordLengths
   }
