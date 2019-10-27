@@ -47,9 +47,9 @@ const parseClue = function (clue, indicator, numLetters) {
 
   // if the first word around the indicator is the first word
   if (pos - 1 === 0) {
-    return { definition: words[words.length - 1],  subsidiary1: words[pos-1], subsidiary2:  words[pos + indicatorSplit.length] }
-  }  else {
-    return { definition: words[0],  subsidiary1: words[pos-1], subsidiary2: words[pos + indicatorSplit.length] }
+    return { definition: words[words.length - 1], subsidiary1: words[pos - 1], subsidiary2: words[pos + indicatorSplit.length] }
+  } else {
+    return { definition: words[0], subsidiary1: words[pos - 1], subsidiary2: words[pos + indicatorSplit.length] }
   }
 }
 
@@ -74,7 +74,7 @@ const analyzeContainers = async function (clue) {
   }
   console.log('split clue = ', splitClue)
 
-  // now try to get anagram indicators
+  // now try to get container indicators
   // returns an array of indicators or an empty array if there are none
   var indicators = identifyIndicators(splitClue.clue)
   if (indicators.length === 0) {
@@ -90,91 +90,42 @@ const analyzeContainers = async function (clue) {
   // calculate synonyms
   var s1 = await datamuse.synonym(parsedClue.subsidiary1)
   var s2 = await datamuse.synonym(parsedClue.subsidiary2)
-  console.log('synonyms of', parsedClue.subsidiary1, 'are' , s1)
-  console.log('synonyms of', parsedClue.subsidiary2, 'are' , s2)
-  const candidates = []
-  for(var i in s1) {
-   for(var j in s2) {
-     const str = s1[i] + s2[j]
-     if (str.length === splitClue.totalLength) {
-       var solvedAnagrams = await solveAnagram(str)
-       console.log('Anagrams of ', str, 'are' , solvedAnagrams)
-       for(var l in  solvedAnagrams) {
-         var solvedAnagram = solvedAnagrams[l]
-         // only solved anagrams that contain one of the original words
-         // are allowed to be solutions
-         if (solvedAnagram.indexOf(s1[i]) > -1 || solvedAnagram.indexOf(s2[j]) > -1) {
-           candidates.push(solvedAnagram)
-         }
-       }
-     }
-   }
-  }
-  console.log('candidates', candidates)
-
-
-  return []
-
-
-  // now parse clue for every possible indicator
-  // paseClue returns  an array of objects [{letters, words, definition}]
-  for (var i in indicators) {
-    var indicator = indicators[i]
-    var parsedClue = parseClue(splitClue.clue, indicator, splitClue.totalLength)
-    console.log('indicator is ', indicator, ' and parsed Clue is ', parsedClue)
-
-    for (var j in parsedClue) {
-      var pc = parsedClue[j]
-      var obj = {
-        type: 'anagram',
-        clue: splitClue.clue,
-        totalLength: splitClue.totalLength,
-        definition: pc.definition,
-        indicator: indicator,
-        words: pc.words,
-        subsidiary: pc.words.join(' ')
+  console.log('synonyms of', parsedClue.subsidiary1, 'are', s1)
+  console.log('synonyms of', parsedClue.subsidiary2, 'are', s2)
+  for (var i in s1) {
+    for (var j in s2) {
+      const str = s1[i] + s2[j]
+      if (str.length === splitClue.totalLength) {
+        var solvedAnagrams = await solveAnagram(str)
+        console.log('Anagrams of ', str, 'are', solvedAnagrams)
+        for (var l in solvedAnagrams) {
+          var solvedAnagram = solvedAnagrams[l]
+          // only solved anagrams that contain one of the original words
+          // are allowed to be solutions
+          var s1ok = (solvedAnagram.indexOf(s1[i]) > -1)
+          var s2ok = (solvedAnagram.indexOf(s2[j]) > -1)
+          if (s1ok || s2ok) {
+            var isSynonym = await utilities.isSynonym(parsedClue.definition, solvedAnagram)
+            var maybeOrIs = isSynonym ? 'is' : 'may be'
+            // calculate which synonym is contained in the  solvedAnagram
+            var content = s1ok ? s1[i] : s2[j]
+            retval.push({
+              type: 'Containers',
+              clue: splitClue.clue,
+              totalLength: splitClue.totalLength,
+              definition: parsedClue.definition,
+              subsidiary: parsedClue.subsidiary1 + ' / ' + parsedClue.subsidiary2,
+              indicator: indicator,
+              words: null,
+              isSynonym: isSynonym,
+              solution: solvedAnagram,
+              info: 'The word "' + indicator + '" suggests this is a Container-type clue. The word "' + content + '" is inside "' + solvedAnagram + '" which ' + maybeOrIs + ' a synonym of "' + parsedClue.definition + '".'
+            })
+          }
+        }
       }
-      // now make anagram words for all the words
-      // returns an array of strings
-      var solvedAnagrams = await solveAnagram(pc.letters)
-      console.log('solvedAnagrams is ', solvedAnagrams)
-
-      for (var k in solvedAnagrams) {
-        var solved = solvedAnagrams[k]
-        if (solved !== pc.letters) {
-          console.log('solved is ', solved)
-          // now we need to check if the solutions that came back fit with the
-          // length of the solutions we are expecting
-          if (utilities.checkWordPattern(solved, splitClue.wordLengths)) {
-            // clone the obj so that it becomes different and not just a reference to itself.
-            var x = JSON.parse(JSON.stringify(obj))
-            x.solution = solved
-            x.isSynonym = await utilities.isSynonym(x.definition, x.solution)
-            x.info = 'The word "' + x.indicator + '" looks like an anagram indicator and "' + x.solution + '" is an anagram of "' + x.words.join(' ') + '" '
-            if (x.isSynonym) {
-              x.info += ' which is a synonym of "' + x.definition + '"'
-            } else {
-              x.info += ' and may be a synonym of "' + x.definition + '"'
-            }
-            retval.push(x)
-          } // if
-        } // if
-      } // for k
-    }; // for j
-  } // for i
-
-  // sort so that isSynonym:true goes top
-  var sorter = function (a, b) {
-    if (a.isSynonym && !b.isSynonym) {
-      return -1
-    } else if (!a.isSynonym && b.isSynonym) {
-      return 1
-    } else {
-      return 0
     }
   }
-  retval.sort(sorter)
-
   return retval
 }
 
