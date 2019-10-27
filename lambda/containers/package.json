@@ -1,0 +1,17 @@
+{
+  "name": "cryptario",
+  "version": "1.0.0",
+  "description": "Cryptic solver",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "line-by-line": "^0.1.6",
+    "node-snowball": "^0.4.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
+  }
+}
