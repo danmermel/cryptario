@@ -5,7 +5,14 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-
+terraform {
+  backend "s3" {
+    bucket = "cryptario-terraform"
+    key = "state"
+    region = "eu-west-1"
+  }
+  
+}
 
 // DynamoDB dictionary table
 resource "aws_dynamodb_table" "cryptario-dictionary-db" {
