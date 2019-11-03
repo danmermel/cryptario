@@ -108,7 +108,6 @@ const analyzeContainers = async function (clue) {
             var isSynonym = await utilities.isSynonym(parsedClue.definition, solvedAnagram)
             var maybeOrIs = isSynonym ? 'is' : 'may be'
             // calculate which synonym is contained in the  solvedAnagram
-            var content = s1ok ? s1[i] : s2[j]
             retval.push({
               type: 'Containers',
               clue: splitClue.clue,
@@ -119,8 +118,8 @@ const analyzeContainers = async function (clue) {
               words: null,
               isSynonym: isSynonym,
               solution: solvedAnagram,
-              info: 'The word "' + indicator + '" suggests this is a Container-type clue. The word "' + s1[i] + 
-                    '" is a synonym of "' + parsedClue.subsidiary1 +'". The word "' + s2[j] + '" is a synonym of "' + parsedClue.subsidiary2 +
+              info: 'The word "' + indicator + '" suggests this is a Container-type clue. The word "' + s1[i] +
+                    '" is a synonym of "' + parsedClue.subsidiary1 + '". The word "' + s2[j] + '" is a synonym of "' + parsedClue.subsidiary2 +
                     '". One is inside the other in the word "' + solvedAnagram + '", which ' + maybeOrIs + ' a synonym of "' + parsedClue.definition + '".'
             })
           }
