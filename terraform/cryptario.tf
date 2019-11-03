@@ -95,7 +95,7 @@ resource "aws_lambda_function" "cryptario_anagram_lambda" {
   function_name = "cryptario-anagram-${terraform.workspace}"
   role = "${aws_iam_role.cryptario_lambda_role.arn}"
   handler = "index.handler"
-  runtime = "nodejs8.10"
+  runtime = "nodejs10.x"
   timeout = 10
 }
 
@@ -105,7 +105,7 @@ resource "aws_lambda_function" "cryptario_hiddenwords_lambda" {
   function_name = "cryptario-hiddenwords-${terraform.workspace}"
   role = "${aws_iam_role.cryptario_lambda_role.arn}"
   handler = "index.handler"
-  runtime = "nodejs8.10"
+  runtime = "nodejs10.x"
   timeout = 10
 }
 
@@ -115,7 +115,7 @@ resource "aws_lambda_function" "cryptario_doubledef_lambda" {
   function_name = "cryptario-doubledef-${terraform.workspace}"
   role = "${aws_iam_role.cryptario_lambda_role.arn}"
   handler = "index.handler"
-  runtime = "nodejs8.10"
+  runtime = "nodejs10.x"
   timeout = 10
 }
 
@@ -125,7 +125,7 @@ resource "aws_lambda_function" "cryptario_homophones_lambda" {
   function_name = "cryptario-homophones-${terraform.workspace}"
   role = "${aws_iam_role.cryptario_lambda_role.arn}"
   handler = "index.handler"
-  runtime = "nodejs8.10"
+  runtime = "nodejs10.x"
   timeout = 10
 }
 
@@ -135,7 +135,7 @@ resource "aws_lambda_function" "cryptario_reversals_lambda" {
   function_name = "cryptario-reversals-${terraform.workspace}"
   role = "${aws_iam_role.cryptario_lambda_role.arn}"
   handler = "index.handler"
-  runtime = "nodejs8.10"
+  runtime = "nodejs10.x"
   timeout = 10
 }
 
@@ -145,7 +145,7 @@ resource "aws_lambda_function" "cryptario_containers_lambda" {
   function_name = "cryptario-containers-${terraform.workspace}"
   role = "${aws_iam_role.cryptario_lambda_role.arn}"
   handler = "index.handler"
-  runtime = "nodejs8.10"
+  runtime = "nodejs10.x"
   timeout = 10
 }
 
