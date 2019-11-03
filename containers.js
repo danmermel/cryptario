@@ -119,7 +119,9 @@ const analyzeContainers = async function (clue) {
               words: null,
               isSynonym: isSynonym,
               solution: solvedAnagram,
-              info: 'The word "' + indicator + '" suggests this is a Container-type clue. The word "' + content + '" is inside "' + solvedAnagram + '" which ' + maybeOrIs + ' a synonym of "' + parsedClue.definition + '".'
+              info: 'The word "' + indicator + '" suggests this is a Container-type clue. The word "' + s1[i] + 
+                    '" is a synonym of "' + parsedClue.subsidiary1 +'". The word "' + s2[j] + '" is a synonym of "' + parsedClue.subsidiary2 +
+                    '". One is inside the other in the word "' + solvedAnagram + '", which ' + maybeOrIs + ' a synonym of "' + parsedClue.definition + '".'
             })
           }
         }
