@@ -8,7 +8,7 @@ cp ../../*.js ../../config.json .
 # run 'npm install' in the container
 # the files appear on our node_modules (because it's mounted)
 rm -rf node_modules
-docker run -v "$PWD":/var/task lambci/lambda:build-nodejs8.10 npm install --silent
+docker run -v "$PWD":/var/task lambci/lambda:build-nodejs10.x npm install --silent
 
 # build the zip
 zip -r lambda.zip package.json *.js config.json node_modules/
