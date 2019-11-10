@@ -3,6 +3,7 @@ const utilities = require('./utilities.js')
 const stem = require('node-snowball')
 
 const indicators = require('./containerIndicators.js')
+const stopwords = require('./stopwords.js')
 
 const stemmedIndicators = stem.stemword(indicators)
 const db = require('./db.js')
@@ -37,15 +38,35 @@ const identifyIndicators = function (clue) {
 }
 
 const parseClue = function (clue, indicator, numLetters) {
-  const words = utilities.getWords(clue.toLowerCase())
+  var words = utilities.getWords(clue.toLowerCase())
   const indicatorSplit = indicator.toLowerCase().split(' ')
   // find the position  of the indicator
-  const pos = words.indexOf(indicatorSplit[0])
+  var pos = words.indexOf(indicatorSplit[0])
   if (pos === -1) {
     throw new Error('indicator not found')
   }
 
-  // if the first word around the indicator is the first word
+  // get all the words to the left of the indicator
+  var left = words.slice(0, pos).join(' ')
+  console.log('left is ', left)
+  // get all the words to the right of the indicator
+  var right = words.slice(pos + indicatorSplit.length).join(' ')
+  console.log('right is ', right)
+
+  // remove stopwords from left and right
+  left = utilities.removeStopwords(left, stopwords)
+  right = utilities.removeStopwords(right, stopwords)
+
+  // reconstruct words array with what remains (left + indicator + right)
+  var wordString = left + ' ' + indicator + ' ' + right
+  words = utilities.getWords(wordString)
+
+  // recalculate the position ofthe indicator
+  pos = words.indexOf(indicatorSplit[0])
+
+  // This is a naive analysis, where basically it is just assuming that subsidiaries and definitions are one word only.
+  // we can do better by trying multi words subsidiaries and defs....
+
   if (pos - 1 === 0) {
     return { definition: words[words.length - 1], subsidiary1: words[pos - 1], subsidiary2: words[pos + indicatorSplit.length] }
   } else {
@@ -92,6 +113,7 @@ const analyzeContainers = async function (clue) {
   var s2 = await datamuse.synonym(parsedClue.subsidiary2)
   console.log('synonyms of', parsedClue.subsidiary1, 'are', s1)
   console.log('synonyms of', parsedClue.subsidiary2, 'are', s2)
+
   for (var i in s1) {
     for (var j in s2) {
       const str = s1[i] + s2[j]
