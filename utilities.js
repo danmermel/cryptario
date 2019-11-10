@@ -89,8 +89,20 @@ const getLongestIndicator = function (indicators) {
   return indicator
 }
 
+const removeStopwords = function (str, stopwords) {
+  var retval = []
+  const cleanWords = getWords(str)
+  for (var w in cleanWords) {
+    if (!stopwords.includes(cleanWords[w].toLowerCase())) {
+      retval.push(cleanWords[w])
+    }
+  }
+  return retval.join(' ')
+}
+
 module.exports = {
   split: split,
+  removeStopwords: removeStopwords,
   isSynonym: isSynonym,
   getWords: getWords,
   countLetters: countLetters,
