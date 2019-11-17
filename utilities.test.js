@@ -149,3 +149,23 @@ test('findActualWords should  return zero words', async function () {
   const res = await utilities.findActualWords(['ickb', 'ckbr', 'kbro', 'brqw'])
   expect(res).toEqual([])
 })
+
+test('removeStopwords should remove single words', function () {
+  const res = utilities.removeStopwords('the lazy green fox', ['green'])
+  expect(res).toEqual('the lazy fox')
+})
+
+test('removeStopwords should remove multiple words', function () {
+  const res = utilities.removeStopwords('the lazy green fox', ['green', 'the'])
+  expect(res).toEqual('lazy fox')
+})
+
+test('removeStopwords should remove all words', function () {
+  const res = utilities.removeStopwords('the lazy green fox', ['green', 'the', 'fox', 'lazy'])
+  expect(res).toEqual('')
+})
+
+test('removeStopwords should remove all mixed case words', function () {
+  const res = utilities.removeStopwords('the lazy Green fox', ['green'])
+  expect(res).toEqual('the lazy fox')
+})

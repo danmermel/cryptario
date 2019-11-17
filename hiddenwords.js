@@ -102,6 +102,7 @@ const analyzeHidden = async function (clue) {
     var hiddenWordCandidates = findHiddenWords(parsedClue.subsidiary, splitClue.totalLength)
     // now, are any of the candidates actual words?
     var actualWords = await utilities.findActualWords(hiddenWordCandidates)
+    console.log('actualWords', actualWords)
     // now, are these words synonyms of the definition
     for (var j = 0; j < actualWords.length; j++) {
       var isSynonym = await utilities.isSynonym(actualWords[j], parsedClue.definition)
@@ -119,6 +120,8 @@ const analyzeHidden = async function (clue) {
       })
     } // for j
   } // for i
+
+  console.log('retval', retval)
 
   // sort so that isSynonym:true goes top
   var sorter = function (a, b) {

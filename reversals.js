@@ -3,6 +3,7 @@ const stem = require('node-snowball')
 const indicators = require('./reversalIndicators.js')
 const stemmedIndicators = stem.stemword(indicators)
 const datamuse = require('./datamuse.js')
+const stopwords = require('./stopwords.js')
 
 const identifyIndicators = function (clue) {
   var reversalIndicators = []
@@ -95,6 +96,10 @@ const analyzeReversal = async function (clue) {
   // now parse clue for every possible indicator
   // paseClue returns  an array of objects [{letters, words, definition}]
   var parsedClue = parseClue(splitClue.clue, indicator)
+
+  // remove stopwords
+  parsedClue.subsidiary = utilities.removeStopwords(parsedClue.subsidiary, stopwords)
+  parsedClue.definition = utilities.removeStopwords(parsedClue.definition, stopwords)
   console.log('indicator is ', indicator, ' and parsed Clue is ', parsedClue)
 
   // Find synonyms one side, e.g. fish = cod, halibut, swordfish, rib, pez)
