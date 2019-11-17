@@ -7,7 +7,7 @@ const analyzeDoubleDef = async function (clue) {
   const words = utilities.getWords(splitClue.clue)
   // console.log('words are ', words)
   const searchablePairs = createSearchablePairs(words)
-  // console.log('searchablePairs is ', searchablePairs)
+  console.log('searchablePairs is ', searchablePairs)
   for (var i = 0; i < searchablePairs.length; i++) {
     const pair = searchablePairs[i]
     const matches = await comparePair(pair.one, pair.two, splitClue.wordLengths)
@@ -57,7 +57,7 @@ const comparePair = async function (first, second, pattern) {
   const filteredSecondSynonyms = secondSynonyms.filter(function (word) { return utilities.checkWordPattern(word, pattern) })
 
   // now see if there are common synonyms in both arrays
-
+  console.log(filteredFirstSynonyms, filteredSecondSynonyms)
   var matches = []
   for (var i in filteredFirstSynonyms) {
     var word = filteredFirstSynonyms[i]
