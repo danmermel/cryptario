@@ -20,6 +20,7 @@ const isSynonym = async function (word1, word2) {
     return false
   }
   const synonyms = await datamuse.synonym(word1)
+  // console.log('looking for ', word2, 'in', synonyms)
   const find = synonyms.indexOf(word2.toLowerCase())
   return (find > -1)
 }
@@ -79,6 +80,15 @@ const findActualWords = async function (candidateWords) {
   return retval
 }
 
+const isWord = async function (word) {
+  var result = await db.queryHidden(word)
+  if (result.Count > 0) {
+    return true
+  } else {
+    return false
+  }
+}
+
 const getLongestIndicator = function (indicators) {
   var indicator = ''
   for (var i in indicators) {
@@ -95,6 +105,7 @@ module.exports = {
   getWords: getWords,
   countLetters: countLetters,
   transformWord: transformWord,
+  isWord: isWord,
   checkWordPattern: checkWordPattern,
   findActualWords: findActualWords,
   getLongestIndicator: getLongestIndicator

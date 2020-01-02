@@ -79,3 +79,58 @@ test('removeEvenLetters empty string', function () {
   const res = subtractions.removeEvenLetters('')
   expect(res).toEqual('')
 })
+
+test('parseClue indicator at the start', function () {
+  const clue = 'loses his head clergyman is a crime'
+  const test = subtractions.parseClue(clue, 'loses his head')
+  expect(test).toEqual({ definition: 'is a crime', subsidiary: 'clergyman' })
+})
+
+test('parseClue indicator at the end', function () {
+  const clue = 'is a crime clergyman loses his head'
+  const test = subtractions.parseClue(clue, 'loses his head')
+  expect(test).toEqual({ definition: 'is a crime', subsidiary: 'clergyman' })
+})
+
+test('parseClue indicator in the middle', function () {
+  const clue = 'clergyman loses his head is a crime'
+  const test = subtractions.parseClue(clue, 'loses his head')
+  expect(test).toEqual({ definition: 'is a crime', subsidiary: 'clergyman' })
+})
+
+test('parseClue indicator at the start - single word', function () {
+  const clue = 'decapitated clergyman is a crime'
+  const test = subtractions.parseClue(clue, 'decapitated')
+  expect(test).toEqual({ definition: 'is a crime', subsidiary: 'clergyman' })
+})
+
+test('parseClue indicator at the end - single word', function () {
+  const clue = 'is a crime clergyman decapitated'
+  const test = subtractions.parseClue(clue, 'decapitated')
+  expect(test).toEqual({ definition: 'is a crime', subsidiary: 'clergyman' })
+})
+
+test('parseClue indicator in the middle - single word', function () {
+  const clue = 'clergyman decapitated is a crime'
+  const test = subtractions.parseClue(clue, 'decapitated')
+  expect(test).toEqual({ definition: 'is a crime', subsidiary: 'clergyman' })
+})
+
+test('analyseSubtractions - full test', async function () {
+  const answer = await subtractions.analyzeSubtractions('Crime is the result when clergyman first off (5)')
+  expect(answer).toEqual(
+    [{
+      type: 'Subtractions',
+      clue: 'Crime is the result when clergyman first off',
+      totalLength: 5,
+      definition: 'crime is the result when',
+      subsidiary: 'clergyman',
+      indicator: 'first off',
+      words: null,
+      isSynonym: true,
+      solution: 'arson',
+      info:
+     'The word "first off" suggests this is a Subtraction-type clue for "first letter removed". "clergyman" has a synonym of "parson", which when the subtraction is applied becomes "arson", which is a synonym of "crime is the result when".'
+    }]
+  )
+})
