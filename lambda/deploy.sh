@@ -31,7 +31,7 @@ cd ../reversals
 ./prepare.sh
 cd ../containers
 ./prepare.sh
-cd ../subractions
+cd ../subtractions
 ./prepare.sh
 cd ..
 
