@@ -1,0 +1,10 @@
+module.exports = ['cored',
+  'disheartened',
+  'emptied',
+  'empty',
+  'evacuated',
+  'filleted',
+  'gutted',
+  'heartless',
+  'hollow',
+  'losing heart']

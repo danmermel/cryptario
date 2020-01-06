@@ -24,7 +24,7 @@ var app = new Vue({
       self.solutions = []
       self.solving = true
       self.progress = 0
-      const increment = 100/6
+      const increment = 100/7
 
       solve(this.clue, 'anagram').then(function(solutions) {
         self.solutions = self.solutions.concat(solutions)
@@ -47,6 +47,10 @@ var app = new Vue({
         self.progress += increment
       })
       solve(this.clue, 'containers').then(function(solutions) {
+        self.solutions = self.solutions.concat(solutions)
+        self.progress += increment
+      })
+      solve(this.clue, 'subtractions').then(function(solutions) {
         self.solutions = self.solutions.concat(solutions)
         self.progress += increment
       })

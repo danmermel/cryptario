@@ -31,6 +31,8 @@ cd ../reversals
 ./prepare.sh
 cd ../containers
 ./prepare.sh
+cd ../subractions
+./prepare.sh
 cd ..
 
 
@@ -41,6 +43,7 @@ aws lambda update-function-code --function-name "cryptario-hiddenwords-${1}" --z
 aws lambda update-function-code --function-name "cryptario-homophones-${1}" --zip-file fileb://homophones/lambda.zip
 aws lambda update-function-code --function-name "cryptario-reversals-${1}" --zip-file fileb://reversals/lambda.zip
 aws lambda update-function-code --function-name "cryptario-containers-${1}" --zip-file fileb://containers/lambda.zip
+aws lambda update-function-code --function-name "cryptario-subtractions-${1}" --zip-file fileb://subtractions/lambda.zip
 
 
 # tidy up zip files
@@ -50,3 +53,4 @@ rm doubledef/lambda.zip
 rm homophones/lambda.zip
 rm reversals/lambda.zip
 rm containers/lambda.zip
+rm subtractions/lambda.zip

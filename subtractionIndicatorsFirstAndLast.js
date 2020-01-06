@@ -1,0 +1,10 @@
+module.exports = ['edges away',
+  'lacking wings',
+  'limitless',
+  'losing margins',
+  'shelled',
+  'sides splitting',
+  'trimmed',
+  'unlimited',
+  'wingless',
+  'without limits']

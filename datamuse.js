@@ -7,6 +7,7 @@ const url = 'https://api.datamuse.com/'
 // Promises as synchronous code
 async function synonym (word) {
   // await = hide the Promise/callback stuff
+  console.log('finding synonym of', word)
   try {
     const response = await request({ url: url + 'words?ml=' + word, json: true })
     const words = []
@@ -15,6 +16,7 @@ async function synonym (word) {
     }
     return words
   } catch (e) {
+    console.error(e)
     return []
   }
 }
