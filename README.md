@@ -53,3 +53,18 @@ cd ..
 cd lambda
 ./deploy.sh prod
 ```
+
+## Taint the infrastructure
+
+Terraform doesn't correctly update the AWS API Gateway infrastructure, so for every new API call we need to "taint" the API Gateway and re-deploy:
+
+```sh
+# prod
+terraform taint -state=./terraform.tfstate.d/prod/terraform.tfstate  aws_api_gateway_rest_api.cryptario_api
+
+# stage
+terraform taint -state=./terraform.tfstate.d/stage/terraform.tfstate  aws_api_gateway_rest_api.cryptario_api
+```
+
+Remember to be in the right "workspace" otherwise it doesn't work.
+
