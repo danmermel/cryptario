@@ -14,7 +14,7 @@ const identifyIndicators = function (clue) {
 
   // looping through the array stemmedWords, but ignoring the first and last words because
   // by definition they cannot be indicators - you cannot have anything to anagram before/after them
-  for (var i = 1; i < stemmedWords.length - 1; i++) {
+  for (var i = 0; i < stemmedWords.length; i++) {
     var word = stemmedWords[i]
     var x = stemmedIndicators.indexOf(word)
     if (x !== -1) {
@@ -45,24 +45,77 @@ const parseClue = function (clue, indicator, numLetters) {
   // pleasant tumble in gale
   const left = words.slice(0, pos).reverse() // pleasant
   const right = words.slice(pos + indicatorSplit.length) // in gale
-
-  // look for words that add up to the numLetters count
-  const leftSolution = utilities.countLetters(left, numLetters)
-  const rightSolution = utilities.countLetters(right, numLetters)
-
   const retval = []
+console.log('left', left, 'right', right)
 
-  // left null, right solution
-  if (leftSolution === null && rightSolution) {
-    retval.push({ letters: rightSolution.join(''), words: rightSolution, definition: left.reverse().join(' ') })
-  }
-  if (leftSolution && rightSolution === null) {
-    retval.push({ letters: leftSolution.join(''), words: leftSolution, definition: right.join(' ') })
-  }
-  if (leftSolution && rightSolution) {
-    retval.push({ letters: leftSolution.join(''), words: leftSolution, definition: right.join(' ') })
-    retval.push({ letters: rightSolution.join(''), words: rightSolution, definition: left.reverse().join(' ') })
-  }
+  if (right.length === 0) { // indicator is at the end
+    var subsidiaryWords = []
+    var definition = ''
+    // the indicator is reversed on this side.
+    //so you work from the beginning 
+    // looking for word lengths which add up to the clue length
+    for (var x = 0; x < left.length - 1; x++) {
+      // take slice if words from the right of the array
+      const subset = left.slice(0, x)
+
+      // if their total string length matches the clue length
+      if (utilities.countLetters(subset, numLetters)) {
+        // we know the subsidiary
+        subsidiaryWords = subset
+
+        // and the definition is the remaining words
+        definition = left.slice(x)
+        break
+      }
+    }
+
+    // if we found a match
+    if (subsidiaryWords.length > 0) {
+      // add it to the return array
+      retval.push({ letters: subsidiaryWords.join(''), words: subsidiaryWords.reverse(), definition: definition.reverse().join(' ') })
+    }
+  } else if (left.length === 0) { // indicator is at the end
+    var subsidiaryWords = []
+    var definition = ''
+    //so you work from the beginning 
+    // looking for word lengths which add up to the clue length
+    for (var x = 0; x < right.length - 1; x++) {
+      // take slice if words from the right of the array
+      const subset = right.slice(0, x)
+
+      // if their total string length matches the clue length
+      if (utilities.countLetters(subset, numLetters)) {
+        // we know the subsidiary
+        subsidiaryWords = subset
+
+        // and the definition is the remaining words
+        definition = right.slice(x)
+        break
+      }
+    }
+
+    // if we found a match
+    if (subsidiaryWords.length > 0) {
+      // add it to the return array
+      retval.push({ letters: subsidiaryWords.join(''), words: subsidiaryWords, definition: definition.join(' ') })
+    }
+  } else { // indicator is somewhere else in the middle
+  // look for words that add up to the numLetters count
+    const leftSolution = utilities.countLetters(left, numLetters)
+    const rightSolution = utilities.countLetters(right, numLetters)
+
+    // left null, right solution
+    if (leftSolution === null && rightSolution) {
+      retval.push({ letters: rightSolution.join(''), words: rightSolution, definition: left.reverse().join(' ') })
+    }
+    if (leftSolution && rightSolution === null) {
+      retval.push({ letters: leftSolution.join(''), words: leftSolution, definition: right.join(' ') })
+    }
+    if (leftSolution && rightSolution) {
+      retval.push({ letters: leftSolution.join(''), words: leftSolution, definition: right.join(' ') })
+      retval.push({ letters: rightSolution.join(''), words: rightSolution, definition: left.reverse().join(' ') })
+    }
+  } // end if
   return retval
 }
 
@@ -94,52 +147,54 @@ const analyzeAnagram = async function (clue) {
     return []
   }
   console.log('indicators = ', indicators)
-  // now parse clue for every possible indicator
+
+  // now use only the longest indicator
+
+  var indicator = utilities.getLongestIndicator(indicators)
+  console.log(indicator)
+
   // paseClue returns  an array of objects [{letters, words, definition}]
-  for (var i in indicators) {
-    var indicator = indicators[i]
-    var parsedClue = parseClue(splitClue.clue, indicator, splitClue.totalLength)
-    console.log('indicator is ', indicator, ' and parsed Clue is ', parsedClue)
+  var parsedClue = parseClue(splitClue.clue, indicator, splitClue.totalLength)
+  console.log('indicator is ', indicator, ' and parsed Clue is ', parsedClue)
 
-    for (var j in parsedClue) {
-      var pc = parsedClue[j]
-      var obj = {
-        type: 'anagram',
-        clue: splitClue.clue,
-        totalLength: splitClue.totalLength,
-        definition: pc.definition,
-        indicator: indicator,
-        words: pc.words,
-        subsidiary: pc.words.join(' ')
-      }
-      // now make anagram words for all the words
-      // returns an array of strings
-      var solvedAnagrams = await solveAnagram(pc.letters)
-      console.log('solvedAnagrams is ', solvedAnagrams)
+  for (var j in parsedClue) {
+    var pc = parsedClue[j]
+    var obj = {
+      type: 'anagram',
+      clue: splitClue.clue,
+      totalLength: splitClue.totalLength,
+      definition: pc.definition,
+      indicator: indicator,
+      words: pc.words,
+      subsidiary: pc.words.join(' ')
+    }
+    // now make anagram words for all the words
+    // returns an array of strings
+    var solvedAnagrams = await solveAnagram(pc.letters)
+    console.log('solvedAnagrams is ', solvedAnagrams)
 
-      for (var k in solvedAnagrams) {
-        var solved = solvedAnagrams[k]
-        if (solved !== pc.letters) {
-          console.log('solved is ', solved)
-          // now we need to check if the solutions that came back fit with the
-          // length of the solutions we are expecting
-          if (utilities.checkWordPattern(solved, splitClue.wordLengths)) {
-            // clone the obj so that it becomes different and not just a reference to itself.
-            var x = JSON.parse(JSON.stringify(obj))
-            x.solution = solved
-            x.isSynonym = await utilities.isSynonym(x.definition, x.solution)
-            x.info = 'The word "' + x.indicator + '" looks like an anagram indicator and "' + x.solution + '" is an anagram of "' + x.words.join(' ') + '" '
-            if (x.isSynonym) {
-              x.info += ' which is a synonym of "' + x.definition + '"'
-            } else {
-              x.info += ' and may be a synonym of "' + x.definition + '"'
-            }
-            retval.push(x)
-          } // if
+    for (var k in solvedAnagrams) {
+      var solved = solvedAnagrams[k]
+      if (solved !== pc.letters) {
+        console.log('solved is ', solved)
+        // now we need to check if the solutions that came back fit with the
+        // length of the solutions we are expecting
+        if (utilities.checkWordPattern(solved, splitClue.wordLengths)) {
+          // clone the obj so that it becomes different and not just a reference to itself.
+          var x = JSON.parse(JSON.stringify(obj))
+          x.solution = solved
+          x.isSynonym = await utilities.isSynonym(x.definition, x.solution)
+          x.info = 'The word "' + x.indicator + '" looks like an anagram indicator and "' + x.solution + '" is an anagram of "' + x.words.join(' ') + '" '
+          if (x.isSynonym) {
+            x.info += ' which is a synonym of "' + x.definition + '"'
+          } else {
+            x.info += ' and may be a synonym of "' + x.definition + '"'
+          }
+          retval.push(x)
         } // if
-      } // for k
-    }; // for j
-  } // for i
+      } // if
+    } // for k
+  }; // for j
 
   // sort so that isSynonym:true goes top
   var sorter = function (a, b) {
