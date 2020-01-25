@@ -20,16 +20,6 @@ test('identifyIndicators returns multiple anagram indicator', function () {
   expect(res).toEqual(['altered', 'absurd'])
 })
 
-test('identifyIndicators should ignore indicator at end of string', function () {
-  const res = anagram.identifyIndicators('cat pu mixed malfunction')
-  expect(res).toEqual(['mixed'])
-})
-
-test('identifyIndicators should ignore indicator at start of string', function () {
-  const res = anagram.identifyIndicators('malfunction cat pu mixed stuff')
-  expect(res).toEqual(['mixed'])
-})
-
 test('solveAnagram: single word', async function () {
   var solution = await anagram.solveAnagram('god')
   expect(solution).toEqual(expect.arrayContaining(['god', 'dog']))
@@ -128,6 +118,21 @@ test('analyzeAnagram: a drab cord mixed inferior (9)', async function () {
     isSynonym: true
   }]))
 })
+
+test('analyzeAnagram: The largest rates get adjusted (8) - indicator at end of clue', async function () {
+  var solution = await anagram.analyzeAnagram('The largest rates get adjusted (8)')
+  expect(solution.length).toEqual(1)
+  expect(solution[0].solution).toEqual("greatest")
+})
+
+test('analyzeAnagram: Adjusted rates get The largest (8) - indicator at beginning of clue', async function () {
+  var solution = await anagram.analyzeAnagram('Adjusted rates get The largest (8)')
+  expect(solution.length).toEqual(1)
+  expect(solution[0].solution).toEqual("greatest")
+})
+
+
+
 
 test('analyzeAnagram: inferior mixed a drab cord (9)', async function () {
   var solution = await anagram.analyzeAnagram('inferior mixed a drab cord (9)')
