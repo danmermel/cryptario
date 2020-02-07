@@ -159,6 +159,16 @@ resource "aws_lambda_function" "cryptario_subtractions_lambda" {
   timeout = 10
 }
 
+// create stub Lambda function with dummy code
+resource "aws_lambda_function" "cryptario_charades_lambda" {
+  filename = "dummy.zip"
+  function_name = "cryptario-charades-${terraform.workspace}"
+  role = "${aws_iam_role.cryptario_lambda_role.arn}"
+  handler = "index.handler"
+  runtime = "nodejs10.x"
+  timeout = 10
+}
+
 
 // create an API gateway
 resource "aws_api_gateway_rest_api" "cryptario_api" {
@@ -238,6 +248,17 @@ module "subtractions_method" {
   api_path_part = "subtractions"
   api_lambda_arn = "${aws_lambda_function.cryptario_subtractions_lambda.arn}"
   api_lambda_name = "${aws_lambda_function.cryptario_subtractions_lambda.function_name}"
+  api_region = "${data.aws_region.current.name}"
+  api_account_id = "${data.aws_caller_identity.current.account_id}"
+}
+
+module "charades_method" {
+  source = "./modules/apimethod"
+  api_id = "${aws_api_gateway_rest_api.cryptario_api.id}"
+  api_root_resource_id = "${aws_api_gateway_rest_api.cryptario_api.root_resource_id}"
+  api_path_part = "charades"
+  api_lambda_arn = "${aws_lambda_function.cryptario_charades_lambda.arn}"
+  api_lambda_name = "${aws_lambda_function.cryptario_charades_lambda.function_name}"
   api_region = "${data.aws_region.current.name}"
   api_account_id = "${data.aws_caller_identity.current.account_id}"
 }
