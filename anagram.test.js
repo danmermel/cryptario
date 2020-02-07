@@ -122,17 +122,14 @@ test('analyzeAnagram: a drab cord mixed inferior (9)', async function () {
 test('analyzeAnagram: The largest rates get adjusted (8) - indicator at end of clue', async function () {
   var solution = await anagram.analyzeAnagram('The largest rates get adjusted (8)')
   expect(solution.length).toEqual(1)
-  expect(solution[0].solution).toEqual("greatest")
+  expect(solution[0].solution).toEqual('greatest')
 })
 
 test('analyzeAnagram: Adjusted rates get The largest (8) - indicator at beginning of clue', async function () {
   var solution = await anagram.analyzeAnagram('Adjusted rates get The largest (8)')
   expect(solution.length).toEqual(1)
-  expect(solution[0].solution).toEqual("greatest")
+  expect(solution[0].solution).toEqual('greatest')
 })
-
-
-
 
 test('analyzeAnagram: inferior mixed a drab cord (9)', async function () {
   var solution = await anagram.analyzeAnagram('inferior mixed a drab cord (9)')

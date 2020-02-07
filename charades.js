@@ -5,6 +5,7 @@ const stem = require('node-snowball')
 const charadeIndicators = require('./charadeIndicators.js')
 
 const datamuse = require('./datamuse.js')
+const dictionary = require('./dictionary.js')
 
 const identifyIndicators = function (clue, indicators) {
   var retval = []
@@ -63,6 +64,8 @@ const parseClue = function (clue, indicator) {
 }
 
 const analyzeCharades = async function (clue) {
+  var retval = []
+
   // first split the clue
   // returns an object with a clue, a totalLength and a wordLengths array
   var splitClue = utilities.split(clue)
@@ -90,10 +93,10 @@ const analyzeCharades = async function (clue) {
 
   // split the subsidiary into two
   var words = utilities.getWords(parsedClue.subsidiary) // get an array
-  var array_length = words.length
-  var half_way = Math.floor(array_length / 2)
-  var sub1 = words.slice(0, half_way).join(' ')
-  var sub2 = words.slice(half_way).join(' ')
+  var arrayLength = words.length
+  var halfWay = Math.floor(arrayLength / 2)
+  var sub1 = words.slice(0, halfWay).join(' ')
+  var sub2 = words.slice(halfWay).join(' ')
   console.log('sub1 is ', sub1)
   console.log('sub2 is ', sub2)
 
@@ -104,85 +107,49 @@ const analyzeCharades = async function (clue) {
   console.log('sub2synonyms are ', sub2Synonyms)
 
   // make "words" out of the cartesian product
-  var candidateWords = []
+  var realWords = []
+  var realWordsOriginal1 = []
+  var realWordsOriginal2 = []
+
   for (var i = 0; i < sub1Synonyms.length; i++) {
     for (var j = 0; j < sub2Synonyms.length; j++) {
-      candidateWords.push(sub1Synonyms[i] + sub2Synonyms[j])
-    }
-  }
-
-  // isolate real words
-  var realWords = []
-  for (var k = 0; k < candidateWords.length; k++) {
-    var isReal = await utilities.isWord(candidateWords[k])
-    if (isReal) {
-      realWords.push(candidateWords[k])
-    }
-  }
-  console.log('Real words are ', realWords)
-
-  return []
-/*
-  //are any of the real words synonyms of the definition?
-
-  // get synonyms of the subsidiary
-  var subSynonyms = await datamuse.synonym(parsedClue.subsidiary)
-  console.log('subSynonyms', subSynonyms)
-  if (subSynonyms.length === 0) {
-    return []
-  }
-
-  // apply the function to each synoym
-  console.log('running', actionName)
-  const choppedSynonyms = []
-  for (i in subSynonyms) {
-    choppedSynonyms[i] = actionFunction(subSynonyms[i])
-  }
-  console.log('choppedSynonyms', choppedSynonyms)
-
-  // make sure the processed synonyms a) are words b) are the right length
-  const candidateWords = []
-  const candidateOriginals = []
-  for (i in choppedSynonyms) {
-    const word = choppedSynonyms[i]
-    if (utilities.checkWordPattern(word, splitClue.wordLengths)) {
-      const isAWord = await utilities.isWord(word)
-      if (isAWord) {
-        candidateWords.push(word)
-        candidateOriginals.push(subSynonyms[i])
+      const candidateWord = sub1Synonyms[i] + sub2Synonyms[j]
+      if (candidateWord.length === splitClue.totalLength && dictionary.wordExists(candidateWord)) {
+        // only add words to the list that are the right length for the solution
+        realWords.push(candidateWord)
+        realWordsOriginal1.push(sub1Synonyms[i])
+        realWordsOriginal2.push(sub2Synonyms[j])
       }
     }
   }
-  console.log('candidateWords', candidateWords, 'originalls', candidateOriginals)
-  if (candidateWords.length === 0) {
-    return []
-  }
+  console.log('Real words are ', realWords)
+  console.log('Originals 1 are ', realWordsOriginal1)
+  console.log('Originals 2 are ', realWordsOriginal2)
 
-  // check the remaining words are synonyms of the definition  and build return array
-  const retval = []
-  for (i in candidateWords) {
-    const isSynonym = await utilities.isSynonym(parsedClue.definition, candidateWords[i])
-    const isOrMaybe = isSynonym ? 'is' : 'may be'
-    retval.push({
-      type: 'Subtractions',
-      clue: splitClue.clue,
-      totalLength: splitClue.totalLength,
-      definition: parsedClue.definition,
-      subsidiary: parsedClue.subsidiary,
-      indicator: indicator,
-      words: null,
-      isSynonym: isSynonym,
-      solution: candidateWords[i],
-      info: 'The word "' + indicator + '" suggests this is a Subtraction-type clue for "' +
-                    actionName + '". "' + parsedClue.subsidiary + '" has a synonym of "' + candidateOriginals[i] + '", ' +
-                    'which when the subtraction is applied becomes "' + candidateWords[i] + '", ' +
-                    'which ' + isOrMaybe + ' a synonym of "' + parsedClue.definition + '".'
-    })
+  // now check if any of the  found words is a synonym of the definition
+
+  for (var q = 0; q < realWords.length; q++) {
+    if (await utilities.isSynonym(realWords[q], parsedClue.definition)) {
+      // we found a word
+      retval.push({
+        type: 'Charades',
+        clue: splitClue.clue,
+        totalLength: splitClue.totalLength,
+        definition: parsedClue.definition,
+        subsidiary: sub1 + ' and ' + sub2,
+        indicator: indicator,
+        words: null,
+        solution: realWords[q],
+        info: 'The word "' + indicator + '" suggests this is a Charades-type clue. "' +
+                    sub1 + '" has a synonym of "' + realWordsOriginal1[q] + '", and "' +
+                    sub2 + '" has a synonym of "' + realWordsOriginal2[q] + '", ' +
+                    'which when combined become "' + realWords[q] + '", ' +
+                    'which is a synonym of "' + parsedClue.definition + '".'
+      })
+    }
   }
 
   return retval
-
-*/
 }
 
 module.exports = {

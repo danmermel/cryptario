@@ -33,6 +33,8 @@ cd ../containers
 ./prepare.sh
 cd ../subtractions
 ./prepare.sh
+cd ../charades
+./prepare.sh
 cd ..
 
 
@@ -44,6 +46,7 @@ aws lambda update-function-code --function-name "cryptario-homophones-${1}" --zi
 aws lambda update-function-code --function-name "cryptario-reversals-${1}" --zip-file fileb://reversals/lambda.zip
 aws lambda update-function-code --function-name "cryptario-containers-${1}" --zip-file fileb://containers/lambda.zip
 aws lambda update-function-code --function-name "cryptario-subtractions-${1}" --zip-file fileb://subtractions/lambda.zip
+aws lambda update-function-code --function-name "cryptario-charades-${1}" --zip-file fileb://charades/lambda.zip
 
 
 # tidy up zip files
@@ -54,3 +57,4 @@ rm homophones/lambda.zip
 rm reversals/lambda.zip
 rm containers/lambda.zip
 rm subtractions/lambda.zip
+rm charades/lambda.zip
