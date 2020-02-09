@@ -47,14 +47,14 @@ const parseClue = function (clue, indicator, numLetters) {
   const right = words.slice(pos + indicatorSplit.length) // in gale
   const retval = []
   console.log('left', left, 'right', right)
+  var subsidiaryWords = []
+  var definition = ''
 
   if (right.length === 0) { // indicator is at the end
-    var subsidiaryWords = []
-    var definition = ''
     // the indicator is reversed on this side.
     // so you work from the beginning
     // looking for word lengths which add up to the clue length
-    for (var x = 0; x < left.length - 1; x++) {
+    for (var x = 1; x < left.length; x++) {
       // take slice if words from the right of the array
       const subset = left.slice(0, x)
 
@@ -74,12 +74,16 @@ const parseClue = function (clue, indicator, numLetters) {
       // add it to the return array
       retval.push({ letters: subsidiaryWords.join(''), words: subsidiaryWords.reverse(), definition: definition.reverse().join(' ') })
     }
-  } else if (left.length === 0) { // indicator is at the end
+  } else if (left.length === 0) { // indicator is at the beginning
     // so you work from the beginning
     // looking for word lengths which add up to the clue length
-    for (x = 0; x < right.length - 1; x++) {
-      // take slice if words from the right of the array
+    console.log('right is ', right)
+    console.log('right length is ', right.length)
+
+    for (x = 1; x < right.length; x++) {
+      // take slice of words from the left of the array
       const subset = right.slice(0, x)
+      console.log('subset contains .', subset)
 
       // if their total string length matches the clue length
       if (utilities.countLetters(subset, numLetters)) {

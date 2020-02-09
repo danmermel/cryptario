@@ -65,7 +65,7 @@ const parseClue = function (clue, indicator, numLetters) {
   // recalculate the position ofthe indicator
   pos = words.indexOf(indicatorSplit[0])
 
-  // This is a naive analysis, 
+  // This is a naive analysis,
   // we assume a one word definition and one word subsidiary
   // and the second subsidiary is the rest of the words
   // What if there is a two-word definition?
