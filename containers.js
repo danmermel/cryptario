@@ -60,15 +60,17 @@ const parseClue = function (clue, indicator, numLetters) {
   // reconstruct words array with what remains (left + indicator + right)
   var wordString = left + ' ' + indicator + ' ' + right
   words = utilities.getWords(wordString)
+  console.log('wordString', words)
 
   // recalculate the position ofthe indicator
   pos = words.indexOf(indicatorSplit[0])
 
-  // This is a naive analysis, where basically it is just assuming that subsidiaries and definitions are one word only.
-  // we can do better by trying multi words subsidiaries and defs....
-
+  // This is a naive analysis, 
+  // we assume a one word definition and one word subsidiary
+  // and the second subsidiary is the rest of the words
+  // What if there is a two-word definition?
   if (pos - 1 === 0) {
-    return { definition: words[words.length - 1], subsidiary1: words[pos - 1], subsidiary2: words[pos + indicatorSplit.length] }
+    return { definition: words[words.length - 1], subsidiary1: words[pos - 1], subsidiary2: words.slice(pos + indicatorSplit.length, words.length - 1).join(' ') }
   } else {
     return { definition: words[0], subsidiary1: words[pos - 1], subsidiary2: words[pos + indicatorSplit.length] }
   }
@@ -122,6 +124,7 @@ const analyzeContainers = async function (clue) {
         // console.log('Anagrams of ', str, 'are', solvedAnagrams)
         for (var l in solvedAnagrams) {
           var solvedAnagram = solvedAnagrams[l]
+          console.log('solvedAnagram', solvedAnagram)
           // only solved anagrams that contain one of the original words
           // are allowed to be solutions
           var s1ok = (solvedAnagram.indexOf(s1[i]) > -1)
