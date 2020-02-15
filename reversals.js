@@ -1,46 +1,6 @@
 const utilities = require('./utilities.js')
-const stem = require('node-snowball')
-const indicators = require('./reversalIndicators.js')
-const stemmedIndicators = stem.stemword(indicators)
 const datamuse = require('./datamuse.js')
 const stopwords = require('./stopwords.js')
-
-const identifyIndicators = function (clue) {
-  var reversalIndicators = []
-  const words = utilities.getWords(clue.toLowerCase())
-  const stemmedWords = stem.stemword(words)
-
-  // look for single word indicators
-  for (var i = 0; i < stemmedWords.length; i++) {
-    var word = stemmedWords[i]
-    var x = stemmedIndicators.indexOf(word)
-    if (x !== -1) {
-      reversalIndicators.push(words[i])
-    }
-  }
-
-  // second pass for two-word indicators
-  // we are using the unstemmed indicators for comparison
-  for (i = 0; i < words.length - 1; i++) {
-    word = words[i] + ' ' + words[i + 1]
-    x = indicators.indexOf(word)
-    if (x !== -1) {
-      reversalIndicators.push(word)
-    }
-  }
-
-  // third pass for three-word indicators
-  // we are using the unstemmed indicators for comparison
-  for (i = 0; i < words.length - 2; i++) {
-    word = words[i] + ' ' + words[i + 1] + ' ' + words[i + 2]
-    x = indicators.indexOf(word)
-    if (x !== -1) {
-      reversalIndicators.push(word)
-    }
-  }
-
-  return reversalIndicators
-}
 
 const parseClue = function (clue, indicator) {
   const words = utilities.getWords(clue.toLowerCase())
@@ -84,14 +44,12 @@ const analyzeReversal = async function (clue) {
   }
   console.log('split clue = ', splitClue)
 
-  // now try to get hidden word indicators
-  // returns an array of indicators or an empty array if there are none
-  var indicators = identifyIndicators(splitClue.clue)
-  if (indicators.length === 0) {
+  // now look for longest indicator
+  var indicator = utilities.identifyIndicators(splitClue.clue, './reversalIndicators.js')
+  console.log('indicator', indicator)
+  if (indicator === '') {
     return []
   }
-  console.log('indicators = ', indicators)
-  var indicator = utilities.getLongestIndicator(indicators)
 
   // now parse clue for every possible indicator
   // paseClue returns  an array of objects [{letters, words, definition}]
@@ -158,7 +116,6 @@ const analyzeReversal = async function (clue) {
 }
 
 module.exports = {
-  identifyIndicators: identifyIndicators,
   parseClue: parseClue,
   analyzeReversal: analyzeReversal
 }

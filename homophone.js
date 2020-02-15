@@ -1,69 +1,7 @@
 
 const utilities = require('./utilities.js')
-const stem = require('node-snowball')
 const datamuse = require('./datamuse.js')
-const indicators = require('./homophoneIndicators.js')
 const soundex = require('double-metaphone')
-const stemmedIndicators = stem.stemword(indicators)
-// const db = require('./db.js')
-
-const identifyIndicators = function (clue) {
-  var homophoneIndicators = []
-  const words = utilities.getWords(clue.toLowerCase())
-  const stemmedWords = stem.stemword(words)
-
-  // looping through the array stemmedWords
-
-  for (var i = 0; i < stemmedWords.length; i++) {
-    var word = stemmedWords[i]
-    var x = stemmedIndicators.indexOf(word)
-    if (x !== -1) {
-      homophoneIndicators.push(words[i])
-    }
-  }
-
-  // second pass for 2-word indicators
-  // we are using the unstemmed indicators for comparison
-  for (i = 0; i < words.length - 1; i++) {
-    word = words[i] + ' ' + words[i + 1]
-    x = indicators.indexOf(word)
-    if (x !== -1) {
-      homophoneIndicators.push(word)
-    }
-  }
-
-  // second pass for 3-word indicators
-  // we are using the unstemmed indicators for comparison
-  for (i = 0; i < words.length - 2; i++) {
-    word = words[i] + ' ' + words[i + 1] + ' ' + words[i + 2]
-    x = indicators.indexOf(word)
-    if (x !== -1) {
-      homophoneIndicators.push(word)
-    }
-  }
-
-  // second pass for 4-word indicators
-  // we are using the unstemmed indicators for comparison
-  for (i = 0; i < words.length - 3; i++) {
-    word = words[i] + ' ' + words[i + 1] + ' ' + words[i + 2] + ' ' + words[i + 3]
-    x = indicators.indexOf(word)
-    if (x !== -1) {
-      homophoneIndicators.push(word)
-    }
-  }
-
-  // second pass for 5-word indicators
-  // we are using the unstemmed indicators for comparison
-  for (i = 0; i < words.length - 4; i++) {
-    word = words[i] + ' ' + words[i + 1] + ' ' + words[i + 2] + ' ' + words[i + 3] + ' ' + words[i + 4]
-    x = indicators.indexOf(word)
-    if (x !== -1) {
-      homophoneIndicators.push(word)
-    }
-  }
-
-  return homophoneIndicators
-}
 
 const parseClue = function (clue, indicator, numLetters) {
   const words = utilities.getWords(clue.toLowerCase())
@@ -98,18 +36,6 @@ const parseClue = function (clue, indicator, numLetters) {
   }
 }
 
-/*
-const solveAnagram = async function (letters) {
-  var processedLetters = utilities.transformWord(letters)
-  var data = await db.queryAnagram(processedLetters)
-  var retval = []
-  for (var i in data.Items) {
-    retval.push(data.Items[i].solution)
-  }
-  return retval
-}
-*/
-
 const analyzeHomophone = async function (clue) {
   // first split the clue
   // returns an object with a clue, a totalLength and a wordLengths array
@@ -117,24 +43,19 @@ const analyzeHomophone = async function (clue) {
   if (splitClue == null) {
     return []
   }
-  // console.log('split clue = ', splitClue)
+  console.log('split clue = ', splitClue)
 
-  // now try to get homophone indicators
-  // returns an array of indicators or an empty array if there are none
-  var indicators = identifyIndicators(splitClue.clue)
-  if (indicators.length === 0) {
+  // now look for longest indicator
+  var indicator = utilities.identifyIndicators(splitClue.clue, './homophoneIndicators.js')
+  console.log('indicator', indicator)
+  if (indicator === '') {
     return []
   }
-  // console.log('indicators = ', indicators)
 
-  // now discard eveything  but the longest
-  var indicator = utilities.getLongestIndicator(indicators)
-
-  // now parse clue for every possible indicator
   // paseClue returns  an array of objects [{letters, words, definition}]
   var solutions = []
   var parsedClue = parseClue(splitClue.clue, indicator, splitClue.totalLength)
-  // console.log('indicator is ', indicator, ' and parsed Clue is ', parsedClue)
+  console.log('indicator is ', indicator, ' and parsed Clue is ', parsedClue)
 
   var pc = parsedClue
   var obj = {
@@ -203,7 +124,6 @@ const analyzeHomophone = async function (clue) {
 }
 
 module.exports = {
-  identifyIndicators: identifyIndicators,
   parseClue: parseClue,
   analyzeHomophone: analyzeHomophone
 }

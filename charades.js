@@ -1,41 +1,7 @@
 
 const utilities = require('./utilities.js')
-const stem = require('node-snowball')
-
-const charadeIndicators = require('./charadeIndicators.js')
-
 const datamuse = require('./datamuse.js')
 const dictionary = require('./dictionary.js')
-
-const identifyIndicators = function (clue, indicators) {
-  var retval = []
-  const words = utilities.getWords(clue.toLowerCase())
-  const stemmedIndicators = stem.stemword(indicators)
-  const stemmedWords = stem.stemword(words)
-
-  // single word
-  for (var i = 0; i < stemmedWords.length; i++) {
-    var word = stemmedWords[i]
-    var x = stemmedIndicators.indexOf(word)
-    if (x !== -1) {
-      retval.push(words[i])
-    }
-  }
-
-  // second pass for two-word indicators
-  for (i = 0; i < words.length - 1; i++) {
-    word = words[i] + ' ' + words[i + 1]
-    x = indicators.indexOf(word)
-    if (x !== -1) {
-      retval.push(word)
-    }
-  }
-
-  // need three word indicators here
-  // MISSING
-  console.log('indicators are ', retval)
-  return retval
-}
 
 const parseClue = function (clue, indicator) {
   const words = utilities.getWords(clue.toLowerCase())
@@ -74,19 +40,12 @@ const analyzeCharades = async function (clue) {
   }
   console.log('split clue = ', splitClue)
 
-  // loop through all of the indicators for all the subtraction types
-  // noting which subtraction type was found
-  var indicators = null
-  indicators = identifyIndicators(splitClue.clue, charadeIndicators)
-  // if we have found no indicators, we're done
-  if (indicators.length === 0) {
+  // now look for longest indicator
+  var indicator = utilities.identifyIndicators(splitClue.clue, './charadeIndicators.js')
+  console.log('indicator', indicator)
+  if (indicator === '') {
     return []
   }
-
-  // just use the longest indicator
-  console.log('indicators = ', indicators)
-  var indicator = utilities.getLongestIndicator(indicators)
-  console.log('indicator = ', indicator)
 
   var parsedClue = parseClue(splitClue.clue, indicator)
   console.log('parsedClue', parsedClue)
@@ -153,7 +112,6 @@ const analyzeCharades = async function (clue) {
 }
 
 module.exports = {
-  identifyIndicators,
   parseClue,
   analyzeCharades
 }
