@@ -1,39 +1,6 @@
 
 const utilities = require('./utilities.js')
-const stem = require('node-snowball')
-
-const indicators = require('./anagramIndicators.js')
-
-const stemmedIndicators = stem.stemword(indicators)
 const db = require('./db.js')
-
-const identifyIndicators = function (clue) {
-  var anagramIndicators = []
-  const words = utilities.getWords(clue.toLowerCase())
-  const stemmedWords = stem.stemword(words)
-
-  // looping through the array stemmedWords, but ignoring the first and last words because
-  // by definition they cannot be indicators - you cannot have anything to anagram before/after them
-  for (var i = 0; i < stemmedWords.length; i++) {
-    var word = stemmedWords[i]
-    var x = stemmedIndicators.indexOf(word)
-    if (x !== -1) {
-      anagramIndicators.push(words[i])
-    }
-  }
-
-  // second pass for multi-word indicators
-  // we are using the unstemmed indicators for comparison
-  for (i = 1; i < words.length - 2; i++) {
-    word = words[i] + ' ' + words[i + 1]
-    x = indicators.indexOf(word)
-    if (x !== -1) {
-      anagramIndicators.push(word)
-    }
-  }
-
-  return anagramIndicators
-}
 
 const parseClue = function (clue, indicator, numLetters) {
   const words = utilities.getWords(clue.toLowerCase())
@@ -142,18 +109,12 @@ const analyzeAnagram = async function (clue) {
   }
   console.log('split clue = ', splitClue)
 
-  // now try to get anagram indicators
-  // returns an array of indicators or an empty array if there are none
-  var indicators = identifyIndicators(splitClue.clue)
-  if (indicators.length === 0) {
+  // now look for longest indicator
+  var indicator = utilities.identifyIndicators(splitClue.clue, './anagramIndicators.js')
+  console.log('indicator', indicator)
+  if (indicator === '') {
     return []
   }
-  console.log('indicators = ', indicators)
-
-  // now use only the longest indicator
-
-  var indicator = utilities.getLongestIndicator(indicators)
-  console.log(indicator)
 
   // paseClue returns  an array of objects [{letters, words, definition}]
   var parsedClue = parseClue(splitClue.clue, indicator, splitClue.totalLength)
@@ -214,7 +175,6 @@ const analyzeAnagram = async function (clue) {
 }
 
 module.exports = {
-  identifyIndicators: identifyIndicators,
   parseClue: parseClue,
   solveAnagram: solveAnagram,
   analyzeAnagram: analyzeAnagram

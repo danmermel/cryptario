@@ -169,3 +169,40 @@ test('removeStopwords should remove all mixed case words', function () {
   const res = utilities.removeStopwords('the lazy Green fox', ['green'])
   expect(res).toEqual('the lazy fox')
 })
+
+test('identifyIndicators should return empty string if no indicators found', function () {
+  const res = utilities.identifyIndicators('pleasant tuumble in gale', './anagramIndicators.js')
+  expect(res).toEqual('')
+})
+
+test('identifyIndicators should return a single word indicator', function () {
+  var res = utilities.identifyIndicators('pleasant tumble in gale', './anagramIndicators.js')
+  expect(res).toEqual('tumble')
+  res = utilities.identifyIndicators('tumble pleasant in gale', './anagramIndicators.js')
+  expect(res).toEqual('tumble')
+  res = utilities.identifyIndicators('pleasant in gale tumble', './anagramIndicators.js')
+  expect(res).toEqual('tumble')
+})
+
+test('identifyIndicators should return two word indicator', function () {
+  var res = utilities.identifyIndicators('pleasant thrashing about in gale', './anagramIndicators.js')
+  expect(res).toEqual('thrashing about')
+  res = utilities.identifyIndicators('thrashing about pleasant  in gale', './anagramIndicators.js')
+  expect(res).toEqual('thrashing about')
+  res = utilities.identifyIndicators('pleasant in gale thrashing about', './anagramIndicators.js')
+  expect(res).toEqual('thrashing about')
+})
+
+test('identifyIndicators should return three word indicator', function () {
+  var res = utilities.identifyIndicators('pleasant not in order in gale', './anagramIndicators.js')
+  expect(res).toEqual('not in order')
+  res = utilities.identifyIndicators('not in order pleasant in gale', './anagramIndicators.js')
+  expect(res).toEqual('not in order')
+  res = utilities.identifyIndicators('pleasant in gale not in order', './anagramIndicators.js')
+  expect(res).toEqual('not in order')
+})
+
+test('identifyIndicators should return the longest indicator', function () {
+  const res = utilities.identifyIndicators('pleasant tumble in gale thrashing about', './anagramIndicators.js')
+  expect(res).toEqual('thrashing about')
+})

@@ -1,20 +1,5 @@
 const containers = require('./containers.js')
 
-test('identifyIndicators returns empty array when there are none', function () {
-  const res = containers.identifyIndicators('The quick brown fox')
-  expect(res).toEqual([])
-})
-
-test('identifyIndicators returns one indicator in middle of string', function () {
-  const res = containers.identifyIndicators('The quick brown inside fox')
-  expect(res).toEqual(['inside'])
-})
-
-test('identifyIndicators long one', function () {
-  const res = containers.identifyIndicators('The quick brown put into fox')
-  expect(res).toEqual(['put into'])
-})
-
 test('parseClue - indicator in middle', function () {
   const res = containers.parseClue('object put into torn clothing', 'put into', 7)
   expect(res).toEqual({ definition: 'clothing', subsidiary1: 'object', subsidiary2: 'torn' })

@@ -1,14 +1,11 @@
 
 const utilities = require('./utilities.js')
-const stem = require('node-snowball')
-
-const subtractionIndicatorsCentralLetters = require('./subtractionIndicatorsCentralLetters.js')
-const subtractionIndicatorsEvenLetters = require('./subtractionIndicatorsEvenLetters.js')
-const subtractionIndicatorsFirstAndLast = require('./subtractionIndicatorsFirstAndLast.js')
-const subtractionIndicatorsFirstLetter = require('./subtractionIndicatorsFirstLetter.js')
-const subtractionIndicatorsLastLetter = require('./subtractionIndicatorsLastLetter.js')
-const subtractionIndicatorsOddLetters = require('./subtractionIndicatorsOddLetters.js')
-
+const subtractionIndicatorsCentralLetters = './subtractionIndicatorsCentralLetters.js'
+const subtractionIndicatorsEvenLetters = './subtractionIndicatorsEvenLetters.js'
+const subtractionIndicatorsFirstAndLast = './subtractionIndicatorsFirstAndLast.js'
+const subtractionIndicatorsFirstLetter = './subtractionIndicatorsFirstLetter.js'
+const subtractionIndicatorsLastLetter = './subtractionIndicatorsLastLetter.js'
+const subtractionIndicatorsOddLetters = './subtractionIndicatorsOddLetters.js'
 const datamuse = require('./datamuse.js')
 
 const removeFirstLetter = function (clue) {
@@ -64,36 +61,6 @@ const removeEvenLetters = function (clue) {
     retval.push(t[i])
   }
   return retval.join('')
-}
-
-const identifyIndicators = function (clue, indicators) {
-  var containerIndicators = []
-  const words = utilities.getWords(clue.toLowerCase())
-  const stemmedIndicators = stem.stemword(indicators)
-  const stemmedWords = stem.stemword(words)
-
-  // single word
-  for (var i = 0; i < stemmedWords.length; i++) {
-    var word = stemmedWords[i]
-    var x = stemmedIndicators.indexOf(word)
-    if (x !== -1) {
-      containerIndicators.push(words[i])
-    }
-  }
-
-  // second pass for two-word indicators
-  for (i = 0; i < words.length - 1; i++) {
-    word = words[i] + ' ' + words[i + 1]
-    x = indicators.indexOf(word)
-    if (x !== -1) {
-      containerIndicators.push(word)
-    }
-  }
-
-  // need three word indicators here
-  // MISSING
-
-  return containerIndicators
 }
 
 const parseClue = function (clue, indicator) {
@@ -168,12 +135,12 @@ const analyzeSubtractions = async function (clue) {
   // noting which subtraction type was found
   var actionFunction = null
   var actionName = null
-  var indicators = null
+  var indicator = null
   for (var i = 0; i < allIndicators.length; i++) {
     var subtractionType = allIndicators[i]
     console.log('looking for ', subtractionType.name)
-    indicators = identifyIndicators(splitClue.clue, subtractionType.indicators)
-    if (indicators.length > 0) {
+    indicator = utilities.identifyIndicators(splitClue.clue, subtractionType.indicators)
+    if (indicator !== '') {
       actionName = subtractionType.name
       actionFunction = subtractionType.action
       break
@@ -184,12 +151,7 @@ const analyzeSubtractions = async function (clue) {
   if (actionName === null) {
     return []
   }
-  console.log(indicators, actionName, actionFunction)
-
-  // just use the longest indicator
-  console.log('indicators = ', indicators)
-  var indicator = utilities.getLongestIndicator(indicators)
-  console.log('indicator = ', indicator)
+  console.log(indicator, actionName, actionFunction)
 
   var parsedClue = parseClue(splitClue.clue, indicator, splitClue.totalLength)
   console.log('parsedClue', parsedClue)
@@ -259,7 +221,6 @@ module.exports = {
   removeCentralLetters,
   removeOddLetters,
   removeEvenLetters,
-  identifyIndicators,
   parseClue,
   analyzeSubtractions
 }

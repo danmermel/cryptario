@@ -1,5 +1,6 @@
 const datamuse = require('./datamuse.js')
 const db = require('./db.js')
+const stem = require('node-snowball')
 
 const split = function (fullClue) {
   var lastBracket = fullClue.lastIndexOf('(')
@@ -110,6 +111,82 @@ const removeStopwords = function (str, stopwords) {
   return retval.join(' ')
 }
 
+// find longest indicator in the clue
+const identifyIndicators = function (clue, indicatorFilename) {
+  // load and stem the indicators from source file
+  const indicators = require(indicatorFilename)
+  const stemmedIndicators = stem.stemword(indicators)
+
+  // split the clue into words and stem the words
+  const retval = []
+  const words = getWords(clue.toLowerCase())
+  const stemmedWords = stem.stemword(words)
+
+  // search for single word indicators
+  for (var i = 0; i < stemmedWords.length; i++) {
+    const word = stemmedWords[i]
+    const x = stemmedIndicators.indexOf(word)
+    // if indicator found
+    if (x !== -1) {
+      retval.push(words[i])
+    }
+  }
+
+  // second pass for two-word indicators
+  // Note: we are using the unstemmed indicators for comparison
+  // because the stemmedIndicators is only stemming the last
+  // word of a multi-word indicator.
+  for (i = 0; i < words.length - 1; i++) {
+    const word = words[i] + ' ' + words[i + 1]
+    const x = indicators.indexOf(word)
+    // if indicator found
+    if (x !== -1) {
+      retval.push(word)
+    }
+  }
+
+  // third pass for three-word indicators
+  // Note: we are using the unstemmed indicators for comparison
+  // because the stemmedIndicators is only stemming the last
+  // word of a multi-word indicator.
+  for (i = 0; i < words.length - 2; i++) {
+    const word = words[i] + ' ' + words[i + 1] + ' ' + words[i + 2]
+    const x = indicators.indexOf(word)
+    // if indicator found
+    if (x !== -1) {
+      retval.push(word)
+    }
+  }
+
+  // fourth pass for four-word indicators
+  // Note: we are using the unstemmed indicators for comparison
+  // because the stemmedIndicators is only stemming the last
+  // word of a multi-word indicator.
+  for (i = 0; i < words.length - 3; i++) {
+    const word = words[i] + ' ' + words[i + 1] + ' ' + words[i + 2] + ' ' + words[i + 3]
+    const x = indicators.indexOf(word)
+    // if indicator found
+    if (x !== -1) {
+      retval.push(word)
+    }
+  }
+
+  // fifth pass for five-word indicators
+  // Note: we are using the unstemmed indicators for comparison
+  // because the stemmedIndicators is only stemming the last
+  // word of a multi-word indicator.
+  for (i = 0; i < words.length - 4; i++) {
+    const word = words[i] + ' ' + words[i + 1] + ' ' + words[i + 2] + ' ' + words[i + 3] + +' ' + words[i + 4]
+    const x = indicators.indexOf(word)
+    // if indicator found
+    if (x !== -1) {
+      retval.push(word)
+    }
+  }
+
+  return getLongestIndicator(retval)
+}
+
 module.exports = {
   split: split,
   removeStopwords: removeStopwords,
@@ -120,5 +197,6 @@ module.exports = {
   isWord: isWord,
   checkWordPattern: checkWordPattern,
   findActualWords: findActualWords,
-  getLongestIndicator: getLongestIndicator
+  getLongestIndicator: getLongestIndicator,
+  identifyIndicators: identifyIndicators
 }
