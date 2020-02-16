@@ -1,7 +1,6 @@
 
 const utilities = require('./utilities.js')
 const datamuse = require('./datamuse.js')
-const dictionary = require('./dictionary.js')
 
 const parseClue = function (clue, indicator) {
   const words = utilities.getWords(clue.toLowerCase())
@@ -73,7 +72,7 @@ const analyzeCharades = async function (clue) {
   for (var i = 0; i < sub1Synonyms.length; i++) {
     for (var j = 0; j < sub2Synonyms.length; j++) {
       const candidateWord = sub1Synonyms[i] + sub2Synonyms[j]
-      if (candidateWord.length === splitClue.totalLength && dictionary.wordExists(candidateWord)) {
+      if (candidateWord.length === splitClue.totalLength && utilities.isWord(candidateWord)) {
         // only add words to the list that are the right length for the solution
         realWords.push(candidateWord)
         realWordsOriginal1.push(sub1Synonyms[i])

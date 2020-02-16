@@ -1,6 +1,7 @@
 const datamuse = require('./datamuse.js')
 const db = require('./db.js')
 const stem = require('node-snowball')
+const dictionary = require('./dictionary.js')
 
 const split = function (fullClue) {
   var lastBracket = fullClue.lastIndexOf('(')
@@ -81,13 +82,8 @@ const findActualWords = async function (candidateWords) {
   return retval
 }
 
-const isWord = async function (word) {
-  var result = await db.queryHidden(word)
-  if (result.Count > 0) {
-    return true
-  } else {
-    return false
-  }
+const isWord = function (word) {
+  return dictionary.wordExists(word)
 }
 
 const getLongestIndicator = function (indicators) {

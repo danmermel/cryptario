@@ -177,7 +177,7 @@ const analyzeSubtractions = async function (clue) {
   for (i in choppedSynonyms) {
     const word = choppedSynonyms[i]
     if (utilities.checkWordPattern(word, splitClue.wordLengths)) {
-      const isAWord = await utilities.isWord(word)
+      const isAWord = utilities.isWord(word)
       if (isAWord) {
         candidateWords.push(word)
         candidateOriginals.push(subSynonyms[i])
