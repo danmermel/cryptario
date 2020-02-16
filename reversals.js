@@ -77,7 +77,7 @@ const analyzeReversal = async function (clue) {
   console.log('rev synonyms', reversedSynonyms)
 
   // remove words that are nonsense (not in our dictionary)
-  var actualWords = await utilities.findActualWords(reversedSynonyms)
+  var actualWords = utilities.findActualWords(reversedSynonyms)
   console.log('actualWords', actualWords)
 
   // See if any are synonyms of the other side (doc = physician)

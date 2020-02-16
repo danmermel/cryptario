@@ -56,7 +56,7 @@ const analyzeHidden = async function (clue) {
   // now find hidden words in the subsidiary
   var hiddenWordCandidates = findHiddenWords(parsedClue.subsidiary, splitClue.totalLength)
   // now, are any of the candidates actual words?
-  var actualWords = await utilities.findActualWords(hiddenWordCandidates)
+  var actualWords = utilities.findActualWords(hiddenWordCandidates)
   console.log('actualWords', actualWords)
   // now, are these words synonyms of the definition
   for (var j = 0; j < actualWords.length; j++) {

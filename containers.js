@@ -1,7 +1,6 @@
 
 const utilities = require('./utilities.js')
 const stopwords = require('./stopwords.js')
-const db = require('./db.js')
 const datamuse = require('./datamuse.js')
 
 const parseClue = function (clue, indicator, numLetters) {
@@ -43,16 +42,6 @@ const parseClue = function (clue, indicator, numLetters) {
   }
 }
 
-const solveAnagram = async function (letters) {
-  var processedLetters = utilities.transformWord(letters)
-  var data = await db.queryAnagram(processedLetters)
-  var retval = []
-  for (var i in data.Items) {
-    retval.push(data.Items[i].solution)
-  }
-  return retval
-}
-
 const analyzeContainers = async function (clue) {
   var retval = []
 
@@ -84,7 +73,7 @@ const analyzeContainers = async function (clue) {
     for (var j in s2) {
       const str = s1[i] + s2[j]
       if (str.length === splitClue.totalLength) {
-        var solvedAnagrams = await solveAnagram(str)
+        var solvedAnagrams = utilities.solveAnagram(str)
         // console.log('Anagrams of ', str, 'are', solvedAnagrams)
         for (var l in solvedAnagrams) {
           var solvedAnagram = solvedAnagrams[l]

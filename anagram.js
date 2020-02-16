@@ -1,6 +1,5 @@
 
 const utilities = require('./utilities.js')
-const db = require('./db.js')
 
 const parseClue = function (clue, indicator, numLetters) {
   const words = utilities.getWords(clue.toLowerCase())
@@ -88,16 +87,6 @@ const parseClue = function (clue, indicator, numLetters) {
   return retval
 }
 
-const solveAnagram = async function (letters) {
-  var processedLetters = utilities.transformWord(letters)
-  var data = await db.queryAnagram(processedLetters)
-  var retval = []
-  for (var i in data.Items) {
-    retval.push(data.Items[i].solution)
-  }
-  return retval
-}
-
 const analyzeAnagram = async function (clue) {
   var retval = []
 
@@ -133,7 +122,7 @@ const analyzeAnagram = async function (clue) {
     }
     // now make anagram words for all the words
     // returns an array of strings
-    var solvedAnagrams = await solveAnagram(pc.letters)
+    var solvedAnagrams = utilities.solveAnagram(pc.letters)
     console.log('solvedAnagrams is ', solvedAnagrams)
 
     for (var k in solvedAnagrams) {
@@ -176,6 +165,5 @@ const analyzeAnagram = async function (clue) {
 
 module.exports = {
   parseClue: parseClue,
-  solveAnagram: solveAnagram,
   analyzeAnagram: analyzeAnagram
 }

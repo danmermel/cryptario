@@ -1,5 +1,4 @@
 const datamuse = require('./datamuse.js')
-const db = require('./db.js')
 const stem = require('node-snowball')
 const dictionary = require('./dictionary.js')
 
@@ -71,11 +70,10 @@ const checkWordPattern = function (str, pattern) {
   return (JSON.stringify(lengths) === JSON.stringify(pattern))
 }
 
-const findActualWords = async function (candidateWords) {
+const findActualWords = function (candidateWords) {
   var retval = []
   for (var i = 0; i < candidateWords.length; i++) {
-    var result = await db.queryHidden(candidateWords[i])
-    if (result.Count > 0) {
+    if (isWord(candidateWords[i])) {
       retval.push(candidateWords[i]) // the word is real, so add it to the array
     }
   }
@@ -183,7 +181,14 @@ const identifyIndicators = function (clue, indicatorFilename) {
   return getLongestIndicator(retval)
 }
 
+const solveAnagram = function (letters) {
+  const anagramSolutions = require('./anagramSolutions.json')
+  const processedLetters = transformWord(letters)
+  return anagramSolutions[processedLetters] || []
+}
+
 module.exports = {
+  solveAnagram: solveAnagram,
   split: split,
   removeStopwords: removeStopwords,
   isSynonym: isSynonym,
