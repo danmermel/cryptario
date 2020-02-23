@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # copy the utilities libraries here for deployment
-cp ../../*.js ../../config.json ../../*.json .
+cp ../../*.js ../../config.json ../../dictionary.json .
 
 # mount our directory as /var/task on the Docker container
 # run the Lambda Docker image

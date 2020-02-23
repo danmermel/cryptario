@@ -1,6 +1,5 @@
 const datamuse = require('./datamuse.js')
 const stem = require('node-snowball')
-const dictionary = require('./dictionary.js')
 
 const split = function (fullClue) {
   var lastBracket = fullClue.lastIndexOf('(')
@@ -81,6 +80,7 @@ const findActualWords = function (candidateWords) {
 }
 
 const isWord = function (word) {
+  const dictionary = require('./dictionary.js')
   return dictionary.wordExists(word)
 }
 
@@ -182,8 +182,15 @@ const identifyIndicators = function (clue, indicatorFilename) {
 }
 
 const solveAnagram = function (letters) {
-  const anagramSolutions = require('./anagramSolutions.json')
   const processedLetters = transformWord(letters)
+  console.log('processed letters', processedLetters)
+  const len = Math.min(15, processedLetters.length)
+  const start = new Date().getTime()
+  const dict = './anagramSolutions' + len + '.json'
+  console.log('dictionary', dict)
+  const anagramSolutions = require(dict)
+  const end = new Date().getTime()
+  console.log('anagram dictionary took',(end - start)/1000, 'seconds to load')
   return anagramSolutions[processedLetters] || []
 }
 
