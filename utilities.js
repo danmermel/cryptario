@@ -190,7 +190,7 @@ const solveAnagram = function (letters) {
   console.log('dictionary', dict)
   const anagramSolutions = require(dict)
   const end = new Date().getTime()
-  console.log('anagram dictionary took',(end - start)/1000, 'seconds to load')
+  console.log('anagram dictionary took', (end - start) / 1000, 'seconds to load')
   return anagramSolutions[processedLetters] || []
 }
 

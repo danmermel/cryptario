@@ -6,21 +6,21 @@ var main = function () {
 
   var lr = new LineByLineReader('combined.txt')
   var dictionary = {
-   1: {},
-   2: {},
-   3: {},
-   4: {},
-   5: {},
-   6: {},
-   7: {},
-   8: {},
-   9: {},
-   10: {},
-   11: {},
-   12: {},
-   13: {},
-   14: {},
-   15: {}
+    1: {},
+    2: {},
+    3: {},
+    4: {},
+    5: {},
+    6: {},
+    7: {},
+    8: {},
+    9: {},
+    10: {},
+    11: {},
+    12: {},
+    13: {},
+    14: {},
+    15: {}
   }
 
   lr.on('error', function (err) {
@@ -45,7 +45,7 @@ var main = function () {
     // calculate how many letters are in the solution
     // all solutions over 15 letters are bundled together
     // so that the long tail on the bell curve are in one file
-    var len = Math.min(15, jumble.length) 
+    var len = Math.min(15, jumble.length)
     var minidic = dictionary[len]
 
     // does the jumble already exist as a key
@@ -60,8 +60,8 @@ var main = function () {
   })
 
   lr.on('end', function () {
-    for(var i in dictionary) {
-      const filename = 'anagramSolutions'+ i +'.json'
+    for (var i in dictionary) {
+      const filename = 'anagramSolutions' + i + '.json'
       console.log(filename)
       fs.writeFileSync(filename, JSON.stringify(dictionary[i]))
     }
