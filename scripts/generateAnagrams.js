@@ -61,7 +61,7 @@ var main = function () {
 
   lr.on('end', function () {
     for (var i in dictionary) {
-      const filename = 'anagramSolutions' + i + '.json'
+      const filename = '../anagramSolutions' + i + '.json'
       console.log(filename)
       fs.writeFileSync(filename, JSON.stringify(dictionary[i]))
     }
