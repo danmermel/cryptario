@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "line-by-line": "^0.1.6",
-    "node-snowball": "^0.4.0",
+    "stemmer": "^1.0.5",
     "request": "^2.88.0",
     "request-promise": "^4.2.4"
   }
