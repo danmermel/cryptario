@@ -22,6 +22,7 @@ echo $PWD
 # build the dictionaries
 echo "Building dictionaries"
 cd ../scripts
+npm install
 node generateAnagrams.js
 node generateDictionary.js
 cd ../lambda

@@ -1,4 +1,19 @@
-const utilities = require('../utilities.js')
+const transformWord = function (word) {
+  // lowercase
+  word = word.toLowerCase()
+
+  // remove all but letters
+  word = word.replace(/[^a-z]/g, '')
+
+  // reorder alphabetically
+
+  word = word.split('')
+  word = word.sort()
+  word = word.join('')
+
+  return word
+}
+
 const fs = require('fs')
 
 var main = function () {
@@ -40,7 +55,7 @@ var main = function () {
     line = line.replace(/[^a-z]/g, '')
     // transform what is left into alphabetically ordered letters
 
-    var jumble = utilities.transformWord(line)
+    var jumble = transformWord(line)
 
     // calculate how many letters are in the solution
     // all solutions over 15 letters are bundled together
