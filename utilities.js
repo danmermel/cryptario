@@ -1,5 +1,5 @@
 const datamuse = require('./datamuse.js')
-const stem = require('node-snowball')
+const stemmer = require('stemmer')
 
 const split = function (fullClue) {
   var lastBracket = fullClue.lastIndexOf('(')
@@ -105,16 +105,24 @@ const removeStopwords = function (str, stopwords) {
   return retval.join(' ')
 }
 
+const stemArray = function (arr) {
+  var retval = []
+  for (var i in arr) {
+    retval[i] = stemmer(arr[i])
+  }
+  return retval
+}
+
 // find longest indicator in the clue
 const identifyIndicators = function (clue, indicatorFilename) {
   // load and stem the indicators from source file
   const indicators = require(indicatorFilename)
-  const stemmedIndicators = stem.stemword(indicators)
+  const stemmedIndicators = stemArray(indicators)
 
   // split the clue into words and stem the words
   const retval = []
   const words = getWords(clue.toLowerCase())
-  const stemmedWords = stem.stemword(words)
+  const stemmedWords = stemArray(words)
 
   // search for single word indicators
   for (var i = 0; i < stemmedWords.length; i++) {
