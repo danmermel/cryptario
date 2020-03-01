@@ -1,4 +1,3 @@
-const utilities = require('../utilities.js')
 const fs = require('fs')
 
 var main = function () {
@@ -33,11 +32,9 @@ var main = function () {
     if (line.length === 0) {
       return
     }
-    // keep the original word before mangling it to retain potentially valuable info
-    var originalWord = line
     line = line.toLowerCase()
     // remove punctuation and numbers and shit
-    const word  = line.replace(/[^a-z]/g, '')
+    const word = line.replace(/[^a-z]/g, '')
 
     // calculate how many letters are in the solution
     // all solutions over 15 letters are bundled together
