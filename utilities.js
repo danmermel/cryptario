@@ -107,7 +107,7 @@ const removeStopwords = function (str, stopwords) {
 
 const stemArray = function (arr) {
   var retval = []
-  for(var i in arr) {
+  for (var i in arr) {
     retval[i] = stemmer(arr[i])
   }
   return retval
