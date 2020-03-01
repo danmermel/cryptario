@@ -19,6 +19,13 @@ cd $TRAVIS_BUILD_DIR/lambda
 
 echo $PWD
 
+# build the dictionaries
+cd scripts
+node generateAnagrams.js
+node generateDictionary.js
+cd ..
+
+# build the Lambda functions
 cd  anagram
 ./prepare.sh
 cd ../hiddenwords
