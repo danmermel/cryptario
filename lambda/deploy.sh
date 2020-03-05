@@ -34,6 +34,9 @@ cd ../scripts
 cd ../lambda
 echo "Done"
 
+# get npm modules once only
+npm install
+
 # build the Lambda functions
 declare -a arr=("anagram" "hiddenwords" "doubledef" "homophones" "reversals" "containers" "charades" "subtractions")
 
@@ -43,13 +46,18 @@ do
   echo "Doing ${i}"
   pwd
   cp ../../*.js ../../config.json ../../dictionary*.json ../../anagramSolutions*.json .
-  npm install
+
+  # copy the common dependencies
+  cp -r ../node_modules .
+
   # build the zip
   rm lambda.zip
   zip -r lambda.zip *.js *.json node_modules/
+
   # tidy up
   # remove all files except those in the list
   rm !(package.json|index.js|prepare.sh|node_modules|package-lock.json|lambda.zip)
+
   # deploy to lambda
   aws lambda update-function-code --function-name "cryptario-${i}-${1}" --zip-file fileb://lambda.zip
   cd ..
