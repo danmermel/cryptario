@@ -26,38 +26,18 @@ var app = new Vue({
       self.progress = 0
       const increment = 100/8
 
-      solve(this.clue, 'anagram').then(function(solutions) {
-        self.solutions = self.solutions.concat(solutions)
-        self.progress += increment
-      })
-      solve(this.clue, 'hiddenwords').then(function(solutions) {
-        self.solutions = self.solutions.concat(solutions)
-        self.progress += increment
-      })
-      solve(this.clue, 'doubledef').then(function(solutions) {
-        self.solutions = self.solutions.concat(solutions)
-        self.progress += increment
-      })
-      solve(this.clue, 'homophones').then(function(solutions) {
-        self.solutions = self.solutions.concat(solutions)
-        self.progress += increment
-      })
-      solve(this.clue, 'reversals').then(function(solutions) {
-        self.solutions = self.solutions.concat(solutions)
-        self.progress += increment
-      })
-      solve(this.clue, 'containers').then(function(solutions) {
-        self.solutions = self.solutions.concat(solutions)
-        self.progress += increment
-      })
-      solve(this.clue, 'subtractions').then(function(solutions) {
-        self.solutions = self.solutions.concat(solutions)
-        self.progress += increment
-      })
-      solve(this.clue, 'charades').then(function(solutions) {
-        self.solutions = self.solutions.concat(solutions)
-        self.progress += increment
-      })
-    }
-  }
+     const clueTypes = ["anagram", "hiddenwords", "containers", "reversals", "doubledef", "charades", "homophones", "subtractions"]
+
+     for (var i in clueTypes) {
+       var clueType = clueTypes[i]
+       solve(this.clue, clueType).then(function(solutions) {
+         self.solutions = self.solutions.concat(solutions)
+         self.progress += increment
+       }).catch(function(err) {
+         self.progress += increment
+         console.log (clueType, " err ", err)
+       })
+     }  //end for
+   } // analyze
+  } //methods
 })
