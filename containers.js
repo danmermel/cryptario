@@ -42,6 +42,25 @@ const parseClue = function (clue, indicator, numLetters) {
   }
 }
 
+// returns true if
+//  - c1 is inside full (not at the beginning or end)
+//  - AND when removing c1 , c2 remains
+const contains = function (full, c1, c2) {
+  var pos = full.indexOf(c1)
+  // berate
+  // if the c1 isn't in full or is at the start or at the end
+  if (pos === -1 || pos ===0 || pos + c1.length === full.length) {
+    return false
+  }
+  // remove c1 from full
+  full = full.replace(c1, '')
+  if (full === c2) {
+    return true
+  } else {
+    return false
+  }  
+}
+
 const analyzeContainers = async function (clue) {
   var retval = []
 
@@ -82,7 +101,7 @@ const analyzeContainers = async function (clue) {
           // are allowed to be solutions
           var s1ok = (solvedAnagram.indexOf(s1[i]) > -1)
           var s2ok = (solvedAnagram.indexOf(s2[j]) > -1)
-          if (s1ok || s2ok) {
+          if (contains(solvedAnagram, s1[i], s2[j]) || contains(solvedAnagram, s2[j], s1[i])) {
             var isSynonym = await utilities.isSynonym(parsedClue.definition, solvedAnagram)
             var maybeOrIs = isSynonym ? 'is' : 'may be'
             // calculate which synonym is contained in the  solvedAnagram
