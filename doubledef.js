@@ -8,28 +8,25 @@ const analyzeDoubleDef = async function (clue) {
   // console.log('words are ', words)
   const searchablePairs = createSearchablePairs(words)
   console.log('searchablePairs is ', searchablePairs)
-  for (var i = 0; i < searchablePairs.length; i++) {
-    const pair = searchablePairs[i]
-    const matches = await comparePair(pair.one, pair.two, splitClue.wordLengths)
-    for (var j = 0; j < matches.length; j++) {
-      const obj = {
-        type: 'double definition',
-        clue: splitClue.clue,
-        totalLength: splitClue.totalLength,
-        definition: [pair.one.join(' '), pair.two.join(' ')],
-        subsidiary: '',
-        indicator: '',
-        words: null,
-        solution: matches[j],
-        isSynonym: true,
-        info: '"' + pair.one.join(' ') + '" and "' + pair.two.join(' ') + '" are both synonyms of "' + matches[j] + '".'
-      }
-      retval.push(obj)
+  // now we will take the middle searchable pair, i.e. the one most evenly balanced.
+  // This is a compromise because doing all the pairs will be expensive on datamuse calls
+  const i = Math.floor(searchablePairs.length / 2)
+  const pair = searchablePairs[i]
+  const matches = await comparePair(pair.one, pair.two, splitClue.wordLengths)
+  for (var j = 0; j < matches.length; j++) {
+    const obj = {
+      type: 'double definition',
+      clue: splitClue.clue,
+      totalLength: splitClue.totalLength,
+      definition: [pair.one.join(' '), pair.two.join(' ')],
+      subsidiary: '',
+      indicator: '',
+      words: null,
+      solution: matches[j],
+      isSynonym: true,
+      info: '"' + pair.one.join(' ') + '" and "' + pair.two.join(' ') + '" are both synonyms of "' + matches[j] + '".'
     }
-    // if we find one or more matches, stop looking
-    if (matches.length > 0) {
-      break
-    }
+    retval.push(obj)
   }
   return retval
 }

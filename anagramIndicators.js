@@ -1,4 +1,6 @@
 module.exports = [
+  'order',
+  'ordered',
   'doctored',
   'break',
   'being doctored',

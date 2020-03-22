@@ -1,4 +1,5 @@
 module.exports = ['about',
+  'lodges',
   'admit',
   'admits',
   'admitting',
