@@ -1,6 +1,6 @@
 // this is the Promise version of the request library
 const request = require('request-promise')
-
+const crypticSynonyms = require('./crypticSynonyms.js')
 const url = 'https://api.datamuse.com/'
 
 // this is an async function. It can treat things that return
@@ -9,12 +9,17 @@ async function synonym (word) {
   // await = hide the Promise/callback stuff
   console.log('finding synonym of', word)
   try {
+    // ask datamuse to find the synonyms of the supplied word
     const response = await request({ url: url + 'words?ml=' + word, json: true })
     const words = []
     for (var i in response) {
       words.push(response[i].word)
     }
-    return words
+    // also lookup the cryptic synonyms of the word e.g. state --> AL
+    const cs = crypticSynonyms[word.toLowerCase()] || []
+
+    // return array of datamus + cryptic synonyms
+    return words.concat(cs)
   } catch (e) {
     console.error(e)
     return []
