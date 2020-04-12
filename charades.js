@@ -1,9 +1,19 @@
+// if there are no indicators carry on  and
+//    try each word for a cryptic synonym (need a fn for that)
+//    if you find a CS assume this is a charade and
+//       assume first word is def and rest
 
 const utilities = require('./utilities.js')
 const datamuse = require('./datamuse.js')
+const cartesian = require('fast-cartesian')
 
 const parseClue = function (clue, indicator) {
   const words = utilities.getWords(clue.toLowerCase())
+  if (indicator === '') {
+    // this means no indicator was found, so we just assume that the definition is at the end and the
+    // rest is subsidiary
+    return { definition: words[words.length - 1], subsidiary: words.slice(0, words.length - 1).join(' ') }
+  }
   const indicatorSplit = indicator.toLowerCase().split(' ')
   // find the position  of the indicator
   const pos = words.indexOf(indicatorSplit[0])
@@ -28,7 +38,7 @@ const parseClue = function (clue, indicator) {
   return { definition: words.slice(pos + indicatorSplit.length).join(' '), subsidiary: words.slice(0, pos).join(' ') }
 }
 
-const analyzeCharades = async function (clue) {
+const analyzeCharadesWorker = async function (clue) {
   var retval = []
 
   // first split the clue
@@ -42,73 +52,82 @@ const analyzeCharades = async function (clue) {
   // now look for longest indicator
   var indicator = utilities.identifyIndicators(splitClue.clue, './charadeIndicators.js')
   console.log('indicator', indicator)
-  if (indicator === '') {
-    return []
-  }
-
   var parsedClue = parseClue(splitClue.clue, indicator)
   console.log('parsedClue', parsedClue)
 
-  // split the subsidiary into two
+  // find the synonyms of all the words in the subsidiary
+  // add a blank string to every array
+  // filter out any words longer than the solution length -1 
   var words = utilities.getWords(parsedClue.subsidiary) // get an array
-  var arrayLength = words.length
-  var halfWay = Math.floor(arrayLength / 2)
-  var sub1 = words.slice(0, halfWay).join(' ')
-  var sub2 = words.slice(halfWay).join(' ')
-  console.log('sub1 is ', sub1)
-  console.log('sub2 is ', sub2)
-
-  // get synonyms of each half
-  var sub1Synonyms = await datamuse.synonym(sub1)
-  var sub2Synonyms = await datamuse.synonym(sub2)
-  console.log('sub1synonyms are ', sub1Synonyms)
-  console.log('sub2synonyms are ', sub2Synonyms)
-
-  // make "words" out of the cartesian product
-  var realWords = []
-  var realWordsOriginal1 = []
-  var realWordsOriginal2 = []
-
-  for (var i = 0; i < sub1Synonyms.length; i++) {
-    for (var j = 0; j < sub2Synonyms.length; j++) {
-      const candidateWord = sub1Synonyms[i] + sub2Synonyms[j]
-      if (candidateWord.length === splitClue.totalLength && utilities.isWord(candidateWord)) {
-        // only add words to the list that are the right length for the solution
-        realWords.push(candidateWord)
-        realWordsOriginal1.push(sub1Synonyms[i])
-        realWordsOriginal2.push(sub2Synonyms[j])
-      }
-    }
+  var synonyms = []
+  for (var x = 0; x < words.length; x++) {
+    synonyms[x] = await datamuse.synonym(words[x])
+    synonyms[x] = synonyms[x].filter(function (word) { return (word.length < splitClue.totalLength -1) })
+    synonyms[x].push('')
+    console.log('synonyoms of', words[x], synonyms[x].slice(0,10),'...',synonyms[x].length)
   }
+  // get the cartesian product of all the remaining strings
+  // remove any whose join is not equal to the clue length (first filter)
+  // make sure the remaining are real words (second filter)
+  var candidateWords = cartesian(synonyms)
+      .filter(function (arr) { var y = arr.join(''); return (y.length === splitClue.totalLength) })
+      .filter(function (arr) { var y = arr.join(''); return (utilities.isWord(y)) })
+      .map(function (arr) { return arr.join('') })
+
+  var realWords =  candidateWords.filter(function (item,pos) {return (candidateWords.indexOf(item) === pos)  })
+
   console.log('Real words are ', realWords)
-  console.log('Originals 1 are ', realWordsOriginal1)
-  console.log('Originals 2 are ', realWordsOriginal2)
 
   // now check if any of the  found words is a synonym of the definition
 
   for (var q = 0; q < realWords.length; q++) {
     if (await utilities.isSynonym(realWords[q], parsedClue.definition)) {
       // we found a word
+      var info =''
+      if (indicator) {
+        info = 'The word "' + indicator + '" suggests this is a Charades-type clue. "'
+      } else {
+        info = 'This appears to be a Charades-type clue. '
+      }
+      info += ' We think the definition is ' + parsedClue.definition + '. We found synonyms of one or more of these words: "' + parsedClue.subsidiary + '", which when combined together form the word "' + realWords[q] + '", which is a synonym of "' + parsedClue.definition + '".' 
       retval.push({
         type: 'Charades',
         clue: splitClue.clue,
         totalLength: splitClue.totalLength,
         definition: parsedClue.definition,
-        subsidiary: sub1 + ' and ' + sub2,
+        subsidiary: parsedClue.subsidiary,
         indicator: indicator,
         words: null,
         solution: realWords[q],
-        info: 'The word "' + indicator + '" suggests this is a Charades-type clue. "' +
-                    sub1 + '" has a synonym of "' + realWordsOriginal1[q] + '", and "' +
-                    sub2 + '" has a synonym of "' + realWordsOriginal2[q] + '", ' +
-                    'which when combined become "' + realWords[q] + '", ' +
-                    'which is a synonym of "' + parsedClue.definition + '".'
+        info: info
       })
     }
   }
 
   return retval
 }
+
+
+// this is a horrible hack  so that we don't have to rewrite everything.
+// we just want to allow the definition to be at the start or the end
+const analyzeCharades = async function (clue) {
+
+  // solve the clue as is
+  const s1 = await analyzeCharadesWorker(clue)
+
+  // solve the clue with the firt and last words switched
+  const splitClue = utilities.split(clue)
+  const words = utilities.getWords(splitClue.clue.toLowerCase())
+  const firstWord = words[0]
+  words[0] = ''
+  words.push(firstWord)
+  const clue2 = (words.join(' ')  + ' (' + splitClue.totalLength + ')').trim()
+  console.log('clue2', clue2)
+  const s2 =  await analyzeCharadesWorker(clue2)
+
+  return s1.concat(s2)
+}
+
 
 module.exports = {
   parseClue,

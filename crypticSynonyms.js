@@ -1,5 +1,5 @@
 const dictionary = {
-  a: ['a'], 
+  a: ['a'],
   about: ['re', 'on', 'c', 'ca'],
   abstainer: ['tt'],
   account: ['ac'],
@@ -209,7 +209,7 @@ const dictionary = {
   north: ['n'],
   'north america': ['na'],
   note: ['nb', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'do', 're', 'mi', 'fa', 'so', 'la', 'ti', 'te'],
-  nothing: ['o','nada'],
+  nothing: ['o', 'nada'],
   november: ['n', 'nov'],
   number: ['n', 'no', 'l', 'x', 'i', 'v', 'c', 'm'],
   old: ['ex', 'o'],

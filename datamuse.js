@@ -10,7 +10,7 @@ async function synonym (word) {
   console.log('finding synonym of', word)
   try {
     // ask datamuse to find the synonyms of the supplied word
-    const response = await request({ url: url + 'words?ml=' + word, json: true })
+    const response = await request({ url: url + 'words?max=50&ml=' + word, json: true })
     const words = []
     for (var i in response) {
       words.push(response[i].word)
