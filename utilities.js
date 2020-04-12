@@ -199,9 +199,9 @@ const solveAnagram = function (letters) {
   const anagramSolutions = require(dict)
   const end = new Date().getTime()
   console.log('anagram dictionary took', (end - start) / 1000, 'seconds to load')
-  var solutions= anagramSolutions[processedLetters] || []
-  //filter out solutions that are basically anagrams of itself, but with different casing
-  return solutions.filter(function(item) { return (item.toLowerCase() !== letters.toLowerCase() )   })
+  var solutions = anagramSolutions[processedLetters] || []
+  // filter out solutions that are basically anagrams of itself, but with different casing
+  return solutions.filter(function (item) { return (item.toLowerCase() !== letters.toLowerCase()) })
 }
 
 module.exports = {
