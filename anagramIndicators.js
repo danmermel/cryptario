@@ -1,7 +1,7 @@
 module.exports = [
   'organise',
-  'organised'
-  'organises'
+  'organised',
+  'organises',
   'variety of',
   'order',
   'ordered',
