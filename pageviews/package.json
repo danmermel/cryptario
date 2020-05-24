@@ -1,0 +1,14 @@
+{
+  "name": "pageviews",
+  "version": "1.0.0",
+  "description": "This is what the regexp does",
+  "main": "extracttotals.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "line-by-line": "^0.1.6"
+  }
+}
