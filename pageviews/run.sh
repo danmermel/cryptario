@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# change directory for crontab
+echo "Entering WIKI cron"
+cd /home/daniel/cryptario/pageviews/
+
 YEAR=`date --date='yesterday' '+%Y'`
 MONTH=`date --date='yesterday' '+%m'`
 DAY=`date --date='yesterday' '+%d'`
@@ -22,7 +26,7 @@ done
 # remove any List_ pages e.g. List_Of_Marvel_Films
 # substitute _ for space
 # take top 100k
-node extracttotals.js | sort -r | sed 's/^[0-9]*	//g' | sed 's/_(.*)$//g' | grep '^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_]*$' | grep -v '^List_' | sed 's/_/ /g' | head -n 100000 > mostpopular.txt
+node extracttotals.js | sort -r | sed 's/^[0-9]*\t//g' | sed 's/_(.*)$//g' | grep '^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_]*$' | grep -v '^List_' | sed 's/_/ /g' | head -n 100000 > mostpopular.txt
 
 # add new strings to our anagram dictionary
 cp mostpopular.txt ../scripts/
@@ -31,6 +35,13 @@ cat combined.txt mostpopular.txt | sort -u > test.txt
 mv test.txt combined.txt
 cd ../pageviews
 mv mostpopular.txt "mostpopular_${YEAR}_${MONTH}_${DAY}.txt"
+
+# commit to git
+cd ../scripts/
+git add combined.txt
+git commit -m'latest wiki pages'
+git push
+cd ../pageviews/
 
 # tidy up
 rm totals.json
