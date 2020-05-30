@@ -90,6 +90,16 @@ resource "aws_iam_role_policy_attachment" "cryptario_role_attach" {
 }
 
 // create stub Lambda function with dummy code
+resource "aws_lambda_function" "cryptario_solver_lambda" {
+  filename = "dummy.zip"
+  function_name = "cryptario-solver-${terraform.workspace}"
+  role = "${aws_iam_role.cryptario_lambda_role.arn}"
+  handler = "index.handler"
+  runtime = "nodejs10.x"
+  timeout = 10
+}
+
+// create stub Lambda function with dummy code
 resource "aws_lambda_function" "cryptario_anagram_lambda" {
   filename = "dummy.zip"
   function_name = "cryptario-anagram-${terraform.workspace}"

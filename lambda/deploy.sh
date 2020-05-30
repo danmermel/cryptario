@@ -38,7 +38,7 @@ echo "Done"
 npm install
 
 # build the Lambda functions
-declare -a arr=("anagram" "hiddenwords" "doubledef" "homophones" "reversals" "containers" "charades" "subtractions")
+declare -a arr=("solver" "anagram" "hiddenwords" "doubledef" "homophones" "reversals" "containers" "charades" "subtractions")
 
 for i in "${arr[@]}"
 do
