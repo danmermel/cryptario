@@ -26,7 +26,7 @@ done
 # remove any List_ pages e.g. List_Of_Marvel_Films
 # substitute _ for space
 # take top 100k
-node extracttotals.js | sort -r | sed 's/^[0-9]*\t//g' | sed 's/_(.*)$//g' | grep '^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_]*$' | grep -v '^List_' | sed 's/_/ /g' | head -n 100000 > mostpopular.txt
+node extracttotals.js | sort -r | sed 's/^[0-9]*\t//g' | sed 's/_(.*)$//g' | grep '^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_]*$' | grep -v '^List_' | sed 's/_/ /g' | head -n 50000 > mostpopular.txt
 
 # add new strings to our anagram dictionary
 cp mostpopular.txt ../scripts/
