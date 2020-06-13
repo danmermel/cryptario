@@ -4,7 +4,7 @@ const handler = async function (event, context) {
   console.log(JSON.stringify(event))
   const body = JSON.parse(event.body)
   console.log('the body is', body)
-  const string = body.string
+  const string = body.clue
   console.log('the string is', string)
   if (!string) {
     throw (new Error('missing string'))

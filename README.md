@@ -71,10 +71,10 @@ Remember to be in the right "workspace" otherwise it doesn't work.
 ## Test the API
 
 ```sh
-curl -X POST -H 'Content-type: application/json' -d'{"string":"ylator switf"}' https://stage.remebit.com/solver
+curl -X POST -H 'Content-type: application/json' -d'{"clue":"ylator switf"}' https://stage.remebit.com/solver
 
 or
 
-curl -X POST -H 'Content-type: application/json' -d'{"string":"ylator switf"}' https://prod.remebit.com/solver
+curl -X POST -H 'Content-type: application/json' -d'{"clue":"ylator switf"}' https://prod.remebit.com/solver
 ```
 
