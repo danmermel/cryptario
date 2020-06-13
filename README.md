@@ -68,3 +68,13 @@ terraform taint -state=./terraform.tfstate.d/stage/terraform.tfstate  aws_api_ga
 
 Remember to be in the right "workspace" otherwise it doesn't work.
 
+## Test the API
+
+```sh
+curl -X POST -H 'Content-type: application/json' -d'{"string":"ylator switf"}' https://stage.remebit.com/solver
+
+or
+
+curl -X POST -H 'Content-type: application/json' -d'{"string":"ylator switf"}' https://prod.remebit.com/solver
+```
+

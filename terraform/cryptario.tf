@@ -90,6 +90,16 @@ resource "aws_iam_role_policy_attachment" "cryptario_role_attach" {
 }
 
 // create stub Lambda function with dummy code
+resource "aws_lambda_function" "cryptario_solver_lambda" {
+  filename = "dummy.zip"
+  function_name = "cryptario-solver-${terraform.workspace}"
+  role = "${aws_iam_role.cryptario_lambda_role.arn}"
+  handler = "index.handler"
+  runtime = "nodejs10.x"
+  timeout = 10
+}
+
+// create stub Lambda function with dummy code
 resource "aws_lambda_function" "cryptario_anagram_lambda" {
   filename = "dummy.zip"
   function_name = "cryptario-anagram-${terraform.workspace}"
@@ -173,6 +183,17 @@ resource "aws_lambda_function" "cryptario_charades_lambda" {
 // create an API gateway
 resource "aws_api_gateway_rest_api" "cryptario_api" {
   name = "cryptario-${terraform.workspace}"
+}
+
+module "solver_method" {
+  source = "./modules/apimethod"
+  api_id = "${aws_api_gateway_rest_api.cryptario_api.id}"
+  api_root_resource_id = "${aws_api_gateway_rest_api.cryptario_api.root_resource_id}"
+  api_path_part = "solver"
+  api_lambda_arn = "${aws_lambda_function.cryptario_solver_lambda.arn}"
+  api_lambda_name = "${aws_lambda_function.cryptario_solver_lambda.function_name}"
+  api_region = "${data.aws_region.current.name}"
+  api_account_id = "${data.aws_caller_identity.current.account_id}"
 }
 
 module "anagram_method" {

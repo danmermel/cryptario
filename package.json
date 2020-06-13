@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "fast-cartesian": "^5.0.0",
+    "request-promise": "^4.2.5",
     "stemmer": "^1.0.5"
   },
   "standard": {
