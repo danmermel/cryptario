@@ -185,6 +185,17 @@ resource "aws_api_gateway_rest_api" "cryptario_api" {
   name = "cryptario-${terraform.workspace}"
 }
 
+module "solver_method" {
+  source = "./modules/apimethod"
+  api_id = "${aws_api_gateway_rest_api.cryptario_api.id}"
+  api_root_resource_id = "${aws_api_gateway_rest_api.cryptario_api.root_resource_id}"
+  api_path_part = "solver"
+  api_lambda_arn = "${aws_lambda_function.cryptario_solver_lambda.arn}"
+  api_lambda_name = "${aws_lambda_function.cryptario_solver_lambda.function_name}"
+  api_region = "${data.aws_region.current.name}"
+  api_account_id = "${data.aws_caller_identity.current.account_id}"
+}
+
 module "anagram_method" {
   source = "./modules/apimethod"
   api_id = "${aws_api_gateway_rest_api.cryptario_api.id}"
