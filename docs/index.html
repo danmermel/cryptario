@@ -1,65 +1,35 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
     <title>Cryptario, solving all your cryptic crossword clues!</title>
  </head>
 
 <body>
-  <div id="app" v-cloak>
-   <div class="container">
-     <div class="jumbotron">
-       <h1 class="display-4">Welcome to Cryptario</h1>
-       <p class="lead">Type a cryptic crossword clue below (e.g. Pleasant tumble in gale (6) ) and we will try to solve it for you!</p>
-       <hr class="my-4">
-       <div class="input-group input-group-lg">
-         <input class="form-control" v-model="clue" placeholder="Enter Clue here">
-       </div>  <!-- input group -->         
-       <input v-bind:disabled="solving && progress < 100" type="button" class="btn btn-primary btn-lg" v-on:click="analyze" value="Submit">
+  <div id="app">
+       <v-app>
+      <v-main>
+        <v-container>Hello world</v-container>
+        <form>
+          <v-text-field v-model="clue" label="Enter Clue" required> </v-text-field>
+          <v-btn class="mr-4" @click="analyze">Submit</v-btn>
+        </form>
 
-    </div>  <!-- jumbotron -->
 
-    <div class="progress" v-if="solving && progress <100">
-      <div class="progress-bar" role="progressbar" v-bind:style="{width: progress +'%'}" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-    
-    <div class="alert alert-danger" role="alert" v-if="progress==100 && solutions.length ==0">
-      No solutions found
-    </div>
+        <v-btn color="primary">Submit</v-btn>
+        <v-text-field color="success" loading disabled></v-text-field>
 
-     <table class="table" v-if="solutions.length>0">
-       <thead>
-         <th scope="col">Clue Type</th>
-         <th scope="col">Definition</th>
-         <th scope="col">Indicator</th>
-         <th scope="col">Subsidiary</th>
-         <th scope="col">Solution</th>
-         <th scope="col">Explanation</th>
-       </thead>
-       <tbody>
-         <tr v-for="s in solutions">
-           <td>{{ s.type }}</td>
-           <td>{{ s.definition }}</td>
-           <td>{{ s.indicator }}</td>
-           <td>{{ s.subsidiary }}</td>
-           <td>{{ s.solution }}</td>
-           <td>{{ s.info }}</td>
-         </tr>
-       </tbody>
-     </table>
-
-    </div>   <!-- container -->
+      </v-main>
+    </v-app>
   </div>   <!-- app --> 
+ 
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
 
-
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="app.js"></script>
 </body>
 
