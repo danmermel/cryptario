@@ -302,7 +302,7 @@ module "custom_domain" {
 
 resource "aws_api_gateway_domain_name" "cdn" {
   certificate_arn = module.custom_domain.certarn
-  domain_name     = "${terraform.workspace}.remebit.com"
+  domain_name     = "${terraform.workspace}.api.cryptario.net"
 }
 
 # api base path  mapping

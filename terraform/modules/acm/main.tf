@@ -5,7 +5,7 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# create certificate for <workspace>.remebit.com
+# create certificate for <workspace>.cryptario.net
 resource "aws_acm_certificate" "cert" {
   domain_name  = "${terraform.workspace}.api.cryptario.net"
   validation_method = "DNS"
