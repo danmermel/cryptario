@@ -28,6 +28,15 @@ done
 # take top 100k
 node extracttotals.js | sort -r | sed 's/^[0-9]*\t//g' | sed 's/_(.*)$//g' | grep '^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_]*$' | grep -v '^List_' | sed 's/_/ /g' | head -n 50000 > mostpopular.txt
 
+
+# calculate top 50 newly added strings
+# for each of the most popular Wikipedia articles, grep to see if they already exist in our dictionary
+cat mostpopular.txt | tr '\n' '\0' | xargs -0 -L 1  -I % sh -c 'grep "^%$" ../scripts/combined.txt' > out.txt
+# find the strings which don't exist in the dictionary
+diff out.txt mostpopular.txt |  grep -E "^>" | sed 's/^> //g' > top.txt
+# take the top 50 strings that don't exist
+head -n 50 top.txt > "top50_${YEAR}_${MONTH}_${DAY}.txt"
+
 # add new strings to our anagram dictionary
 cp mostpopular.txt ../scripts/
 cd ../scripts
