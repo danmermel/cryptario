@@ -10,6 +10,7 @@ const solve = async (clue, clueType) => {
 
 var app = new Vue({
   el: '#app',
+  vuetify: new Vuetify(),
   data: {
     clue: '',
     progress: 0,

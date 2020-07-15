@@ -302,7 +302,7 @@ module "custom_domain" {
 
 resource "aws_api_gateway_domain_name" "cdn" {
   certificate_arn = module.custom_domain.certarn
-  domain_name     = "${terraform.workspace}.remebit.com"
+  domain_name     = "${terraform.workspace}.api.cryptario.net"
 }
 
 # api base path  mapping
@@ -315,8 +315,8 @@ resource "aws_api_gateway_base_path_mapping" "cdn_mapping" {
 # create DNS record in Route 53 - aliasing our domain name with 
 # the api gateway's domain name
 resource "aws_route53_record" "r53_cdn_entry" { 
-  zone_id = "Z1L8M1ZWQLKTWT" 
-  name = "${terraform.workspace}.remebit.com" 
+  zone_id = "Z097007520BJXLNUB48G5" 
+  name = "${terraform.workspace}.api.cryptario.net" 
   type = "A" 
   alias { 
     name = "${aws_api_gateway_domain_name.cdn.cloudfront_domain_name}" 
@@ -324,3 +324,4 @@ resource "aws_route53_record" "r53_cdn_entry" {
     evaluate_target_health = true 
   } 
 }
+
