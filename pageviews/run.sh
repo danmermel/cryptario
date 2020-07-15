@@ -31,11 +31,23 @@ node extracttotals.js | sort -r | sed 's/^[0-9]*\t//g' | sed 's/_(.*)$//g' | gre
 
 # calculate top 50 newly added strings
 # for each of the most popular Wikipedia articles, grep to see if they already exist in our dictionary
+# first change carriage returns to \0 for using as a delimiter
+# then pass to xargs line by line (-L 1 ) and interpolate the line as % (-I %) in the shell argument (grep)
 cat mostpopular.txt | tr '\n' '\0' | xargs -0 -L 1  -I % sh -c 'grep "^%$" ../scripts/combined.txt' > out.txt
-# find the strings which don't exist in the dictionary
+# find the strings which don't exist in the dictionary (all content lines in the diff start with > so find those and remove the > before saving)
 diff out.txt mostpopular.txt |  grep -E "^>" | sed 's/^> //g' > top.txt
 # take the top 50 strings that don't exist
 head -n 50 top.txt > "top50_${YEAR}_${MONTH}_${DAY}.txt"
+
+# turn the top 50 newly added strings  into a JavaScript array
+head -n 50 top.txt | sed 's/^/"/g' | sed 's/$/",/g' | tr -d '\n' > toplist.txt
+echo 'var newTerms=[' > var.txt
+cat var.txt toplist.txt  | sed s/,$/]/ > ../../cryptariofront/top.js
+cd ../../cryptariofront
+git add top.js
+git commit -m'new Wikipedia terms'
+git push
+cd ../cryptario/pageviews
 
 # add new strings to our anagram dictionary
 cp mostpopular.txt ../scripts/
