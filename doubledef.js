@@ -46,6 +46,9 @@ const createSearchablePairs = function (words) {
 }
 
 const comparePair = async function (first, second, pattern) {
+  console.log('comparePair', first, second)
+  first = first.join(' ')
+  second = second.join(' ')
   const firstSynonyms = await datamuse.synonym(first)
   // Throw away any that are not as long as the solution pattern
   const filteredFirstSynonyms = firstSynonyms.filter(function (word) { return utilities.checkWordPattern(word, pattern) })
