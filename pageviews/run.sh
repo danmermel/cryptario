@@ -41,10 +41,10 @@ head -n 50 top.txt > "top50_${YEAR}_${MONTH}_${DAY}.txt"
 
 # turn the top 50 newly added strings  into a JavaScript array
 head -n 50 top.txt | sed 's/^/"/g' | sed 's/$/",/g' | tr -d '\n' > toplist.txt
-echo 'var newTerms=[' > var.txt
-cat var.txt toplist.txt  | sed s/,$/]/ > ../../cryptariofront/top.js
+echo '[' > var.txt
+cat var.txt toplist.txt  | sed s/,$/]/ > ../../cryptariofront/_data/newTerms.json
 cd ../../cryptariofront
-git add top.js
+git add _data/newTerms.json
 git commit -m'new Wikipedia terms'
 git push
 cd ../cryptario/pageviews
