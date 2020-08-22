@@ -15,8 +15,10 @@
     "standard": "^14.3.3"
   },
   "dependencies": {
+    "double-metaphone": "^1.0.5",
     "fast-cartesian": "^5.0.0",
     "request-promise": "^4.2.5",
+    "sqlite3": "^5.0.0",
     "stemmer": "^1.0.5"
   },
   "standard": {

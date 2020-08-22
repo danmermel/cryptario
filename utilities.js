@@ -1,5 +1,6 @@
 const datamuse = require('./datamuse.js')
 const stemmer = require('stemmer')
+const sqlite3 = require('sqlite3')
 
 const split = function (fullClue) {
   var lastBracket = fullClue.lastIndexOf('(')
@@ -189,19 +190,33 @@ const identifyIndicators = function (clue, indicatorFilename) {
   return getLongestIndicator(retval)
 }
 
-const solveAnagram = function (letters) {
-  const processedLetters = transformWord(letters)
-  console.log('processed letters', processedLetters)
-  const len = Math.min(15, processedLetters.length)
-  const start = new Date().getTime()
-  const dict = './anagramSolutions' + len + '.json'
-  console.log('dictionary', dict)
-  const anagramSolutions = require(dict)
-  const end = new Date().getTime()
-  console.log('anagram dictionary took', (end - start) / 1000, 'seconds to load')
-  var solutions = anagramSolutions[processedLetters] || []
-  // filter out solutions that are basically anagrams of itself, but with different casing
-  return solutions.filter(function (item) { return (item.toLowerCase() !== letters.toLowerCase()) })
+const solveAnagram = async function (letters) {
+  // this is async so we return a Promise
+  return new Promise((resolve, reject) => {
+    // process the letters to form a jumble e.g. dog => dgo
+    const processedLetters = transformWord(letters)
+    console.log('processed letters', processedLetters)
+
+    // open the database
+    var db = new sqlite3.Database('./anagrams.db')
+
+    // form a query to search for matching jumbled strings
+    const query = "SELECT solution FROM anagrams WHERE jumble ='" + processedLetters + "';"
+
+    // perform the query
+    db.all(query, function (err, data) {
+      // if there was an error, reject the Promise
+      if (err) {
+        return reject(err)
+      }
+
+      // turn array of objects into flat array of solutions
+      const solutions = data.map((v) => { return v.solution })
+
+      // filter out duplicates
+      resolve(solutions.filter(function (item) { return (item.toLowerCase() !== letters.toLowerCase()) }))
+    })
+  })
 }
 
 module.exports = {

@@ -30,6 +30,17 @@ echo "Building dictionaries"
 cd ../scripts
 npm install
 node generateAnagrams.js
+
+# import anagram csv into sqlite
+rm anagrams.db
+sqlite3 anagrams.db <<'END_SQL'
+CREATE TABLE anagrams (id INTEGER PRIMARY KEY,jumble TEXT NOT NULL,solution TEXT NOT NULL);
+CREATE INDEX anagramindex ON anagrams (jumble);
+.mode csv
+.import anagrams.csv anagrams
+END_SQL
+cp anagrams.db ../
+
 node generateDictionary.js
 cd ../lambda
 echo "Done"

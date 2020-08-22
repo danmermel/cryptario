@@ -92,7 +92,7 @@ const analyzeContainers = async function (clue) {
     for (var j in s2) {
       const str = s1[i] + s2[j]
       if (str.length === splitClue.totalLength) {
-        var solvedAnagrams = utilities.solveAnagram(str)
+        var solvedAnagrams = await utilities.solveAnagram(str)
         // console.log('Anagrams of ', str, 'are', solvedAnagrams)
         for (var l in solvedAnagrams) {
           var solvedAnagram = solvedAnagrams[l]
