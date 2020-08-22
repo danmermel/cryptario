@@ -10,7 +10,7 @@ const handler = async function (event, context) {
     throw (new Error('missing string'))
   }
 
-  const anagramSolutions = utilities.solveAnagram(string)
+  const anagramSolutions = await utilities.solveAnagram(string)
   // now we have to dedupe
   var lc = [] // keeps the ones we've already seen
   anagramSolutions.sort() // sorts alphabetaically and upper cases first
