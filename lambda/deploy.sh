@@ -56,7 +56,7 @@ do
   cd "$i"
   echo "Doing ${i}"
   pwd
-  cp ../../*.js ../../config.json ../../dictionary*.json ../../anagramSolutions*.json .
+  cp ../../*.js ../../config.json ../../dictionary*.json ../../anagrams.db .
 
   # copy the common dependencies
   cp -r ../node_modules .
