@@ -39,6 +39,8 @@ CREATE INDEX anagramindex ON anagrams (jumble);
 .mode csv
 .import anagrams.csv anagrams
 END_SQL
+ls -la anagrams.db
+echo "SELECT * FROM anagrams WHERE solution='dog';" | sqlite3 anagrams.db
 cp anagrams.db ../
 
 node generateDictionary.js
