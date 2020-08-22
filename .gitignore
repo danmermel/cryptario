@@ -4,3 +4,6 @@ crash.log
 dictionary*.json
 anagramSolutions*.json
 mostpopular*
+anagrams.db
+anagrams.csv
+top50*

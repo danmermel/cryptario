@@ -122,7 +122,7 @@ const analyzeAnagram = async function (clue) {
     }
     // now make anagram words for all the words
     // returns an array of strings
-    var solvedAnagrams = utilities.solveAnagram(pc.letters)
+    var solvedAnagrams = await utilities.solveAnagram(pc.letters)
     console.log('solvedAnagrams is ', solvedAnagrams)
 
     for (var k in solvedAnagrams) {

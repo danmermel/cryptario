@@ -8,6 +8,7 @@ env:
 
 services:
   - docker
+  - sqlite3
 
 before_install:
   - pip install --user awscli

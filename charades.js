@@ -64,7 +64,7 @@ const analyzeCharadesWorker = async function (clue) {
     synonyms[x] = await datamuse.synonym(words[x])
     synonyms[x] = synonyms[x].filter(function (word) { return (word.length < splitClue.totalLength - 1) })
     synonyms[x].push('')
-    console.log('synonyoms of', words[x], synonyms[x].slice(0, 10), '...', synonyms[x].length)
+    console.log('synonyoms of', words[x], synonyms[x], synonyms[x].length)
   }
   // get the cartesian product of all the remaining strings
   // remove any whose join is not equal to the clue length (first filter)
