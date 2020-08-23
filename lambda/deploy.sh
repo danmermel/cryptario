@@ -65,11 +65,11 @@ do
 
   # build the zip
   rm lambda.zip
-  zip -r lambda.zip *.js *.json node_modules/
+  zip -r lambda.zip *.js *.json node_modules/ anagrams.db
 
   # tidy up
   # remove all files except those in the list
-  rm !(package.json|index.js|prepare.sh|node_modules|package-lock.json|lambda.zip)
+  rm !(package.json|index.js|prepare.sh|node_modules|package-lock.json|lambda.zip|anagrams.db)
 
   # deploy to lambda
   aws lambda update-function-code --function-name "cryptario-${i}-${1}" --zip-file fileb://lambda.zip
