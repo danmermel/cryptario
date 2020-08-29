@@ -82,44 +82,67 @@ const analyzeContainers = async function (clue) {
   var parsedClue = parseClue(splitClue.clue, indicator, splitClue.totalLength)
   console.log('parsedClue', parsedClue)
 
-  // calculate synonyms
-  var s1 = await datamuse.synonym(parsedClue.subsidiary1)
-  var s2 = await datamuse.synonym(parsedClue.subsidiary2)
-  console.log('synonyms of', parsedClue.subsidiary1, 'are', s1)
-  console.log('synonyms of', parsedClue.subsidiary2, 'are', s2)
+  var done = false
+  var passes = 0
+  var s1 = null
+  var s2 = null
+  while(!done && passes < 2) {
+    passes++
+    console.log('Pass',passes)
+ 
+    // calculate synonyms of the two subsidiaries
+    // one the first pass we need to find synonyms of s1 & s2
+    // but the second pass only needs s1 calculated.
+    s1 = await datamuse.synonym(parsedClue.subsidiary1)
+    if (!s2) {
+      s2 = await datamuse.synonym(parsedClue.subsidiary2)
+    }
+    console.log('synonyms of', parsedClue.subsidiary1, 'are', s1)
+    console.log('synonyms of', parsedClue.subsidiary2, 'are', s2)
 
-  for (var i in s1) {
-    for (var j in s2) {
-      const str = s1[i] + s2[j]
-      if (str.length === splitClue.totalLength) {
-        var solvedAnagrams = await utilities.solveAnagram(str)
-        // console.log('Anagrams of ', str, 'are', solvedAnagrams)
-        for (var l in solvedAnagrams) {
-          var solvedAnagram = solvedAnagrams[l]
-          console.log('solvedAnagram', solvedAnagram)
-          // only solved anagrams that contain one of the original words
-          // are allowed to be solutions
-          if (contains(solvedAnagram, s1[i], s2[j]) || contains(solvedAnagram, s2[j], s1[i])) {
-            var isSynonym = await utilities.isSynonym(parsedClue.definition, solvedAnagram)
-            var maybeOrIs = isSynonym ? 'is' : 'may be'
-            // calculate which synonym is contained in the  solvedAnagram
-            retval.push({
-              type: 'Containers',
-              clue: splitClue.clue,
-              totalLength: splitClue.totalLength,
-              definition: parsedClue.definition,
-              subsidiary: parsedClue.subsidiary1 + ' / ' + parsedClue.subsidiary2,
-              indicator: indicator,
-              words: null,
-              isSynonym: isSynonym,
-              solution: solvedAnagram,
-              info: 'The word "' + indicator + '" suggests this is a Container-type clue. The word "' + s1[i] +
-                    '" is a synonym of "' + parsedClue.subsidiary1 + '". The word "' + s2[j] + '" is a synonym of "' + parsedClue.subsidiary2 +
-                    '". One is inside the other in the word "' + solvedAnagram + '", which ' + maybeOrIs + ' a synonym of "' + parsedClue.definition + '".'
-            })
+    for (var i in s1) {
+      for (var j in s2) {
+        const str = s1[i] + s2[j]
+        if (str.length === splitClue.totalLength) {
+          var solvedAnagrams = await utilities.solveAnagram(str)
+          // console.log('Anagrams of ', str, 'are', solvedAnagrams)
+          for (var l in solvedAnagrams) {
+            var solvedAnagram = solvedAnagrams[l]
+            console.log('solvedAnagram', solvedAnagram)
+            // only solved anagrams that contain one of the original words
+            // are allowed to be solutions
+            if (contains(solvedAnagram, s1[i], s2[j]) || contains(solvedAnagram, s2[j], s1[i])) {
+              var isSynonym = await utilities.isSynonym(parsedClue.definition, solvedAnagram)
+              var maybeOrIs = isSynonym ? 'is' : 'may be'
+              // calculate which synonym is contained in the  solvedAnagram
+              retval.push({
+                type: 'Containers',
+                clue: splitClue.clue,
+                totalLength: splitClue.totalLength,
+                definition: parsedClue.definition,
+                subsidiary: parsedClue.subsidiary1 + ' / ' + parsedClue.subsidiary2,
+                indicator: indicator,
+                words: null,
+                isSynonym: isSynonym,
+                solution: solvedAnagram,
+                info: 'The word "' + indicator + '" suggests this is a Container-type clue. The word "' + s1[i] +
+                      '" is a synonym of "' + parsedClue.subsidiary1 + '". The word "' + s2[j] + '" is a synonym of "' + parsedClue.subsidiary2 +
+                      '". One is inside the other in the word "' + solvedAnagram + '", which ' + maybeOrIs + ' a synonym of "' + parsedClue.definition + '".'
+              })
+              done = true
+            }
           }
         }
       }
+    }
+
+    // should we try a second pass, without the assumption that the definition is the last word?
+    if (!done && passes === 1) {
+      console.log('Nothing found after first pass - flipping definition & subsidiary 1')
+      // flip the subsidiary1 & definition and try again
+      var def = parsedClue.definition
+      parsedClue.definition = parsedClue.subsidiary1
+      parsedClue.subsidiary1 = def
     }
   }
   return retval
