@@ -1,4 +1,5 @@
 module.exports = [
+  'misinformed',
   'organise',
   'organised',
   'organises',
