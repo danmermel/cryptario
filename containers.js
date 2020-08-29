@@ -38,7 +38,7 @@ const parseClue = function (clue, indicator, numLetters) {
   if (pos - 1 === 0) {
     return { definition: words[words.length - 1], subsidiary1: words[pos - 1], subsidiary2: words.slice(pos + indicatorSplit.length, words.length - 1).join(' ') }
   } else {
-    return { definition: words[0], subsidiary1: words[pos - 1], subsidiary2: words[pos + indicatorSplit.length] }
+    return { definition: words[0], subsidiary1: words[pos - 1], subsidiary2: words.slice(pos + indicatorSplit.length, words.length).join(' ') }
   }
 }
 
@@ -86,10 +86,10 @@ const analyzeContainers = async function (clue) {
   var passes = 0
   var s1 = null
   var s2 = null
-  while(!done && passes < 2) {
+  while (!done && passes < 2) {
     passes++
-    console.log('Pass',passes)
- 
+    console.log('Pass', passes)
+
     // calculate synonyms of the two subsidiaries
     // one the first pass we need to find synonyms of s1 & s2
     // but the second pass only needs s1 calculated.
@@ -103,6 +103,7 @@ const analyzeContainers = async function (clue) {
     for (var i in s1) {
       for (var j in s2) {
         const str = s1[i] + s2[j]
+        // console.log(i,j, str)
         if (str.length === splitClue.totalLength) {
           var solvedAnagrams = await utilities.solveAnagram(str)
           // console.log('Anagrams of ', str, 'are', solvedAnagrams)

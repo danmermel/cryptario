@@ -3,6 +3,12 @@ const request = require('request-promise')
 const crypticSynonyms = require('./crypticSynonyms.js')
 const url = 'https://api.datamuse.com/'
 
+const uniqueArray = function (a) {
+  return a.filter(function (item, pos) {
+    return a.indexOf(item) === pos
+  })
+}
+
 // this is an async function. It can treat things that return
 // Promises as synchronous code
 async function synonym (word) {
@@ -19,7 +25,7 @@ async function synonym (word) {
     const cs = crypticSynonyms[word.toLowerCase()] || []
 
     // return array of datamus + cryptic synonyms
-    return words.concat(cs)
+    return uniqueArray(words.concat(cs))
   } catch (e) {
     console.error(e)
     return []
