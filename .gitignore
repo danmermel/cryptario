@@ -9,3 +9,9 @@ anagrams.csv
 top50*
 todo.txt
 test.js
+functionassets/
+*.zip
+.terraform
+terraform.tfvars
+terraform.tfstate
+terraform/terraform.tfstate.backup
