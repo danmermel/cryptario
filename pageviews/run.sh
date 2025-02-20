@@ -2,7 +2,7 @@
 
 # change directory for crontab
 echo "Entering WIKI cron"
-cd /home/daniel/cryptario/pageviews/
+#cd /home/daniel/cryptario/pageviews/
 
 YEAR=`date --date='yesterday' '+%Y'`
 MONTH=`date --date='yesterday' '+%m'`

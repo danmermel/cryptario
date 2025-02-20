@@ -20,7 +20,7 @@ var main = function () {
   var LineByLineReader = require('line-by-line')
 
   var lr = new LineByLineReader('combined.txt')
-  var dictionary = ''
+  var dictionary = 'id,jumble,solution\n'
   var index = 1
 
   lr.on('error', function (err) {
