@@ -15,3 +15,5 @@ functionassets/
 terraform.tfvars
 terraform.tfstate
 terraform/terraform.tfstate.backup
+combined.txt
+totals.json

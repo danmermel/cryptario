@@ -5,7 +5,7 @@ if (!process.argv[2]) {
 }
 
 const TOTALS_FILE = './totals.json'
-var totals = require(TOTALS_FILE)
+var totals = {}
 const fs = require('fs')
 var LineByLineReader = require('line-by-line')
 var lr = new LineByLineReader(process.argv[2])
