@@ -30,6 +30,12 @@ jobs:
           cd pageviews
           ./build_dict.sh stage
 
+      # Build layer for Lambda
+      - name: Build layer for Lambda
+        run: |
+          cd scripts
+          ./build_layer.sh stage
+
       # Run terraform deployment
       - name: Terraform Deployment
         run: |
@@ -37,3 +43,4 @@ jobs:
           terraform init
           terraform workspace select stage
           terraform apply -auto-approve
+          terraform output
