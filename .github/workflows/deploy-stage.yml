@@ -1,0 +1,39 @@
+# https://github.com/actions/deploy-pages#usage
+name: Deploy to GitHub Pages
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - stage
+jobs:  
+  build:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+          terraform_version: 1.10.2   
+      # Build Anagram Dictionary
+      - name: Build Anagram Dictionary
+        run: |
+          cd pageviews
+          ./build_dict.sh stage
+
+      # Run terraform deployment
+      - name: Terraform Deployment
+        run: |
+          cd terraform
+          terraform init
+          terraform workspace select stage
+          terraform apply -auto-approve
