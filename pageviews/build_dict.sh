@@ -14,7 +14,7 @@ aws s3 cp "s3://cryptario-dictionary-${1}/combined.txt" .
 # 2 Run the scripts that augment it with new databaseR
 #2.1 Get popularity data for a single hour from wikipedia
 
-YEAR=`date -d "yesterday" '+%Y'`
+YEAR="2024" #`date -d "yesterday" '+%Y'`
 MONTH=`date -d "yesterday" '+%m'`
 DAY=`date -d "yesterday" '+%d'`
 HOUR=`date -d "yesterday" '+%H'`
