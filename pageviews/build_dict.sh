@@ -50,7 +50,37 @@ rm ${FILENAME}.txt
 # substitute _ for space
 # take top 100k
 echo "getting most popular entries"
-node extracttotals.js | sort -r | sed 's/^[0-9]*\t//g' | sed 's/_(.*)$//g' | grep '^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_]*$' | grep -v '^List_' | sed 's/_/ /g' | head -n 50000 > mostpopular.txt
+node extracttotals.js > temp1.txt
+echo "total lines is " 
+wc -l temp1.txt 
+echo "sorting"
+cat temp1.txt | sort -r > temp2.txt
+echo "total lines is"
+wc -l temp2.txt
+echo "filtering 1"
+cat temp2.txt | sed 's/^[0-9]*\t//g' > temp3.txt
+echo "total lines is"
+wc -l temp3.txt
+echo "filtering 2"
+cat temp3.txt | sed 's/_(.*)$//g' > temp4.txt
+echo "total lines is"
+wc -l temp4.txt
+echo "grepping"
+cat temp4.txt | grep '^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_]*$' > temp5.txt
+echo "total lines is"
+wc -l temp5.txt
+echo "grepping 2"
+cat temp5.txt | grep -v '^List_' > temp6.txt
+echo "total lines is"
+wc -l temp6.txt
+echo "filtering 3"
+cat temp6.txt | sed 's/_/ /g' > temp7.txt
+echo "total lines is"
+wc -l temp7.txt
+echo "getting top 50k"
+cat temp7.txt | head -n 50000 > mostpopular.txt
+echo "total lines is"
+wc -l mostpopular.txt
 
 # 2.4 Add any new terms in the mostpopular file to the combined file by cat-ing both files and de-duping  
 echo "adding most popular entries to our dictionary"
