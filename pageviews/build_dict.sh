@@ -78,7 +78,7 @@ cat temp6.txt | sed 's/_/ /g' > temp7.txt
 echo "total lines is"
 wc -l temp7.txt
 echo "getting top 50k"
-cat temp7.txt | head -n 50000 > mostpopular.txt
+head -n 50000 temp7.txt > mostpopular.txt
 echo "total lines is"
 wc -l mostpopular.txt
 
