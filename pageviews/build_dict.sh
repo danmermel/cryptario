@@ -22,6 +22,7 @@ FILENAME="pageviews-${YEAR}${MONTH}${DAY}-${HOUR}0000"
 ZIPFILE="${FILENAME}.gz"
 URL="https://dumps.wikimedia.org/other/pageviews/${YEAR}/${YEAR}-${MONTH}/${ZIPFILE}"
 echo "Fetching usage data from wikipedia"
+echo $URL
 curl $URL > $ZIPFILE
 
 echo "unzipping.."
@@ -81,14 +82,21 @@ echo "getting top 50k"
 head -n 50000 temp7.txt > mostpopular.txt
 echo "total lines is"
 wc -l mostpopular.txt
+echo "top 100 were.." 
+head -n 100 mostpopular.txt
 
 # 2.4 Add any new terms in the mostpopular file to the combined file by cat-ing both files and de-duping  
-echo "adding most popular entries to our dictionary"
-cat mostpopular.txt combined.txt | sort -u > new_combined.txt
+echo "combining existing with new entries"
+cat mostpopular.txt combined.txt > temp8.txt
+echo "total lines is"
+wc -l temp8.txt
+echo "de-duping"
+sort -u temp8.txt > new_combined.txt
 echo "original combined file contains"
-cat combined.txt | wc -l
+wc -l combined.txt
 echo "new combined file contains"
-cat new_combined.txt | wc -l
+wc -l new_combined.txt
+
 mv new_combined.txt combined.txt
 
 # 3. Write it back to s3
