@@ -46,10 +46,8 @@ const solveAnagram = async function (letters) {
 }
 
 const handler = async function (event, context) {
-  console.log(JSON.stringify(event))
-  const body = JSON.parse(event.body)
-  console.log('the body is', body)
-  const string = body.clue
+  console.log(event.queryStringParameters)
+  const string = event.queryStringParameters.clue
   console.log('the string is', string)
   if (!string) {
     throw (new Error('missing string'))

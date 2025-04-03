@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width,initial-scale=1,minimal-ui" name="viewport">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3.7.19/dist/vuetify.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=roboto:400,500,700" />
+  <script type="importmap">
+    {
+      "imports": {
+        "vue": "https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.esm-browser.js",
+        "vuetify": "https://cdn.jsdelivr.net/npm/vuetify@3.7.19/dist/vuetify.esm.js"
+      }
+    }
+    </script>
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+    .v-card {
+      margin-top: 20px;
+    }
+  </style>
+  <title>Anagram Solver</title>
+  <!-- <link rel="manifest" href="/anagram.webmanifest" /> -->
+</head>
+
+<body>
+  <v-layout v-cloak id="app">
+    <v-app theme="light">
+      <v-app-bar density="compact" color="#009688">
+        <v-app-bar-title style="user-select:none;">Anagram Solver</v-app-bar-title>
+      </v-app-bar>
+      <v-main>
+        <v-container fluid>
+          <v-text-field label="Letters to anagram" v-model="source"
+            hint="This is the string you want to solve the anagram for"></v-text-field>
+          <v-btn @click="solveanagram">Solve</v-btn>
+          <v-card v-if="solutions.length>0">
+            <v-card-title>Solutions for {{frozenSource}}</v-card-title>
+            <v-card-text>
+              <v-list :items="solutions"></v-list>
+            </v-card-text>
+          </v-card>
+        </v-container>
+      </v-main>
+    </v-app>
+  </v-layout>
+
+  <script type="module">
+    // imports
+    import { createApp, ref, computed } from "vue"
+    import { createVuetify } from "vuetify"
+
+    // use vuetify for UI
+    const vuetify = createVuetify()
+
+    // create Vue.js app
+    createApp({
+      setup() {
+        // app state
+        const source = ref('')
+        const solutions = ref([])
+        const frozenSource = ref('')
+
+        const url = "https://nz3iql5vo43zdraczprffrcwla0znxpf.lambda-url.eu-west-1.on.aws/"
+
+        async function solveanagram() {
+          solutions.value = []
+          //console.log(source.value)
+          frozenSource.value = source.value
+          var result = await fetch(url + "?" + new URLSearchParams({ clue: source.value }).toString())
+          solutions.value = await result.json()
+        }
+        // make state available
+        return {
+          source,
+          frozenSource,
+          solutions,
+          solveanagram
+        }
+      }
+    }).use(vuetify).mount('#app')
+
+  </script>
+</body>
+
+</html>
