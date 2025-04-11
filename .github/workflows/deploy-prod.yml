@@ -44,6 +44,8 @@ jobs:
           terraform workspace select prod
           terraform apply -auto-approve
           terraform output
+          export X=`terraform output --json | jq .cryptarioFunctionUrl.value`
+          echo "export default $X" > ../frontend/api_url.js
 
       # Create artifact for GH pages
       - name: Upload artifact
