@@ -62,6 +62,20 @@
 
     // create Vue.js app
     createApp({
+
+      mounted() {
+        if (window.location.hash){
+          //there is stuff there.. submit the form!
+          var str = decodeURIComponent(window.location.hash.substring(1))
+          str = str.replace(/[^a-zA-Z]/g," ")
+          console.log(str)
+          this.source = str
+          this.solveanagram()
+
+        }
+        
+      },
+
       setup() {
         // app state
         const source = ref('')
@@ -77,6 +91,7 @@
           solutions.value = []
           //console.log(source.value)
           frozenSource.value = source.value
+          window.location.hash=encodeURIComponent(frozenSource.value) // put it in the URL
           var result = await fetch(url + "?" + new URLSearchParams({ clue: source.value }).toString())
           solutions.value = await result.json()
           if (solutions.value.length === 0) {
