@@ -36,7 +36,7 @@
       </v-app-bar>
       <v-main>
         <v-container fluid>
-          <v-text-field v-on:keyup.enter="solveanagram" label="Letters to anagram" v-model="source"
+          <v-text-field clearable v-on:keyup.enter="solveanagram" label="Letters to anagram" v-model="source"
             hint="This is the string you want to solve the anagram for"></v-text-field>
           <v-btn @click="solveanagram" :disabled="processing">Solve</v-btn>
           <v-card v-if="solutions.length>0">
