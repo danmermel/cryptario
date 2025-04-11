@@ -20,8 +20,8 @@
     [v-cloak] {
       display: none;
     }
-    .v-card {
-      margin-top: 20px;
+    .v-btn {
+      margin-bottom: 20px;
     }
   </style>
   <title>Anagram Solver</title>
@@ -45,6 +45,7 @@
               <v-list :items="solutions"></v-list>
             </v-card-text>
           </v-card>
+          <v-alert v-if="message">{{message}}</v-alert>
         </v-container>
       </v-main>
     </v-app>
@@ -68,14 +69,19 @@
         const frozenSource = ref('')
         const url = api_url
         const processing = ref(false)
+        const message = ref('')
 
         async function solveanagram() {
           processing.value = true
+          message.value = ''
           solutions.value = []
           //console.log(source.value)
           frozenSource.value = source.value
           var result = await fetch(url + "?" + new URLSearchParams({ clue: source.value }).toString())
           solutions.value = await result.json()
+          if (solutions.value.length === 0) {
+            message.value = "No solutions found for " + frozenSource.value
+          }
           processing.value = false
         }
         // make state available
@@ -84,7 +90,8 @@
           frozenSource,
           solutions,
           solveanagram,
-          processing
+          processing,
+          message
         }
       }
     }).use(vuetify).mount('#app')
