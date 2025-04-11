@@ -11,7 +11,8 @@
     {
       "imports": {
         "vue": "https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.esm-browser.js",
-        "vuetify": "https://cdn.jsdelivr.net/npm/vuetify@3.7.19/dist/vuetify.esm.js"
+        "vuetify": "https://cdn.jsdelivr.net/npm/vuetify@3.7.19/dist/vuetify.esm.js",
+        "api_url": "./api_url.js"
       }
     }
     </script>
@@ -53,6 +54,7 @@
     // imports
     import { createApp, ref, computed } from "vue"
     import { createVuetify } from "vuetify"
+    import api_url from "api_url"
 
     // use vuetify for UI
     const vuetify = createVuetify()
@@ -64,8 +66,7 @@
         const source = ref('')
         const solutions = ref([])
         const frozenSource = ref('')
-
-        const url = "https://ok7442ek6kkrbooqtaymao2hcq0mqzhf.lambda-url.eu-west-1.on.aws/"
+        const url = api_url
 
         async function solveanagram() {
           solutions.value = []

@@ -17,3 +17,4 @@ terraform.tfstate
 terraform/terraform.tfstate.backup
 combined.txt
 totals.json
+api_url.js
