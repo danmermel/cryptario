@@ -1,0 +1,19 @@
+{
+    "name": "Anagram Solver",
+    "short_name": "Anagram",
+    "icons": [
+      {
+        "src": "/bowl-mix-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/bowl-mix-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "theme_color": "#009688",
+    "background_color": "#FFFFFF",
+    "display": "standalone"
+  }
