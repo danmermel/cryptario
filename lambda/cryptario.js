@@ -46,6 +46,9 @@ const solveAnagram = async function (letters) {
 }
 
 const handler = async function (event, context) {
+  if(!event.queryStringParameters) {
+    throw (new Error('missing string'))
+  }
   console.log(event.queryStringParameters)
   const string = event.queryStringParameters.clue
   console.log('the string is', string)
