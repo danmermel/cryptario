@@ -46,14 +46,14 @@ const solveAnagram = async function (letters) {
 }
 
 const handler = async function (event, context) {
-  if(!event.queryStringParameters) {
-    throw (new Error('missing string'))
-  }
   console.log(event.queryStringParameters)
   const string = event.queryStringParameters.clue
   console.log('the string is', string)
   if (!string) {
-    throw (new Error('missing string'))
+    return {
+      statusCode: 400,
+      body: JSON.stringify({"ok":false, "message":"missing clue"})
+    }
   }
 
   const anagramSolutions = await solveAnagram(string)
