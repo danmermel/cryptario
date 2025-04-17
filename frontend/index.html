@@ -38,7 +38,7 @@
         <v-container fluid>
           <v-text-field clearable v-on:keyup.enter="solveanagram" label="Letters to anagram" v-model="source"
             hint="This is the string you want to solve the anagram for"></v-text-field>
-          <v-btn @click="solveanagram" :disabled="processing || source.length===0">Solve</v-btn>
+          <v-btn @click="solveanagram" :disabled="processing || !source">Solve</v-btn>
           <v-card v-if="solutions.length>0">
             <v-card-title>Solutions for {{frozenSource}}</v-card-title>
             <v-card-text>
