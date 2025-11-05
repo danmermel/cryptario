@@ -1,6 +1,6 @@
 # Cryptario
 
-A cryptic crossword solving service...
+An anagram solving service...
 
 ## Dependencies
 
