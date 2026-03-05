@@ -1,6 +1,6 @@
 # Cryptario
 
-An anagram solving service....
+An anagram solving service.....
 
 ## Dependencies
 
