@@ -33,11 +33,11 @@ jobs:
           cd pageviews
           ./build_dict.sh prod
 
-      # Build layer for Lambda
-      - name: Build layer for Lambda
-        run: |
-          cd scripts
-          ./build_layer.sh prod
+      # # Build layer for Lambda
+      # - name: Build layer for Lambda
+      #   run: |
+      #     cd scripts
+      #     ./build_layer.sh prod
 
       # Run terraform deployment
       - name: Terraform Deployment
