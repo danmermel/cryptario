@@ -1,5 +1,5 @@
-const sqlite3 = require('sqlite3')
-
+const { DatabaseSync } = require('node:sqlite')
+const db = new DatabaseSync('anagrams.db', { "readOnly": true })
 const transformWord = function (word) {
   // lowercase
   word = word.toLowerCase()
@@ -16,33 +16,22 @@ const transformWord = function (word) {
   return word
 }
 
-const solveAnagram = async function (letters) {
-  // this is async so we return a Promise
-  return new Promise((resolve, reject) => {
-    // process the letters to form a jumble e.g. dog => dgo
-    const processedLetters = transformWord(letters)
-    console.log('processed letters', processedLetters)
+const solveAnagram = function (letters) {
 
-    // open the database
-    var db = new sqlite3.Database('./anagrams.db')
+  // process the letters to form a jumble e.g. dog => dgo
+  const processedLetters = transformWord(letters)
+  console.log('processed letters', processedLetters)
 
-    // form a query to search for matching jumbled strings
-    const query = "SELECT solution FROM anagrams WHERE jumble ='" + processedLetters + "';"
+  // form a query to search for matching jumbled strings
+  const query = db.prepare(`SELECT solution FROM anagrams WHERE jumble =?;`)
 
-    // perform the query
-    db.all(query, function (err, data) {
-      // if there was an error, reject the Promise
-      if (err) {
-        return reject(err)
-      }
+  var solutions = query.all(processedLetters)
 
-      // turn array of objects into flat array of solutions
-      const solutions = data.map((v) => { return v.solution })
 
-      // filter out duplicates
-      resolve(solutions.filter(function (item) { return (item.toLowerCase() !== letters.toLowerCase()) }))
-    })
-  })
+
+  // turn array of objects into flat array of solutions and filter out dupes
+  solutions = solutions.map((v) => { return v.solution }).filter(function (item) { return (item.toLowerCase() !== letters.toLowerCase()) })
+  return solutions
 }
 
 const handler = async function (event, context) {
@@ -50,11 +39,11 @@ const handler = async function (event, context) {
   if (!string) {
     return {
       statusCode: 400,
-      body: JSON.stringify({"ok":false, "message":"missing clue"})
+      body: JSON.stringify({ "ok": false, "message": "missing clue" })
     }
   }
 
-  const anagramSolutions = await solveAnagram(string)
+  const anagramSolutions =  solveAnagram(string)
   // now we have to dedupe
   var lc = [] // keeps the ones we've already seen
   anagramSolutions.sort() // sorts alphabetaically and upper cases first

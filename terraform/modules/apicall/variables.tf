@@ -2,7 +2,7 @@
 variable "function_name" {}
 variable "role" {}
 variable "runtime" {
-  default = "nodejs20.x"
+  default = "nodejs24.x"
 }
 variable "timeout" {
   default = 60
