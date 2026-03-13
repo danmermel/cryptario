@@ -14,7 +14,6 @@ resource "aws_lambda_function" "cryptarioLambda" {
   runtime          = var.runtime
   timeout          = var.timeout
   source_code_hash = data.archive_file.lambda.output_base64sha256
-  # layers           = [var.nodeLayer]
 }
 
 resource "aws_cloudwatch_log_group" "cryptarioLG" {
