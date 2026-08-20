@@ -22,7 +22,7 @@ FILENAME="pageviews-${YEAR}${MONTH}${DAY}-${HOUR}0000"
 ZIPFILE="${FILENAME}.gz"
 URL="https://dumps.wikimedia.org/other/pageviews/${YEAR}/${YEAR}-${MONTH}/${ZIPFILE}"
 echo "Fetching usage data from wikipedia"
-echo $URL
+echo $URL 
 curl $URL > $ZIPFILE
 
 echo "unzipping.."
@@ -78,8 +78,8 @@ echo "filtering 3"
 cat temp6.txt | sed 's/_/ /g' > temp7.txt
 echo "total lines is"
 wc -l temp7.txt
-echo "getting top 50k"
-head -n 50000 temp7.txt > mostpopular.txt
+echo "getting top 500"
+head -n 5000 temp7.txt > mostpopular.txt
 echo "total lines is"
 wc -l mostpopular.txt
 echo "top 100 were.." 
@@ -96,6 +96,12 @@ echo "original combined file contains"
 wc -l combined.txt
 echo "new combined file contains"
 wc -l new_combined.txt
+ 
+# get the new entries into a new file for putting later on the front end
+comm -13 combined.txt new_combined.txt > new_entries.txt
+
+# put the new entries somewhere useful
+node put_new_entries.js 
 
 mv new_combined.txt combined.txt
 

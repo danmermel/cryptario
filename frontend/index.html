@@ -12,17 +12,25 @@
       "imports": {
         "vue": "https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.esm-browser.js",
         "vuetify": "https://cdn.jsdelivr.net/npm/vuetify@3.7.19/dist/vuetify.esm.js",
-        "api_url": "./api_url.js"
+        "api_url": "./api_url.js",
+        "new_entries": "./new_entries.js"
       }
     }
     </script>
   <style>
+    h2 {
+      margin-top: 40px;
+      margin-bottom: 20px;
+    }
+
     [v-cloak] {
       display: none;
     }
+
     .v-btn {
       margin-bottom: 20px;
     }
+
     input {
       font-size: 2rem;
     }
@@ -49,6 +57,12 @@
             </v-card-text>
           </v-card>
           <v-alert v-if="message">{{message}}</v-alert>
+          <h2>New Entries in the last 24 hours</h2>
+          <v-row>
+            <v-col cols="4" v-for="term in terms" :key="term">
+              <a :href="`https://en.wikipedia.org/wiki/${term}`" target="_blank">{{ term }}</a>
+            </v-col>
+          </v-row>
         </v-container>
       </v-main>
     </v-app>
@@ -59,6 +73,7 @@
     import { createApp, ref, computed } from "vue"
     import { createVuetify } from "vuetify"
     import api_url from "api_url"
+    import new_entries from "new_entries"
 
     // use vuetify for UI
     const vuetify = createVuetify()
@@ -67,16 +82,16 @@
     createApp({
 
       mounted() {
-        if (window.location.hash){
+        if (window.location.hash) {
           //there is stuff there.. submit the form!
           var str = decodeURIComponent(window.location.hash.substring(1))
-          str = str.replace(/[^a-zA-Z]/g," ")
+          str = str.replace(/[^a-zA-Z]/g, " ")
           console.log(str)
           this.source = str
           this.solveanagram()
 
         }
-        
+
       },
 
       setup() {
@@ -85,6 +100,7 @@
         const solutions = ref([])
         const frozenSource = ref('')
         const url = api_url
+        const terms = new_entries
         const processing = ref(false)
         const message = ref('')
 
@@ -94,7 +110,7 @@
           solutions.value = []
           //console.log(source.value)
           frozenSource.value = source.value
-          window.location.hash=encodeURIComponent(frozenSource.value) // put it in the URL
+          window.location.hash = encodeURIComponent(frozenSource.value) // put it in the URL
           var result = await fetch(url + "?" + new URLSearchParams({ clue: source.value }).toString())
           solutions.value = await result.json()
           if (solutions.value.length === 0) {
@@ -109,7 +125,8 @@
           solutions,
           solveanagram,
           processing,
-          message
+          message,
+          terms
         }
       }
     }).use(vuetify).mount('#app')
