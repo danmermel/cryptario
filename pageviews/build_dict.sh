@@ -128,4 +128,4 @@ END_SQL
 cd ../lambda
 rm -rf functionassets
 mkdir functionassets
-cp cryptario.js ../pageviews/anagrams.db functionassets/
+cp mcp.js cryptario.js ../pageviews/anagrams.db functionassets/
